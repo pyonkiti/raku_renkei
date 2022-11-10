@@ -1,24 +1,15 @@
-# README
+## タイトル
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+楽楽販売の請求処理の外付けツール
 
-Things you may want to cover:
+## 概要
 
-* Ruby version
 
-* System dependencies
 
-* Configuration
+## 開発環境
 
-* Database creation
+Ubuntu 20.4（Windows + Vagrant）
+Rails 5.2.8.1
+Ruby 2.6.0p0
+PostgreSQL
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
