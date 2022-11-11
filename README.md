@@ -4,12 +4,17 @@
 
 ## 概要
 
+楽楽販売の請求処理で行いない処理を、外付けで行う機能です。
+
+## 機能
+
+- 請求月計算 ／ 請求予定額計算
+- 入金一覧表（Excel）出力 ／ 仕入一覧表（CSV）出力
 
 
-## 開発環境
+# 開発環境
 
-Ubuntu 20.4（Windows + Vagrant）
-Rails 5.2.8.1
-Ruby 2.6.0p0
-PostgreSQL
-
+- Ubuntu 20.4（Windows + Vagrant）
+- Rails 5.2.8.1
+- Ruby 2.6.0p0
+- PostgreSQL 12.10
