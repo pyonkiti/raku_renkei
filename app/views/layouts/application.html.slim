@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title
+      | RakuRenkei
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  body
+    / ナビバー /
+    .app-title.navbar.top.navbar-expand-lg.navbar-light.bg-light
+        .navbar-brand 楽楽販売 連携ツール
+
+
+
+    / ナビバー以降の画面
+    .container-fluid.row
+        .col-lg-1
+        .col-lg-10
+
+            / flashのnoticeを表示
+            - if flash.notice.present?
+                .alert.alert-success = flash.notice.html_safe
+
+            / flashのalertを表示
+            - if flash.alert.present?
+                .alert.alert-danger = flash.alert
+            = yield
+        .col-lg-1

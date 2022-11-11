@@ -1,0 +1,2 @@
+module Con37NyushiSeikyusHelper
+end

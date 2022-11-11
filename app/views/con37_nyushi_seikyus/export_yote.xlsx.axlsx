@@ -1,0 +1,38 @@
+# ここのロジックがまだ
+
+# ワークブックを作成
+wb = xlsx_package.workbook
+ 
+# ワークブックにシートを挿入
+wb.add_worksheet(name: "請求予定額") do |sheet|
+
+    # ---------------------------------------------------------
+    # スタイルの設定
+    # ---------------------------------------------------------
+    styles = {
+        title: sheet.styles.add_style(font_name: 'メイリオ'),
+        date:  sheet.styles.add_style(font_name: 'Arial', format_code: 'yyyymmdd'),
+        time:  sheet.styles.add_style(font_name: 'Arial', format_code: 'hhmmss')
+    }
+
+
+    # ---------------------------------------------------------
+    # ヘッダー行の出力
+    # ---------------------------------------------------------
+    header = %w(請求年月 請求額合計 斡旋手数料合計 粗利額合計)
+    sheet.add_row header, style: styles[:title]
+
+
+    # ---------------------------------------------------------
+    # 明細行の出力
+    # ---------------------------------------------------------
+    @ex_seikyu.each do |ex_seikyu|
+        sheet.add_row do |row|
+
+            row.add_cell(ex_seikyu.seikyu_ym)
+            row.add_cell(ex_seikyu.seikyu_kin)
+            row.add_cell(ex_seikyu.assen_tesuryo)
+            row.add_cell(ex_seikyu.seikyu_kin.to_i - ex_seikyu.assen_tesuryo.to_i)
+        end
+    end
+end

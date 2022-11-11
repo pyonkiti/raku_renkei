@@ -1,0 +1,54 @@
+# ワークブックを作成
+wb = xlsx_package.workbook
+ 
+# ワークブックにシートを挿入
+wb.add_worksheet(name: "入金一覧") do |sheet|
+
+    # ---------------------------------------------------------
+    # スタイルの設定
+    # ---------------------------------------------------------
+    styles = {
+        title: sheet.styles.add_style(font_name: 'メイリオ'),
+        date:  sheet.styles.add_style(font_name: 'Arial', format_code: 'yyyymmdd'),
+        time:  sheet.styles.add_style(font_name: 'Arial', format_code: 'hhmmss')
+    }
+
+    # ---------------------------------------------------------
+    # ヘッダー行の出力
+    # ---------------------------------------------------------
+    header = %w(商談名 請求No 請求年月日 取引先コード 請求先コード 請求先名称 入金年月日 入金月 今回請求金額 今回消費税 税込請求金額 期 部門 請求月 担当者 連番 枝番 予備)
+    sheet.add_row header, style: styles[:title]
+
+
+    
+
+    # ---------------------------------------------------------
+    # 明細行の出力
+    # ---------------------------------------------------------
+    @ex_nyukin.each do |ex_nyukin|
+        sheet.add_row do |row|
+
+            row.add_cell(ex_nyukin.syodan_nm)
+            row.add_cell(ex_nyukin.seikyu_no)
+            row.add_cell(ex_nyukin.seikyu_ymd)
+            row.add_cell(ex_nyukin.torihikisaki_cd)
+            row.add_cell(ex_nyukin.seikyusaki_cd)
+            row.add_cell(ex_nyukin.seikyusaki_nm)
+            row.add_cell(ex_nyukin.nyukin_ymd)
+            row.add_cell(ex_nyukin.nyukin_m)
+            row.add_cell(ex_nyukin.kon_seikyu_kin)
+            row.add_cell(ex_nyukin.kon_syouhizei)
+            row.add_cell(ex_nyukin.zeikomi_seikyu_kin)
+            row.add_cell(ex_nyukin.ki)
+            row.add_cell(ex_nyukin.bumon)
+            row.add_cell(ex_nyukin.seikyu_m)
+            row.add_cell(ex_nyukin.tantou)
+            row.add_cell(ex_nyukin.renban)
+            row.add_cell(ex_nyukin.edaban)
+            row.add_cell(ex_nyukin.yobi)
+            
+            # dateのstyleを適用する場合は、このようにする
+            # row.add_cell(task.renraku_d, style: styles[:date])
+        end
+    end
+end
