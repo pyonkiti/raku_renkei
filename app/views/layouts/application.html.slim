@@ -2,19 +2,30 @@ doctype html
 html
   head
     title
-      | RakuRenkei
+      | 楽楽連携
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   body
-    / ナビバー /
+    / ナビバー
     .app-title.navbar.top.navbar-expand-lg.navbar-light.bg-light
-        .navbar-brand 楽楽販売 連携ツール
+        .navbar-brand 　楽楽販売 連携ツール
+        - if current_user
+            .navbar-text 　#{current_user.name_id} さん　
+        
+        ul.navbar-nav.ml-auto
+            - if current_user
+                li.nav-item = link_to "入金仕入", con37_nyushi_excels_path, class: 'nav-link'
+                li.nav-item = link_to "請求計算", con37_nyushi_seikyus_path, class: 'nav-link'
+                li.nav-item = link_to "ユーザー一覧", master_users_path, class: 'nav-link'
+
+        ul.navbar-nav.ms-auto
+            - if current_user
+                li.nav-item = link_to "ログアウト", master_logout_path, method: :delete, class: 'nav-link'
 
 
-
-    / ナビバー以降の画面
+    / ナビバーより下の画面
     .container-fluid.row
         .col-lg-1
         .col-lg-10

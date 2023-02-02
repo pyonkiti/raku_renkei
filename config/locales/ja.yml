@@ -13,6 +13,15 @@ ja:
       sisetu_kanribu_teisyutu2: 施設テーブル_管理部提出データ２
       excel_nyukin_list: 入金仕入Excel_入金一覧
       excel_shiire_list: 入金仕入Excel_仕入一覧
+      user:
+    attributes:
+      master/user:
+        id: ID
+        name: ユーザー
+        name_id: ユーザーID
+        admin: 管理者権限
+        created_at: 登録日
+        updated_at: 更新日
   date:
     abbr_day_names:
     - 日

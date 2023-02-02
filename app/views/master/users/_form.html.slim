@@ -1,0 +1,42 @@
+- if user.errors.present?
+    ul#error_explanation
+        - user.errors.full_messages.each do |msg|
+            li = msg
+
+= form_with model: user, local: true do |f|
+
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :name, 'ユーザー', class: 'form-label'
+            .col-md-4
+                = f.text_field :name, class: 'form-control'
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :name_id, 'ユーザーID'
+            .col-md-4
+                = f.text_field :name_id, class: 'form-control'
+    .form-check
+        .row.mt-4
+            .col-md-2
+                / = f.label :admin, '　', class: 'form-check-label'
+            .col-md-2
+                = f.check_box :admin, class: 'form-check-input'
+                | 管理者権限
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :password, 'パスワード', class: 'form-label'
+            .col-md-4
+                = f.password_field :password, class: 'form-control', id: 'usr_password'
+                <input type = 'checkbox' id = 'users_passcheck' class = 'form-check-input'> パスワード表示
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :password_confirmation, 'パスワード（確認）', class: 'form-label'
+            .col-md-4
+                = f.password_field :password_confirmation, class: 'form-control'
+    .mt-4
+    = f.submit '登録する', class: 'btn btn-primary'
+    

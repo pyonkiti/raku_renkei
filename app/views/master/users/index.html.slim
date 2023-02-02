@@ -1,0 +1,32 @@
+.mt-3
+.display-6 ユーザー一覧
+.mb-3
+
+= link_to '新規登録', new_master_user_path, class: 'btn btn-primary'
+
+.mb-3
+table.table.table-hover
+    thead.thead-default
+        tr
+            th = Master::User.human_attribute_name(:id)
+            th = Master::User.human_attribute_name(:name)
+            th = Master::User.human_attribute_name(:name_id)
+            th = Master::User.human_attribute_name(:admin)
+            th = Master::User.human_attribute_name(:created_at)
+            th = Master::User.human_attribute_name(:updated_at)
+            th
+            th
+    tbody 
+        - @users.each do |user|
+            tr
+                td = link_to user.id, user
+                td = user.name
+                td = user.name_id
+                td = user.admin? ? "あり" : "なし"
+                td = user.created_at.strftime("%Y/%m/%d %H:%M")
+                td = user.updated_at.strftime("%Y/%m/%d %H:%M")
+                td = link_to "編集", edit_master_user_path(user), class: 'btn btn-primary'
+                td = link_to "削除", master_user_path(user), 
+                        method: :delete, 
+                        data: { confirm: "ユーザー「#{user.name}」 を削除します。よろしいですか？" }, 
+                        class: 'btn btn-danger'

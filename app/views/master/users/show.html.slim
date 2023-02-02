@@ -1,0 +1,25 @@
+h2 ユーザーの詳細
+
+.nav.justify-content-end
+    = link_to '一覧', master_users_path, class: 'nav-link'
+
+table.table.table-hover
+    tbody
+        tr 
+            th = Master::User.human_attribute_name(:id)
+            td = @user.id
+        tr 
+            th = Master::User.human_attribute_name(:name)
+            td = @user.name
+        tr 
+            th = Master::User.human_attribute_name(:name_id)
+            td = @user.name_id
+        tr 
+            th = Master::User.human_attribute_name(:admin)
+            td = @user.admin
+        tr 
+            th = Master::User.human_attribute_name(:created_at)
+            td = @user.created_at.strftime("%Y/%m/%d %H:%M")
+        tr 
+            th = Master::User.human_attribute_name(:updated_at)
+            td = @user.updated_at.strftime("%Y/%m/%d %H:%M")

@@ -1,0 +1,22 @@
+.mt-3
+.display-6 ログイン
+.mb-3
+
+= form_with url: master_login_path, scope: :session, local: true do |f|
+
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :name_id, 'ID', class: 'form-label'
+            .col-md-4
+                = f.text_field :name_id, class: 'form-control', id: 'session_name_id'
+
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :password, 'パスワード', class: 'form-label'
+            .col-md-4
+                = f.password_field :password, class: 'form-control', id: 'session_password'
+
+    .mt-4
+    = f.submit 'ログインする', class: 'btn btn-primary'

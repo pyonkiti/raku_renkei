@@ -19,6 +19,7 @@ module RakuRenkei
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-
+    # helper利用を限定する
+    config.action_controller.include_all_helpers = false
   end
 end
