@@ -4,22 +4,25 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
     class << self
 
         # ---------------------------------------------------------
+        # ファイル取り込みのチェック
+        # ---------------------------------------------------------
+        def check_head(file)
+            
+            ret = Common.check_file(file)
+            return ret
+        end
+
+        # ---------------------------------------------------------
         # メイン処理
         # ---------------------------------------------------------
         def import_main(file)
 
-            if file.nil?
+            table_delete
+            unless table_import(file)
                 return false
-            else
-                table_delete
-                unless table_import(file)
-                    return false
-                end
             end
             return true
         end
-
-
         
         # ---------------------------------------------------------
         # データ件数を取得
@@ -43,10 +46,11 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
         def table_import(file)
 
             begin
+                err_id = ""
                 CSV.foreach(file.path, headers: true) do |row|
-
+                    
                     hash = {}
-                    hash["id"]                  = row[0]
+                    hash["id"], err_id          = row[0], row[0]
                     hash["seikyu_key_link"]     = row[1]
                     hash["bango"]               = row[2]
                     hash["sisetu_cd"]           = Common.check_integer(row[3])
@@ -74,8 +78,8 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = err + " : " + "自動採番:" + err_id.to_s + "の更新でエラーが発生しています"
                 @@debug.pri_logger.error(err)
                 return false
             end

@@ -4,17 +4,22 @@ class SisetuKanribuTeisyutu2 < ApplicationRecord
     class << self
 
         # ---------------------------------------------------------
+        # ファイル取り込みのチェック
+        # ---------------------------------------------------------
+        def check_head(file)
+            
+            ret = Common.check_file(file)
+            return ret
+        end
+
+        # ---------------------------------------------------------
         # メイン処理
         # ---------------------------------------------------------
         def import_main(file)
-
-            if file.nil?
+            
+            table_delete
+            unless table_import(file)
                 return false
-            else
-                table_delete
-                unless table_import(file)
-                    return false
-                end
             end
             return true
         end
@@ -41,10 +46,11 @@ class SisetuKanribuTeisyutu2 < ApplicationRecord
         def table_import(file)
 
             begin
+                err_id = ""
                 CSV.foreach(file.path, headers: true) do |row|
 
                     hash = {}
-                    hash["id"]                   = row[0]
+                    hash["id"], err_id           = row[0], row[0]
                     hash["shiire_nm"]            = row[1]
                     hash["uri_m"]                = row[2]
                     hash["siharai_kikan_cd"]     = row[3]
@@ -62,8 +68,8 @@ class SisetuKanribuTeisyutu2 < ApplicationRecord
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = err + " : " + "自動採番:" + err_id.to_s + "の更新でエラーが発生しています"
                 @@debug.pri_logger.error(err)
                 return false
             end
@@ -75,7 +81,5 @@ class SisetuKanribuTeisyutu2 < ApplicationRecord
         def table_delete
             connection.execute "TRUNCATE TABLE sisetu_kanribu_teisyutu2s;"
         end
-
-        
     end
 end

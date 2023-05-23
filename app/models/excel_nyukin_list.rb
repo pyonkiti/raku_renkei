@@ -22,49 +22,49 @@ class ExcelNyukinList < ApplicationRecord
         def proc_syori1
             
             begin
+
+                ary_shiire = get_siharai(Time.current.strftime("%m"))           # 支払期間コードを取得
+                
                 # 施設テーブル_管理部提出データ0_統合を読み込む
-                # 後で復活させる @table0 = SisetuKanribuTeisyutu0.where("shiire_cd >= '0'")
                 @table0 = SisetuKanribuTeisyutu0.where(print_flg: '有')
+                                                .where(siharai_kikan_cd: ary_shiire)
                                                 .order(:seikyu_key_link)
                                                 .order(:sisetu_cd)
 
                 return true if ( @table0.size == 0 )
+                
+                err_seikyu_key_link = ""                                        # 初期化：請求キーリンク
+                tanka_sum           = 0                                         # 初期化：単価
+                cnt                 = 0                                         # 件数：ループ
+
+                @table0.each_cons(2) do |table0, table_nxt|
                     
-                tanka_sum  = 0              # 単価の初期化
-                assen_sum  = 0              # 斡旋手数料の初期化
-                seiKeyLink = ""             # 請求キーリンクの初期化
+                    err_seikyu_key_link  = table0.seikyu_key_link                                                           # エラー：請求キーリンク
+                    tanka_sum           += Common.check_integer(table0.tanka) * Common.check_integer(table0.seikyu_m_su)    # 合計：単価×請求月数
+                    cnt                 += 1                                                                                # 件数：ループ
 
-                @table0.each_with_index do |table0, idx|
-
-                    if ( idx > 0 )
-                        if ( seiKeyLink == table0.seikyu_key_link )
-                        else
-                            unless proc_syori2(table0, tanka_sum)   # 入金仕入Excel_入金一覧の更新
-                                return false
-                            end
-
-                            tanka_sum = 0                           # 単価の初期化
-                            assen_sum = 0                           # 斡旋手数料の初期化
+                    if ( table0.seikyu_key_link == table_nxt.seikyu_key_link )
+                    else
+                        unless proc_syori2(table0, tanka_sum)                   # 更新：入金仕入Excel_入金一覧
+                            return false
                         end
+                        tanka_sum = 0                                           # 初期化：単価
                     end
-
-                    tanka_sum  += table0.tanka                      # 単価の合計
-                    assen_sum  += table0.assen_tesuryo              # 斡旋手数料の合計
-                    seiKeyLink  = table0.seikyu_key_link            # 請求キーリンクの退避
                     
-                    if ( idx == @table0.size - 1 )                  # 最終行
-                        unless proc_syori2(table0, tanka_sum)       # 入金仕入Excel_入金一覧の更新
+                    # 最終行
+                    if ( cnt == @table0.size - 1 )
+
+                        tanka_sum  += Common.check_integer(table_nxt.tanka) * Common.check_integer(table_nxt.seikyu_m_su)   # 合計：単価×請求月数
+                        unless proc_syori2(table_nxt, tanka_sum)                                                            # 更新：入金仕入Excel_入金一覧
                             return false
                         end
                     end
-
-                    next   if (idx == 5)          # テスト
                 end
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = err + " : " + "請求キーリンク:" + err_seikyu_key_link + "の更新でエラーが発生しています"
                 @@debug.pri_logger.error(err)
                 return false
             end
@@ -76,14 +76,17 @@ class ExcelNyukinList < ApplicationRecord
         def proc_syori2(table0, tanka_sum)
 
             begin
-                w_nyukin_ymd     = get_ymd( table0.siharai_yotei_kbn, table0.siharai_ymd_yokust, table0.siharai_ymd_yokued )    # 入金年月日
-                w_kon_seikyu_kin = cal_hasuu( table0.hasu_kbn_seikyu_gaku, tanka_sum       )                                    # 今回請求金額
-                w_kon_syouhizei  = cal_hasuu( table0.hasu_kbn_syouhizei,   tanka_sum * 0.1 )                                    # 今回消費税
+                w_nyukin_ymd        = get_ymd( table0.siharai_yotei_kbn, table0.siharai_ymd_yokust, table0.siharai_ymd_yokued ) # 入金年月日
+                w_kon_seikyu_kin    = cal_hasuu( table0.hasu_kbn_seikyu_gaku, tanka_sum       )                                 # 今回請求金額
+                w_kon_syouhizei     = cal_hasuu( table0.hasu_kbn_syouhizei,   tanka_sum * 0.1 )                                 # 今回消費税
+
+                err_seikyu_key_link = table0.seikyu_key_link
+                ret = get_bun(table0.siharai_kikan_cd, Time.current.strftime("%Y-%m"))                                          # 何月分かの名称を取得
 
                 hash = {}
-                hash["syodan_nm"]          = table0.seikyu_syo_naiyo_ue
+                hash["syodan_nm"]          = table0.seikyu_syo_naiyo_ue.to_s + " " + ret
                 hash["seikyu_no"]          = ""
-                hash["seikyu_ymd"]         = w_nyukin_ymd.delete("/")[0, 6] + "01"
+                hash["seikyu_ymd"]         = w_nyukin_ymd == "" ? "" : w_nyukin_ymd.delete("/")[0, 6] + "01"
                 hash["torihikisaki_cd"]    = table0.tokuisaki_cd
                 hash["seikyusaki_cd"]      = ""
                 hash["seikyusaki_nm"]      = table0.seikyu_saki1
@@ -107,15 +110,13 @@ class ExcelNyukinList < ApplicationRecord
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = err + " : " + "請求キーリンク:" + err_seikyu_key_link + "の更新でエラーが発生しています"
                 @@debug.pri_logger.error(err)
                 return false
             end
         end
         
-        
-
         # ---------------------------------------------------------
         # 入金仕入Excel_入金一覧の総合計を１行だけ更新（メイン）
         # ---------------------------------------------------------
@@ -133,20 +134,18 @@ class ExcelNyukinList < ApplicationRecord
                 end
 
                 @ex_nyukin.each_with_index do |ex_nyukin, idx|
-                    unless proc_syori4(ex_nyukin)                       # 入金仕入Excel_入金一覧の更新
+                    unless proc_syori4(ex_nyukin)                       # 更新：入金仕入Excel_入金一覧
                         return false
                     end
                 end
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
                 @@debug.pri_logger.error(err)
                 return false
             end
         end
-
 
         # ---------------------------------------------------------
         # 入金仕入Excel_入金一覧の総合計を１行だけ更新
@@ -170,8 +169,8 @@ class ExcelNyukinList < ApplicationRecord
                 hash["bumon"]              = ""
                 hash["seikyu_m"]           = ""
                 hash["tantou"]             = ""
-                hash["renban"]             = "総計"
-                hash["edaban"]             = ""
+                hash["renban"]             = ""
+                hash["edaban"]             = "総計"
                 hash["yobi"]               = ""
                 hash["seikyu_key_link"]    = "999999999"
 
@@ -181,13 +180,11 @@ class ExcelNyukinList < ApplicationRecord
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
                 @@debug.pri_logger.error(err)
                 return false
             end
         end
-
 
         # ---------------------------------------------------------
         # データ件数を取得
@@ -227,14 +224,71 @@ class ExcelNyukinList < ApplicationRecord
         # 端数区分より、請求額or消費税額の端数処理を行う
         # ---------------------------------------------------------
         def cal_hasuu(kbn, kingaku)
-
-            kingaku = Common.check_integer(kingaku)                # 数値の妥当性チェック
-
             case kbn
                 when "四捨五入" then  kingaku.round
-                when "切り上げ" then  kingaku.cell
+                when "切り上げ" then  kingaku.ceil
                 when "切り捨て" then  kingaku.floor
                 else  kingaku.floor
+            end
+        end
+
+        # ---------------------------------------------------------
+        # 支払期間コードの抽出条件をSQLで取得
+        # ---------------------------------------------------------
+        def get_siharai(mm)
+
+            ret = case mm.to_i
+                when  1 then ['01']
+                when  2 then ['01','12']
+                when  3 then ['01','11','21']
+                when  4 then ['01','13']
+                when  5 then ['01']
+                when  6 then ['01']
+                when  7 then ['01']
+                when  8 then ['01','12']
+                when  9 then ['01','11']
+                when 10 then ['01','13']
+                when 11 then ['01']
+                when 12 then ['01']
+                else []
+            end
+            return ret
+        end
+
+        # ---------------------------------------------------------
+        # 何月分かの名称を取得
+        # ---------------------------------------------------------
+        def get_bun(siharai_kikan_cd, ym)
+
+            yy = ym.split('-')[0].to_i                      # 年を取得
+            mm = ym.split('-')[1].to_i                      # 月を取得
+
+            case siharai_kikan_cd
+                when "01" then "#{mm.to_s}月分"             # 毎月
+                    
+                when "11" then                              # 半期（9月/3月）
+                    case mm
+                        when 9 then "上期分"
+                        when 3 then "下期分"
+                        else ""
+                    end
+                    
+                when "12" then                              # 半期（8月/2月）
+                    case mm
+                        when 8 then "上期分"
+                        when 2 then "下期分"
+                        else ""
+                    end
+                
+                when "13" then                              # 半期（4月/10月）
+                    case mm
+                        when  4 then "上期分"
+                        when 10 then "下期分"
+                        else ""
+                    end
+                
+                when "21" then "#{(yy - 1).to_s}年度分"     # 年度末（3月）
+                else ""
             end
         end
 
@@ -244,5 +298,7 @@ class ExcelNyukinList < ApplicationRecord
         private :table_delete
         private :get_ymd
         private :cal_hasuu
+        private :get_siharai
+        private :get_bun
     end
 end

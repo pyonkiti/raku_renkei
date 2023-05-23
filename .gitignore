@@ -27,6 +27,6 @@
 /config/master.key
 
 # 自作ファイル
-/routes.txt
 /.env
 /test/ruby*.rb
+/private/*

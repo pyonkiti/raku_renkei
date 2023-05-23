@@ -2,6 +2,24 @@
 module  Common
     
     # ---------------------------------------------------------
+    # ファイルの取り込みをチェックをする
+    # ---------------------------------------------------------
+    def self.check_file(file)
+
+        if file.nil?
+            return 1
+        end
+
+        content = File.read(file.path)
+        if (NKF.guess(content).to_s == "UTF-8")
+        else
+            return 2
+        end
+
+        return 0
+    end
+
+    # ---------------------------------------------------------
     # 数値かどうかのチェックをする
     # ---------------------------------------------------------
     def self.check_integer(data)
@@ -82,9 +100,4 @@ module  Common
         end
         ret
     end
-
-    # selfをつけたのでこの記述は不要となる
-    # module_function :check_integer
-    # module_function :change_kara
-    
 end

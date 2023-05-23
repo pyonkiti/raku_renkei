@@ -140,15 +140,6 @@ ActiveRecord::Schema.define(version: 2022_12_26_045223) do
     t.datetime "created_at"
   end
 
-  create_table "test01s", force: :cascade do |t|
-    t.string "name1"
-    t.string "name2", default: ""
-    t.string "name3", null: false
-    t.string "name4", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "name_id", null: false

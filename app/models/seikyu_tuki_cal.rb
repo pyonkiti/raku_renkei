@@ -11,7 +11,27 @@ class SeikyuTukiCal < ApplicationRecord
             unless proc1(seikyu_ym)
                 return false
             end
+
+
+            # @@debug.pri_logger.error(seikyu_ym)
+
             return true
+        end
+
+        # ---------------------------------------------------------
+        # 請求月計算のCSVに出力 （未使用）
+        # ---------------------------------------------------------
+        def del_proc_csv(ex_seikyu)
+
+            CSV.generate( headers: true ) do |csv|
+
+                csv << %w(自動採番 請求月数 印刷フラグ)
+                
+                ex_seikyu.each do |seikyu|
+                    arry = ["id", "seikyu_m_su", "print_flg"]
+                    csv << arry.map { |var| seikyu.send(var) }
+                end
+            end
         end
 
         # ---------------------------------------------------------
@@ -19,17 +39,16 @@ class SeikyuTukiCal < ApplicationRecord
         # ---------------------------------------------------------
         def proc_csv(ex_seikyu)
 
-            CSV.generate( headers: true ) do |csv|
+            CSV.generate( headers: true, force_quotes: true) do |csv|
 
                 csv << %w(自動採番 請求月数 印刷フラグ)
                 
                 ex_seikyu.each do |seikyu|
-
-                    arry = ["id", 
-                            "seikyu_m_su",
-                            "print_flg"]
-
-                    csv << arry.map { |var| seikyu.send(var) }
+                    arry = []
+                    arry << sprintf("%09d", seikyu.id)
+                    arry << seikyu.seikyu_m_su
+                    arry << seikyu.print_flg
+                    csv  << arry
                 end
             end
         end
@@ -51,11 +70,11 @@ class SeikyuTukiCal < ApplicationRecord
                     
                     ituki = get_calctuki(ary, seikyu_ym)                        # 請求月数の計算
                     sprnt = get_outjyoken(ary, seikyu_ym)                       # 印刷フラグの算出
-                    
-                    ituki == 0 if sprnt = "無"
+                    ituki = 0 if (sprnt == "無")
                     
                     sql  = ""
                     sql += "Insert Into seikyu_tuki_cals( "
+                    sql += "id,"
                     sql += "seikyu_key_link,"
                     sql += "yuusyou_kaishi_ym,"
                     sql += "yuusyou_syuryo_ym,"
@@ -64,6 +83,7 @@ class SeikyuTukiCal < ApplicationRecord
                     sql += "print_flg"
                     sql += " ) "
                     sql += "Values ( "
+                    sql += "#{tbl0.id},"
                     sql += "#{Common.change_kara(tbl0.seikyu_key_link)},"
                     sql += "#{Common.change_kara(tbl0.yuusyou_kaishi_ym)},"
                     sql += "#{Common.change_kara(tbl0.yuusyou_syuryo_ym)},"
@@ -77,13 +97,11 @@ class SeikyuTukiCal < ApplicationRecord
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
                 @@debug.pri_logger.error(err)
                 return false
             end
         end
-
 
         # ---------------------------------------------------------
         # 請求月計算テーブルを全件削除
@@ -123,6 +141,7 @@ class SeikyuTukiCal < ApplicationRecord
                     end
 
                     # メモ情報 : seikyu_ymは1月の時は、2022-1ではなく、2022-01が入ってくる
+                    # aa, bb のセットはデバックOK
                     aa = seikyu_ym.delete("-").to_i                                                                          # 画面の請求年月
                     bb = Time.local(seikyu_ym.split("-")[0], seikyu_ym.split("-")[1]).ago(iTuki.month).strftime("%Y%m").to_i # 画面の請求年月 - 6(12)ヶ月
                     
@@ -159,7 +178,7 @@ class SeikyuTukiCal < ApplicationRecord
                     # ---------------------------------------------------------
                     if endYM != 0
                         if bb < endYM and endYM <= aa
-                            tuki = Common.datediff(bb, endYM) + 1
+                            tuki = Common.datediff(bb, endYM)
                             return tuki
                         end
                     end
@@ -198,6 +217,7 @@ class SeikyuTukiCal < ApplicationRecord
                         iDifYmd = Common.datediff(ary[2].delete("/").to_i, seikyu_ym.delete("-").to_i)
                         return "無" if iDifYmd >= iTuki
                     end
+
                     # ---------------------------------------------------------
                     #【パターン１３～１６の場合】
                     # 終了年月がどうであれ、開始年月 > 画面年月の場合は請求しない

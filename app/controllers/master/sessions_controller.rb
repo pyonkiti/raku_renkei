@@ -9,13 +9,9 @@ class Master::SessionsController < ApplicationController
 
         user = User.find_by(name_id: params[:session][:name_id])
 
-        # tttttttttttttt
-        # session[:user_id] = user.id
-        # redirect_to con37_nyushi_excels_url
-
         if user&.authenticate(params[:session][:password])
             session[:user_id] = user.id
-            flash[:notice] = "ログインしました。"
+            flash[:notice]    = "ログインしました。"
             redirect_to con37_nyushi_excels_url
         else
             flash[:alert] = "ログインに失敗しました。"

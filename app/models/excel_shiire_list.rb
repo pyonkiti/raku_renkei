@@ -22,52 +22,45 @@ class ExcelShiireList < ApplicationRecord
         def proc_syori1
             
             begin
-
                 # 施設テーブル_管理部提出データ0_統合を読み込む
-                # 今テストでこのような条件にしている
-                # 後で復活させる @table0 = SisetuKanribuTeisyutu0.where("shiire_cd >= '0'")
-                @table0 = SisetuKanribuTeisyutu0.where(print_flg: '有')
+                @table0 = SisetuKanribuTeisyutu0.where("shiire_cd >= '0'")
+                                                .where(print_flg: '有')
                                                 .order(:seikyu_key_link)
                                                 .order(:sisetu_cd) 
+                
+                return true if ( @table0.size == 0 )
 
-                retun true if ( @table0.size == 0 )
+                err_seikyu_key_link = ""                                # 初期化：請求キーリンク
+                assen_sum           = 0                                 # 初期化：斡旋手数料
+                cnt                 = 0                                 # 件数：ループ
+
+                @table0.each_cons(2) do |table0, table_nxt|
                     
-                tanka_sum  = 0              # 単価の初期化
-                assen_sum  = 0              # 斡旋手数料の初期化
-                seiKeyLink = ""             # 請求キーリンクの初期化
+                    err_seikyu_key_link  = table0.seikyu_key_link        # エラー：請求キーリンク
+                    assen_sum           += table0.assen_tesuryo          # 合計：斡旋手数料
+                    cnt                 += 1                             # 件数：ループ
 
-                @table0.each_with_index do |table0, idx|
-
-                    if ( idx > 0 )
-                        if ( seiKeyLink == table0.seikyu_key_link )
-                        else
-                            unless proc_syori2(table0, assen_sum)   # 入金仕入Excel_仕入一覧の更新
-                                return false
-                            end
-
-                            tanka_sum = 0                       # 単価の初期化
-                            assen_sum = 0                       # 斡旋手数料の初期化
+                    if ( table0.seikyu_key_link == table_nxt.seikyu_key_link )
+                    else
+                        unless proc_syori2(table0, assen_sum)           # 更新：入金仕入Excel_仕入一覧
+                            return false
                         end
+                        assen_sum = 0                                   # 初期化：斡旋手数料
                     end
 
-                    tanka_sum  += table0.tanka                  # 単価の合計
-                    assen_sum  += table0.assen_tesuryo          # 斡旋手数料の合計
-                    seiKeyLink  = table0.seikyu_key_link        # 請求キーリンクの退避
-
                     # 最終行
-                    if ( idx == @table0.size - 1 )
-                        unless proc_syori2(table0, assen_sum)   # 入金仕入Excel_仕入一覧の更新
+                    if ( cnt == @table0.size - 1 )
+                        assen_sum  += table_nxt.assen_tesuryo           # 合計：斡旋手数料
+                        unless proc_syori2(table_nxt, assen_sum)        # 更新：入金仕入Excel_仕入一覧
                             return false
                         end
                     end
-
-                    next   if (idx == 5)          # テスト
                 end
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = err + " : " + "請求キーリンク:" + err_seikyu_key_link + "の更新でエラーが発生しています"
                 @@debug.pri_logger.error(err)
                 return false
             end
@@ -79,6 +72,8 @@ class ExcelShiireList < ApplicationRecord
         def proc_syori2(table0, assen_sum)
 
             begin
+                err_seikyu_key_link = table0.seikyu_key_link
+
                 hash = {}
                 hash["denpyo_kugiri"]   = "*"
                 hash["hojyo_kamoku"]    = table0.shiire_cd
@@ -104,13 +99,12 @@ class ExcelShiireList < ApplicationRecord
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = err + " : " + "請求キーリンク:" + err_seikyu_key_link + "の更新でエラーが発生しています"
                 @@debug.pri_logger.error(err)
                 return false
             end
         end
-
 
         # ---------------------------------------------------------
         # CSVに出力
@@ -122,7 +116,6 @@ class ExcelShiireList < ApplicationRecord
                 csv << %w(伝票区切 補助科目 取引先 適用（１） 適用（２） 適用（３） 備考 金額 税 部門 借方科目 消費税 合計金額 買掛金 日付 取引先C)
                 
                 ex_shiire.each do |shiire|
-
                     arry = ["denpyo_kugiri", 
                             "hojyo_kamoku",
                             "torihikisaki",
@@ -144,9 +137,7 @@ class ExcelShiireList < ApplicationRecord
                 end
             end
         end
-
         
-
         # ---------------------------------------------------------
         # データ件数を取得
         # ---------------------------------------------------------

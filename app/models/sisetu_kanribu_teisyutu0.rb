@@ -53,8 +53,7 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
                 return true
 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
                 @@debug.pri_logger.error(err)
                 return false
             end
@@ -66,9 +65,12 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
         def table_insert2
             
             begin
+                err_id = ""
                 @table2 = SisetuKanribuTeisyutu2.all.order(:id)
 
                 @table2.each do |table2|
+
+                    err_id = (table2.id).to_s
 
                     sql = ""
                     sql += "UPDATE sisetu_kanribu_teisyutu0s "
@@ -82,7 +84,7 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
                     sql += "hasu_kbn_seikyu_gaku = #{Common.change_kara(table2.hasu_kbn_seikyu_gaku)}, "
                     sql += "hasu_kbn_syouhizei   = #{Common.change_kara(table2.hasu_kbn_syouhizei)}, "
                     sql += "id_user              = #{Common.change_kara(table2.id_user)}, "
-                    sql += "created_at           = #{Common.change_kara(Time.current)} " 
+                    sql += "created_at           = #{Common.change_kara(Time.current.ago(9.hours))} " 
                     sql += " WHERE id = " + (table2.id).to_s
                     
                     res = ActiveRecord::Base.connection.execute(sql)
@@ -90,13 +92,12 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
                 return true
                 
             rescue => ex
-
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = err + " : " + "id:" + err_id + "の更新でエラーが発生しています"
                 @@debug.pri_logger.error(err)
                 return false
             end
         end
-
 
         # ---------------------------------------------------------
         # テーブルを全件削除

@@ -2,7 +2,8 @@
 .display-6 ユーザー一覧
 .mb-3
 
-= link_to '新規登録', new_master_user_path, class: 'btn btn-primary'
+= link_to new_master_user_path, class: 'btn btn-primary'
+    i class = "far fa-edit"  新規登録
 
 .mb-3
 table.table.table-hover
@@ -23,10 +24,14 @@ table.table.table-hover
                 td = user.name
                 td = user.name_id
                 td = user.admin? ? "あり" : "なし"
-                td = user.created_at.strftime("%Y/%m/%d %H:%M")
-                td = user.updated_at.strftime("%Y/%m/%d %H:%M")
-                td = link_to "編集", edit_master_user_path(user), class: 'btn btn-primary'
-                td = link_to "削除", master_user_path(user), 
+                td = user.created_at.strftime("%Y/%m/%d")
+                td = user.updated_at.strftime("%Y/%m/%d")
+
+                td = link_to edit_master_user_path(user), class: 'btn btn-primary'
+                        i class = "far fa-edit"  編集
+
+                td = link_to master_user_path(user), 
                         method: :delete, 
                         data: { confirm: "ユーザー「#{user.name}」 を削除します。よろしいですか？" }, 
                         class: 'btn btn-danger'
+                        i class = "fas fa-trash-alt"  削除

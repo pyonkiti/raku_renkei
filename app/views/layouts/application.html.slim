@@ -22,8 +22,8 @@ html
 
         ul.navbar-nav.ms-auto
             - if current_user
-                li.nav-item = link_to "ログアウト", master_logout_path, method: :delete, class: 'nav-link'
-
+                li.nav-item = link_to master_logout_path, method: :delete, class: 'nav-link'
+                                i class = "fas fa-sign-out-alt"  ログアウト
 
     / ナビバーより下の画面
     .container-fluid.row

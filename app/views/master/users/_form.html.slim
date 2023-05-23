@@ -37,6 +37,7 @@
                 = f.label :password_confirmation, 'パスワード（確認）', class: 'form-label'
             .col-md-4
                 = f.password_field :password_confirmation, class: 'form-control'
-    .mt-4
-    = f.submit '登録する', class: 'btn btn-primary'
-    
+    .mt-5
+
+    = f.button type: "submit", class: 'btn btn-primary'
+        i class = "far fa-edit"  登録

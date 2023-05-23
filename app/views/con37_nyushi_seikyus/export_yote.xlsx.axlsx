@@ -1,5 +1,3 @@
-# ここのロジックがまだ
-
 # ワークブックを作成
 wb = xlsx_package.workbook
  
@@ -15,13 +13,11 @@ wb.add_worksheet(name: "請求予定額") do |sheet|
         time:  sheet.styles.add_style(font_name: 'Arial', format_code: 'hhmmss')
     }
 
-
     # ---------------------------------------------------------
     # ヘッダー行の出力
     # ---------------------------------------------------------
     header = %w(請求年月 請求額合計 斡旋手数料合計 粗利額合計)
     sheet.add_row header, style: styles[:title]
-
 
     # ---------------------------------------------------------
     # 明細行の出力

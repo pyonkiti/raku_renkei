@@ -30,7 +30,6 @@ class SeikyuYoteCal < ApplicationRecord
 
                 return false unless proc2(icnt, seikyu_ym_next)                         # 請求予定額テーブルの更新
             end
-
             return true
         end
         
@@ -40,9 +39,6 @@ class SeikyuYoteCal < ApplicationRecord
         def proc2(icnt, seikyu_ym)
 
             begin
-
-                # 時間があったら、２テーブル間で、結合のテストを行ってみる
-
                 # ---------------------------------------------------------
                 # 管理部提出データ0_統合 + 請求月計算 （金額合計を計算）
                 # ---------------------------------------------------------
@@ -55,7 +51,7 @@ class SeikyuYoteCal < ApplicationRecord
                 sql += "cal.print_flg     As print_flg "
                 sql += "From sisetu_kanribu_teisyutu0s As te0 "
                 sql += "Left Join seikyu_tuki_cals AS cal On te0.id = cal.id "
-                sql += "Where te0.print_flg = '有'"
+                sql += "Where cal.print_flg = '有'"
 
                 @ex_shiire = ExcelShiireList.find_by_sql(sql)
 
@@ -67,13 +63,13 @@ class SeikyuYoteCal < ApplicationRecord
                 asngk_sum = 0
 
                 @ex_shiire.each do | shiire |
-
                     kingk_sum += Common.check_integer("#{shiire.tanka}") * Common.check_integer("#{shiire.seikyu_m_su}")    # 請求金額
                     asngk_sum += Common.check_integer("#{shiire.assen_tesuryo}")                                            # 斡旋手数料
                 end
                 
                 # ---------------------------------------------------------
                 # 請求予定額の更新
+                # メモ：Insert文で更新する時、text型は''で囲まないと更新されない、時間型、数値型は''で囲まないこと
                 # ---------------------------------------------------------
                 sql  = ""
                 sql += "Insert Into seikyu_yote_cals( "
@@ -88,15 +84,11 @@ class SeikyuYoteCal < ApplicationRecord
                 sql += "#{kingk_sum},"                                      # 請求金額
                 sql += "#{asngk_sum}"                                       # 斡旋手数料
                 sql += " )"
-
                 res = ActiveRecord::Base.connection.execute(sql)
 
-                # メモ：Insert文で更新する時、text型は''で囲まないと更新されない、時間型、数値型は''で囲まないこと
-
                 return true
-
             rescue => ex
-                err = self.class.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
                 @@debug.pri_logger.error(err)
                 return false
             end

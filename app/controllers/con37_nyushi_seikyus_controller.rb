@@ -7,11 +7,6 @@ class Con37NyushiSeikyusController < ApplicationController
     # 請求月計算 ／ 請求予定額計算 《実行》
     # ---------------------------------------------------------
     def syori_main
-
-        # GitHubに上げる
-        # Gitについて勉強
-        # ログイン画面の作成
-        # driverの調査
         
         # ---------------------------------------------------------
         # 請求年月の入力チェック
@@ -19,6 +14,7 @@ class Con37NyushiSeikyusController < ApplicationController
         unless params[:txt_seikyu_ym].present?
             flash[:alert]  = "請求年月が空白です。"
         else
+            
             ret = case params[:kbn_seikyu]
                 when "1" then SeikyuTukiCal.proc_main(params[:txt_seikyu_ym])       # 請求月数計算
                 when "2" then SeikyuYoteCal.proc_main(params[:txt_seikyu_ym])       # 請求予定額計算
@@ -34,15 +30,14 @@ class Con37NyushiSeikyusController < ApplicationController
             end
         end
         
-        redirect_to con37_nyushi_seikyus_url
+        redirect_to con37_nyushi_seikyus_url(seikyu_ym: params[:txt_seikyu_ym], kbn_seikyu: params[:kbn_seikyu])
     end
-
-
+    
     # ---------------------------------------------------------
     # 請求月計算 《CSV出力》
     # ---------------------------------------------------------
     def export_tuki
-
+        
         sql = "Select * From seikyu_tuki_cals Order by id"
         @ex_seikyu = SeikyuTukiCal.find_by_sql(sql)
         
@@ -52,11 +47,11 @@ class Con37NyushiSeikyusController < ApplicationController
             return
         end
 
-        filename = "請求月計算_#{Date.today.strftime("%Y%m")}"
-
+        filename = params[:txt_seikyus_ym].present? ? "#{params[:txt_seikyus_ym].delete("-")}" : ""
+        
         respond_to do |format|
             format.csv do
-                send_data SeikyuTukiCal.proc_csv(@ex_seikyu), filename: "#{filename}.csv"
+                send_data SeikyuTukiCal.proc_csv(@ex_seikyu), filename: "請求月計算_#{filename}.csv"
             end
         end
     end
@@ -76,11 +71,11 @@ class Con37NyushiSeikyusController < ApplicationController
             return
         end
 
-        filename = "請求予定額_#{Time.current.strftime("%Y%m")}"
+        filename = params[:txt_seikyus_ym].present? ? "#{params[:txt_seikyus_ym].delete("-")}" : ""
 
         respond_to do |format|
             format.xlsx do
-                response.headers['Content-Disposition'] = "attachment; filename=#{filename}.xlsx"
+                response.headers['Content-Disposition'] = "attachment; filename=請求予定額_#{filename}.xlsx"
             end
         end
     end
