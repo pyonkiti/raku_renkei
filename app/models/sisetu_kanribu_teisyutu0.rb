@@ -105,7 +105,7 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
         # テーブルを全件削除
         # ---------------------------------------------------------
         def table_delete
-            connection.execute "TRUNCATE TABLE sisetu_kanribu_teisyutu0s;"
+            connection.execute "TRUNCATE TABLE sisetu_kanribu_teisyutu0s CASCADE;"
         end
 
         # ---------------------------------------------------------

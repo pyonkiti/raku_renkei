@@ -8,25 +8,25 @@
 
 .form-group.row
     .col-md-6
-        = form_tag import1_con37_nyushi_excels_path, multipart: true, class: 'mb-3' do 
-            = file_field_tag :file
-            = submit_tag "インポート１", class: 'btn btn-primary'
+        = form_tag import1_con37_nyushi_excels_path, multipart: true, class: 'mb-3', id: 'tag_nyushi_form1' do 
+            = file_field_tag :file, id: 'tag_nyushi_file1'
+            = submit_tag "インポート１", class: 'btn btn-primary', id: 'tag_nyushi_submit1'
 
     .col-md-6
         h9 楽楽の、「請求処理－施設テーブル－管理部提出データ出力１」より出力した、CSVファイルをインポートします。
 
 .form-group.row
     .col-lg-6
-        = form_tag import2_con37_nyushi_excels_path, multipart: true, class: 'mb-3' do 
-            = file_field_tag :file
-            = submit_tag "インポート２", class: 'btn btn-primary'
+        = form_tag import2_con37_nyushi_excels_path, multipart: true, class: 'mb-3', id: 'tag_nyushi_form2' do 
+            = file_field_tag :file ,id: 'tag_nyushi_file2'
+            = submit_tag "インポート２", class: 'btn btn-primary', id: 'tag_nyushi_submit2'
 
     .col-lg-6
         h9 楽楽の、「請求処理－施設テーブル－管理部提出データ出力２」より出力した、CSVファイルをインポートします。
 
 .form-group.row
     .col-lg-6
-        = button_to syori0_con37_nyushi_excels_path, class: 'btn btn-primary'
+        = button_to syori0_con37_nyushi_excels_path, class: 'btn btn-primary', id: 'btn_nyushi_jikko'
             i class = "fas fa-rocket"  実行
 
     .col-lg-6
@@ -36,11 +36,9 @@
             li 入金一覧表（Excel）を出力する前処理を行います。
             li 仕入一覧表（CSV）を出力する前処理を行います。
 
-
 hr
 h4 前回実行時の履歴
 br
-
 
 .form-group.row
     .col-lg-4
@@ -49,9 +47,6 @@ br
         h6 ・ 管理部提出データ２
     .col-lg-4
         h6 ・ 管理部提出データ結合
-
-
-
 
 .form-group.row
     .col-lg-4
@@ -67,7 +62,6 @@ br
                         | 
                     th
                         | 件数
-
             tbody
                 - @table1s.each do |table1|
                     tr
@@ -79,7 +73,6 @@ br
                             = "　　　"
                         td
                             = @tbl1_cnt
-
     .col-lg-4
         table
             thead
@@ -135,12 +128,10 @@ br
     .col-lg-2
         = link_to export_nyu_con37_nyushi_excels_path(@ex_nyukin, format: :xlsx), class: 'btn btn-primary'
                 i class = "fa solid fa-download"  Excel出力
-
     .col-lg-4
         h9 「入金一覧表」を出力します。
     .col-lg-2
         = link_to export_shi_con37_nyushi_excels_path(format: :csv), class: 'btn btn-primary'
                 i class ="fa solid fa-download"  CSV出力
-    
     .col-lg-4
         h9 「仕入一覧表」を出力します。
