@@ -16,7 +16,7 @@ class Con37NyushiSeikyusController < ApplicationController
         else
             
             ret = case params[:kbn_seikyu]
-                when "1" then SeikyuTukiCal.proc_main(params[:txt_seikyu_ym])       # 請求月数計算
+                when "1" then SeikyuTukiCal.proc_main(0, params[:txt_seikyu_ym])    # 請求月数計算
                 when "2" then SeikyuYoteCal.proc_main(params[:txt_seikyu_ym])       # 請求予定額計算
             end
 
@@ -38,7 +38,7 @@ class Con37NyushiSeikyusController < ApplicationController
     # ---------------------------------------------------------
     def export_tuki
         
-        sql = "Select * From seikyu_tuki_cals Order by id"
+        sql = "Select * From seikyu_tuki_cals Order by sisetu_kanribu_teisyutu0_id"
         @ex_seikyu = SeikyuTukiCal.find_by_sql(sql)
         
         if ( @ex_seikyu.size == 0 )

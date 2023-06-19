@@ -16,7 +16,7 @@ wb.add_worksheet(name: "入金一覧") do |sheet|
     # ---------------------------------------------------------
     # ヘッダー行の出力
     # ---------------------------------------------------------
-    header = %w(商談名 請求No 請求年月日 取引先コード 請求先コード 請求先名称 入金年月日 入金月 今回請求金額 今回消費税 税込請求金額 期 部門 請求月 担当者 連番 枝番 予備)
+    header = %w(商談名 請求No 請求年月日 取引先コード 請求先コード 請求先名称 入金年月日 入金月 今回請求金額 今回消費税 税込請求金額 期 部門 請求月 担当者 連番 枝番)
     sheet.add_row header, style: styles[:title]
 
     # ---------------------------------------------------------
@@ -42,7 +42,6 @@ wb.add_worksheet(name: "入金一覧") do |sheet|
             row.add_cell(ex_nyukin.tantou)
             row.add_cell(ex_nyukin.renban)
             row.add_cell(ex_nyukin.edaban)
-            row.add_cell(ex_nyukin.yobi)
             
             # dateのstyleを適用する場合は、このようにする
             # row.add_cell(task.renraku_d, style: styles[:date])

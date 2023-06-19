@@ -9,7 +9,6 @@ class ExcelNyukinList < ApplicationRecord
         def proc_main
 
             table_delete            # 入金仕入Excel_入金一覧の削除
-
             unless proc_syori1      # 入金仕入Excel_入金一覧の更新
                 return false
             end

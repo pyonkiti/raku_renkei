@@ -1,6 +1,8 @@
 # 施設テーブル_管理部提出データ0_統合
 class SisetuKanribuTeisyutu0 < ApplicationRecord
 
+    has_many :seikyu_tuki_cals              # 請求予定計算テーブル
+    
     class << self
 
         # ---------------------------------------------------------

@@ -9,7 +9,6 @@ class ExcelShiireList < ApplicationRecord
         def proc_main
 
             table_delete            # 入金仕入Excel_仕入一覧の削除
-
             unless proc_syori1      # 入金仕入Excel_仕入一覧の更新
                 return false
             end
@@ -32,13 +31,13 @@ class ExcelShiireList < ApplicationRecord
 
                 err_seikyu_key_link = ""                                # 初期化：請求キーリンク
                 assen_sum           = 0                                 # 初期化：斡旋手数料
-                cnt                 = 0                                 # 件数：ループ
+            cnt                 = 0                                     # 件数：ループ
 
                 @table0.each_cons(2) do |table0, table_nxt|
                     
-                    err_seikyu_key_link  = table0.seikyu_key_link        # エラー：請求キーリンク
-                    assen_sum           += table0.assen_tesuryo          # 合計：斡旋手数料
-                    cnt                 += 1                             # 件数：ループ
+                    err_seikyu_key_link  = table0.seikyu_key_link       # エラー：請求キーリンク
+                    assen_sum           += table0.assen_tesuryo         # 合計：斡旋手数料
+                    cnt                 += 1                            # 件数：ループ
 
                     if ( table0.seikyu_key_link == table_nxt.seikyu_key_link )
                     else
@@ -77,11 +76,12 @@ class ExcelShiireList < ApplicationRecord
                 hash = {}
                 hash["denpyo_kugiri"]   = "*"
                 hash["hojyo_kamoku"]    = table0.shiire_cd
-                hash["torihikisaki"]    = table0.shiire_nm
-                hash["tekiyo1"]         = table0.seikyu_saki1
-                hash["tekiyo2"]         = table0.uri_m.to_s + "月"
-                hash["tekiyo3"]         = table0.seikyu_syo_naiyo_ue
-                hash["biko"]            = table0.seikyu_saki1.to_s + " " + table0.uri_m.to_s + "月" + " " + table0.seikyu_syo_naiyo_ue.to_s
+                hash["torihikisaki"]    = table0.shiire_nm.split[0]
+                shiire_nm_shiten = table0.shiire_nm.split[1].nil? ? "" : table0.shiire_nm.split[1]
+                hash["tekiyo1"]         = shiire_nm_shiten
+                hash["tekiyo2"]         = table0.uri_m.to_s + "月分"
+                hash["tekiyo3"]         = "斡旋手数料"
+                hash["biko"]            = shiire_nm_shiten + " " + table0.uri_m.to_s + "月分" + " " + "斡旋手数料"
                 hash["kingaku"]         = assen_sum
                 hash["zei"]             = assen_sum * 0.1
                 hash["bumon"]           = "510"
@@ -151,7 +151,6 @@ class ExcelShiireList < ApplicationRecord
                     count.count.to_s(:delimited)
             end
         end
-
 
         # ---------------------------------------------------------
         # テーブルを全件削除

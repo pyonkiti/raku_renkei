@@ -1,20 +1,18 @@
 class SeikyuTukiCal < ApplicationRecord
 
-    class << self
+    belongs_to :sisetu_kanribu_teisyutu0                             # 施設管理部提出_結合
 
+    class << self
+        
         # ---------------------------------------------------------
         # 請求月計算のメイン処理
         # ---------------------------------------------------------
-        def proc_main(seikyu_ym)
+        def proc_main(icnt, seikyu_ym)
 
-            table_delete
+            table_delete if (icnt == 0)
             unless proc1(seikyu_ym)
                 return false
             end
-
-
-            # @@debug.pri_logger.error(seikyu_ym)
-
             return true
         end
 
@@ -45,7 +43,7 @@ class SeikyuTukiCal < ApplicationRecord
                 
                 ex_seikyu.each do |seikyu|
                     arry = []
-                    arry << sprintf("%09d", seikyu.id)
+                    arry << sprintf("%09d", seikyu.sisetu_kanribu_teisyutu0_id)
                     arry << seikyu.seikyu_m_su
                     arry << seikyu.print_flg
                     csv  << arry
@@ -61,9 +59,9 @@ class SeikyuTukiCal < ApplicationRecord
         def proc1(seikyu_ym)
 
             begin
-                @table0 = SisetuKanribuTeisyutu0.all.order(:seikyu_key_link).order(:sisetu_cd)
+                table0 = SisetuKanribuTeisyutu0.all.order(:seikyu_key_link).order(:sisetu_cd)
                 
-                @table0.each do |tbl0|
+                table0.each do |tbl0|
 
                     # 支払期間コード、有償開始年月、有償終了年月
                     ary = ["#{tbl0.siharai_kikan_cd}", "#{tbl0.yuusyou_kaishi_ym}", "#{tbl0.yuusyou_syuryo_ym}"]
@@ -74,22 +72,24 @@ class SeikyuTukiCal < ApplicationRecord
                     
                     sql  = ""
                     sql += "Insert Into seikyu_tuki_cals( "
-                    sql += "id,"
                     sql += "seikyu_key_link,"
                     sql += "yuusyou_kaishi_ym,"
                     sql += "yuusyou_syuryo_ym,"
                     sql += "seikyu_m_su,"
                     sql += "siharai_kikan_cd,"
-                    sql += "print_flg"
+                    sql += "print_flg,"
+                    sql += "seikyu_ym,"
+                    sql += "sisetu_kanribu_teisyutu0_id"
                     sql += " ) "
                     sql += "Values ( "
-                    sql += "#{tbl0.id},"
                     sql += "#{Common.change_kara(tbl0.seikyu_key_link)},"
                     sql += "#{Common.change_kara(tbl0.yuusyou_kaishi_ym)},"
                     sql += "#{Common.change_kara(tbl0.yuusyou_syuryo_ym)},"
                     sql += "#{ituki},"                                          # 請求月数
                     sql += "#{Common.change_kara(tbl0.siharai_kikan_cd)},"
-                    sql += "#{Common.change_kara(sprnt)}"                       # 印刷フラグ
+                    sql += "#{Common.change_kara(sprnt)},"                      # 印刷フラグ
+                    sql += "#{seikyu_ym.delete("-")},"                          # 請求年月
+                    sql += "#{tbl0.id}"
                     sql += " )"
 
                     res = ActiveRecord::Base.connection.execute(sql)

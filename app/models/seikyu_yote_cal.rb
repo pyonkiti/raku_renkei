@@ -20,49 +20,58 @@ class SeikyuYoteCal < ApplicationRecord
         # 請求月テーブル、請求予定額テーブルを１月単位で、１２月分作成
         # ---------------------------------------------------------
         def proc1(seikyu_ym)
-
+            
             # 0 ～ 11の範囲
             12.times do |icnt|
 
                 seikyu_ym_next = Time.local(seikyu_ym.split("-")[0], seikyu_ym.split("-")[1]).since(icnt.months).strftime("%Y-%m")  # 請求月の次月を計算
 
-                return false unless SeikyuTukiCal.proc_main(seikyu_ym_next)             # 請求月計算のメイン処理
-
+                return false unless SeikyuTukiCal.proc_main(icnt, seikyu_ym_next)       # 請求月計算のメイン処理
+                
                 return false unless proc2(icnt, seikyu_ym_next)                         # 請求予定額テーブルの更新
             end
             return true
         end
-        
+
         # ---------------------------------------------------------
         # 請求予定額テーブルの更新
         # ---------------------------------------------------------
         def proc2(icnt, seikyu_ym)
 
             begin
+                # sql = ""
+                # sql += "Select "
+                # sql += "te0.id            As id, "
+                # sql += "te0.tanka         As tanka, "
+                # sql += "te0.assen_tesuryo As assen_tesuryo, "
+                # sql += "cal.seikyu_m_su   As seikyu_m_su, "
+                # sql += "cal.print_flg     As print_flg "
+                # sql += "From sisetu_kanribu_teisyutu0s As te0 "
+                # sql += "Left Join seikyu_tuki_cals AS cal On te0.id = cal.id "
+                # sql += "Where cal.print_flg = '有' "
+                # sql += "Order by te0.id"
+                # ex_shiire = SisetuKanribuTeisyutu0.find_by_sql(sql)
+
                 # ---------------------------------------------------------
                 # 管理部提出データ0_統合 + 請求月計算 （金額合計を計算）
                 # ---------------------------------------------------------
-                sql = ""
-                sql += "Select "
-                sql += "te0.id            As id, "
-                sql += "te0.tanka         As tanka, "
-                sql += "te0.assen_tesuryo As assen_tesuryo, "
-                sql += "cal.seikyu_m_su   As seikyu_m_su, "
-                sql += "cal.print_flg     As print_flg "
-                sql += "From sisetu_kanribu_teisyutu0s As te0 "
-                sql += "Left Join seikyu_tuki_cals AS cal On te0.id = cal.id "
-                sql += "Where cal.print_flg = '有'"
-
-                @ex_shiire = ExcelShiireList.find_by_sql(sql)
-
-                if ( @ex_shiire.size == 0 )
-                    return false
-                end
-
+                ex_shiire = SisetuKanribuTeisyutu0.left_joins(:seikyu_tuki_cals)
+                                .includes(:seikyu_tuki_cals)
+                                .where("seikyu_tuki_cals.print_flg = '有'")
+                                .where("seikyu_tuki_cals.seikyu_ym = '#{seikyu_ym.delete("-")}'")
+                                .select("sisetu_kanribu_teisyutu0s.id As id")
+                                .select("sisetu_kanribu_teisyutu0s.tanka As tanka")
+                                .select("sisetu_kanribu_teisyutu0s.assen_tesuryo As assen_tesuryo")
+                                .select("seikyu_tuki_cals.seikyu_m_su As seikyu_m_su")
+                                .select("seikyu_tuki_cals.print_flg As print_flg")
+                                .order("sisetu_kanribu_teisyutu0s.id")
+                
+                return false if ( ex_shiire.size == 0 )
+                    
                 kingk_sum = 0
                 asngk_sum = 0
 
-                @ex_shiire.each do | shiire |
+                ex_shiire.each do | shiire |
                     kingk_sum += Common.check_integer("#{shiire.tanka}") * Common.check_integer("#{shiire.seikyu_m_su}")    # 請求金額
                     asngk_sum += Common.check_integer("#{shiire.assen_tesuryo}")                                            # 斡旋手数料
                 end
@@ -92,6 +101,25 @@ class SeikyuYoteCal < ApplicationRecord
                 @@debug.pri_logger.error(err)
                 return false
             end
+        end
+
+        # ---------------------------------------------------------
+        # ActiveRecordからSQL文を生成
+        # ---------------------------------------------------------
+        def get_sql(seikyu_ym)
+            sql = SisetuKanribuTeisyutu0.left_joins(:seikyu_tuki_cals)
+                                        .includes(:seikyu_tuki_cals)
+                                        .where("seikyu_tuki_cals.print_flg = '有'")
+                                        .where("seikyu_tuki_cals.seikyu_ym = '#{seikyu_ym.delete("-")}'")
+                                        .select("sisetu_kanribu_teisyutu0s.id As id")
+                                        .select("sisetu_kanribu_teisyutu0s.tanka As tanka")
+                                        .select("sisetu_kanribu_teisyutu0s.assen_tesuryo As assen_tesuryo")
+                                        .select("sisetu_kanribu_teisyutu0s.seikyu_m_su As seikyu_m_su_test")
+                                        .select("seikyu_tuki_cals.seikyu_m_su As seikyu_m_su")
+                                        .select("seikyu_tuki_cals.print_flg As print_flg")
+                                        .order("seikyu_tuki_cals.id")
+                                        .to_sql
+            return sql
         end
 
         # ---------------------------------------------------------
