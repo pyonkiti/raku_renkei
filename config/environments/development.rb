@@ -8,7 +8,10 @@ Rails.application.configure do
   config.reload_classes_only_on_change = false
   
   # デバック用のログ
-  config.pri_logger = Logger.new(Rails.root.join('log/debug.log'))
+  config.pri_logger = Logger.new(Rails.root.join('log/debug.log'), 3, 50 * 1024 * 1024)
+
+  # 標準のログ
+  config.logger = Logger.new("log/devlopment.log", 3, 50 * 1024 * 1024)
 
   # Do not eager load code on boot.
   config.eager_load = false

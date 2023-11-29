@@ -1,0 +1,45 @@
+                          Prefix Verb   URI Pattern                                                                              Controller#Action
+                            root GET    /                                                                                        master/sessions#new
+                    master_login GET    /master/login(.:format)                                                                  master/sessions#new
+                                 POST   /master/login(.:format)                                                                  master/sessions#create
+                   master_logout DELETE /master/logout(.:format)                                                                 master/sessions#destroy
+             con36_cloud_renkeis GET    /con36_cloud_renkeis(.:format)                                                           con36_cloud_renkeis#index
+                    master_users GET    /master/users(.:format)                                                                  master/users#index
+                                 POST   /master/users(.:format)                                                                  master/users#create
+                 new_master_user GET    /master/users/new(.:format)                                                              master/users#new
+                edit_master_user GET    /master/users/:id/edit(.:format)                                                         master/users#edit
+                     master_user GET    /master/users/:id(.:format)                                                              master/users#show
+                                 PATCH  /master/users/:id(.:format)                                                              master/users#update
+                                 PUT    /master/users/:id(.:format)                                                              master/users#update
+                                 DELETE /master/users/:id(.:format)                                                              master/users#destroy
+            con37_nyushi_seikyus GET    /con37_nyushi_seikyus(.:format)                                                          con37_nyushi_seikyus#index
+ syori_main_con37_nyushi_seikyus POST   /con37_nyushi_seikyus/syori_main(.:format)                                               con37_nyushi_seikyus#syori_main
+export_tuki_con37_nyushi_seikyus GET    /con37_nyushi_seikyus/export_tuki(.:format)                                              con37_nyushi_seikyus#export_tuki
+export_yote_con37_nyushi_seikyus GET    /con37_nyushi_seikyus/export_yote(.:format)                                              con37_nyushi_seikyus#export_yote
+                                 GET    /con37_nyushi_seikyus(.:format)                                                          con37_nyushi_seikyus#index
+                                 POST   /con37_nyushi_seikyus(.:format)                                                          con37_nyushi_seikyus#create
+         new_con37_nyushi_seikyu GET    /con37_nyushi_seikyus/new(.:format)                                                      con37_nyushi_seikyus#new
+        edit_con37_nyushi_seikyu GET    /con37_nyushi_seikyus/:id/edit(.:format)                                                 con37_nyushi_seikyus#edit
+             con37_nyushi_seikyu GET    /con37_nyushi_seikyus/:id(.:format)                                                      con37_nyushi_seikyus#show
+                                 PATCH  /con37_nyushi_seikyus/:id(.:format)                                                      con37_nyushi_seikyus#update
+                                 PUT    /con37_nyushi_seikyus/:id(.:format)                                                      con37_nyushi_seikyus#update
+                                 DELETE /con37_nyushi_seikyus/:id(.:format)                                                      con37_nyushi_seikyus#destroy
+             con37_nyushi_excels GET    /con37_nyushi_excels(.:format)                                                           con37_nyushi_excels#index
+     import1_con37_nyushi_excels POST   /con37_nyushi_excels/import1(.:format)                                                   con37_nyushi_excels#import1
+     import2_con37_nyushi_excels POST   /con37_nyushi_excels/import2(.:format)                                                   con37_nyushi_excels#import2
+      syori0_con37_nyushi_excels POST   /con37_nyushi_excels/syori0(.:format)                                                    con37_nyushi_excels#syori0
+  export_shi_con37_nyushi_excels GET    /con37_nyushi_excels/export_shi(.:format)                                                con37_nyushi_excels#export_shi
+  export_nyu_con37_nyushi_excels GET    /con37_nyushi_excels/export_nyu(.:format)                                                con37_nyushi_excels#export_nyu
+                                 GET    /con37_nyushi_excels(.:format)                                                           con37_nyushi_excels#index
+                                 POST   /con37_nyushi_excels(.:format)                                                           con37_nyushi_excels#create
+          new_con37_nyushi_excel GET    /con37_nyushi_excels/new(.:format)                                                       con37_nyushi_excels#new
+         edit_con37_nyushi_excel GET    /con37_nyushi_excels/:id/edit(.:format)                                                  con37_nyushi_excels#edit
+              con37_nyushi_excel GET    /con37_nyushi_excels/:id(.:format)                                                       con37_nyushi_excels#show
+                                 PATCH  /con37_nyushi_excels/:id(.:format)                                                       con37_nyushi_excels#update
+                                 PUT    /con37_nyushi_excels/:id(.:format)                                                       con37_nyushi_excels#update
+                                 DELETE /con37_nyushi_excels/:id(.:format)                                                       con37_nyushi_excels#destroy
+              rails_service_blob GET    /rails/active_storage/blobs/:signed_id/*filename(.:format)                               active_storage/blobs#show
+       rails_blob_representation GET    /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations#show
+              rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
+       update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                      active_storage/disk#update
+            rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create

@@ -10,10 +10,64 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_26_045223) do
+ActiveRecord::Schema.define(version: 2023_11_02_081729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "cloud_ren_checks", force: :cascade do |t|
+    t.integer "dantai_kbn", default: 0
+    t.integer "jichitai_cd", default: 0
+    t.string "dantai1", default: ""
+    t.string "dantai2", default: ""
+    t.integer "bunrui_cd", default: 0
+    t.string "bunrui", default: ""
+    t.string "userkey", default: ""
+    t.string "deta_kbn1", default: ""
+    t.integer "deta_kbn2", default: 0
+    t.integer "deta_kbn3", default: 0
+    t.string "msg", default: ""
+    t.datetime "created_at"
+    t.index ["userkey"], name: "index_cloud_ren_checks_on_userkey"
+  end
+
+  create_table "cloud_ren_shisetus", force: :cascade do |t|
+    t.string "userkey", default: ""
+    t.integer "f_scode", default: 0
+    t.string "f_ttype", default: ""
+    t.string "f_sname", default: ""
+    t.string "f_connect", default: ""
+    t.string "f_ip", default: ""
+    t.datetime "created_at"
+    t.index ["f_scode", "userkey"], name: "index_cloud_ren_shisetus_on_f_scode_and_userkey"
+  end
+
+  create_table "cloud_ren_users", force: :cascade do |t|
+    t.string "userkey", default: "", null: false
+    t.string "pseudokey", default: "", null: false
+    t.string "remark", default: "", null: false
+    t.string "db_ip", default: "", null: false
+    t.string "port", default: "", null: false
+    t.string "almrcv_port", default: "", null: false
+    t.string "command_port", default: "", null: false
+    t.datetime "created_at"
+    t.index ["userkey"], name: "index_cloud_ren_users_on_userkey"
+  end
+
+  create_table "cloud_ren_work3s", force: :cascade do |t|
+    t.string "seikyu_keylink", default: ""
+    t.string "userkey", default: ""
+    t.string "f_scode", default: ""
+    t.string "f_sname", default: ""
+    t.integer "dantai_kbn", default: 0
+    t.integer "jichitai_cd", default: 0
+    t.string "dantai1", default: ""
+    t.string "dantai2", default: ""
+    t.string "bunrui", default: ""
+    t.string "deta_kbn1", default: ""
+    t.integer "deta_kbn2", default: 0
+    t.index ["seikyu_keylink", "userkey"], name: "index_cloud_ren_work3s_on_seikyu_keylink_and_userkey"
+  end
 
   create_table "excel_nyukin_lists", force: :cascade do |t|
     t.string "syodan_nm", default: "", null: false
@@ -55,6 +109,28 @@ ActiveRecord::Schema.define(version: 2022_12_26_045223) do
     t.string "hizuke", default: "", null: false
     t.string "torihikisaki_c", default: "", null: false
     t.string "seikyu_key_link", default: "", null: false
+  end
+
+  create_table "raku_ren_seikyus", force: :cascade do |t|
+    t.string "jido_renban", default: ""
+    t.integer "dantai_kbn", default: 0
+    t.integer "jichitai_cd", default: 0
+    t.string "todoufuken", default: ""
+    t.string "shikutyouson", default: ""
+    t.integer "kigyou_cd", default: 0
+    t.string "kigyou", default: ""
+    t.string "bunrui", default: ""
+    t.string "userkey", default: ""
+    t.index ["userkey"], name: "index_raku_ren_seikyus_on_userkey"
+  end
+
+  create_table "raku_ren_shisetus", force: :cascade do |t|
+    t.string "seikyu_keylink", default: ""
+    t.string "bango", default: ""
+    t.string "shisetu", default: ""
+    t.integer "shisetu_cd", default: 0
+    t.string "userkey", default: ""
+    t.index ["shisetu_cd", "userkey"], name: "index_raku_ren_shisetus_on_shisetu_cd_and_userkey"
   end
 
   create_table "seikyu_tuki_cals", force: :cascade do |t|
@@ -104,6 +180,7 @@ ActiveRecord::Schema.define(version: 2022_12_26_045223) do
     t.string "hasu_kbn_seikyu_gaku", default: "", null: false
     t.string "hasu_kbn_syouhizei", default: "", null: false
     t.string "id_user", default: "", null: false
+    t.string "nyukin_out_flg", default: "", null: false
     t.datetime "created_at"
   end
 
@@ -140,6 +217,7 @@ ActiveRecord::Schema.define(version: 2022_12_26_045223) do
     t.string "hasu_kbn_seikyu_gaku", default: "", null: false
     t.string "hasu_kbn_syouhizei", default: "", null: false
     t.string "id_user", default: "", null: false
+    t.string "nyukin_out_flg", default: "", null: false
     t.datetime "created_at"
   end
 

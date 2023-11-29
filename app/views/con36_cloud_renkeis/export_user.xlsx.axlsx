@@ -1,0 +1,25 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "クラウド連携") do |sheet|
+
+    styles = {
+        title: sheet.styles.add_style(font_name: 'メイリオ'),
+        date:  sheet.styles.add_style(font_name: 'Arial', format_code: 'yyyymmdd'),
+        time:  sheet.styles.add_style(font_name: 'Arial', format_code: 'hhmmss')
+    }
+
+        header = %w(自治体コード 団体名１ 団体名２ 分類 分類名 ユーザーキー データ区分１ メッセージ)
+        sheet.add_row header, style: styles[:title]
+
+        @cloudrencheck.each do |cloudrencheck|
+            sheet.add_row do |row|
+                row.add_cell(cloudrencheck.jichitai_cd)
+                row.add_cell(cloudrencheck.dantai1)
+                row.add_cell(cloudrencheck.dantai2)
+                row.add_cell(cloudrencheck.bunrui_cd)
+                row.add_cell(cloudrencheck.bunrui)
+                row.add_cell(cloudrencheck.userkey)
+                row.add_cell(cloudrencheck.deta_kbn1)
+                row.add_cell(cloudrencheck.msg)
+            end
+        end
+end

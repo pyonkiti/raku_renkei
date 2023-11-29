@@ -17,14 +17,8 @@ class Con37NyushiExcelsController < ApplicationController
     def import1
         
         # ファイル取り込みのチェック
-        ret = SisetuKanribuTeisyutu1.check_head(params[:file])
-
-        unless ret.zero?
-            case ret
-                when 1 then flash[:alert]  = "ファイルが選択されていません。"
-                when 2 then flash[:alert]  = "UTF-8以外のファイルは取り込みができません。"
-            end
-        end
+        ret, msg = Common.check_file(params[:file])
+        flash[:alert]  = msg unless ret.zero?
 
         if ret.zero?
             if SisetuKanribuTeisyutu1.import_main(params[:file])
@@ -44,14 +38,8 @@ class Con37NyushiExcelsController < ApplicationController
     def import2
 
         # ファイル取り込みのチェック
-        ret = SisetuKanribuTeisyutu2.check_head(params[:file])
-
-        unless ret.zero?
-            case ret
-                when 1 then flash[:alert]  = "ファイルが選択されていません。"
-                when 2 then flash[:alert]  = "UTF-8以外のファイルは取り込みができません。"
-            end
-        end
+        ret, msg = Common.check_file(params[:file])
+        flash[:alert] = msg unless ret.zero?
 
         if ret.zero?
             if SisetuKanribuTeisyutu2.import_main(params[:file])

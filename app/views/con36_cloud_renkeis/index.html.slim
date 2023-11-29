@@ -1,0 +1,73 @@
+.mt-3
+.display-6 Sofinet Cloudの連携
+.mb-3
+
+.form-group.row
+    .col-md-6
+        = form_tag import_seikyu_con36_cloud_renkeis_path, multipart: true, class: 'mb-3', id: 'tag_form_seikyu' do
+            = file_field_tag :file, id: 'tag_file_seikyu'
+            = submit_tag "処理１", class: 'btn btn-primary', id: 'tag_submit_seikyu'
+    .col-md-6
+        h9 楽楽の「請求処理－請求テーブル－Access連携出力」より出力した、CSVファイルをインポートします。
+.form-group.row
+    .col-md-6
+        = form_tag import_shisetu_con36_cloud_renkeis_path, multipart: true, class: 'mb-3', id: 'tag_form_shisetu' do
+            = file_field_tag :file, id: 'tag_file_shisetu'
+            = submit_tag "処理２", class: 'btn btn-primary', id: 'tag_submit_shisetu'
+    .col-md-6
+        h9 楽楽の「請求処理－施設テーブル－Access連携出力」より出力した、CSVファイルをインポートします。
+
+hr
+
+= form_with url: '/con36_cloud_renkeis', local: true do |f|
+
+
+    / リダイレクトで入ってきたとき、チェックボックスの初期化を防ぐ
+    - if (params[:kbn_syori] == "1" or params[:kbn_syori] == nil)
+        - chk_kbn = true
+    - else
+        - chk_kbn = false
+
+    .checkbox.row.mt-4
+        .col-lg-1
+            = f.radio_button :kbn_syori, 1, checked: chk_kbn, id: 'chk_syori_kbn1'
+        .col-lg-11
+            h9 ① 新規/廃止ユーザーのExcel出力を行います。
+    br
+    br
+    .form-group.row
+        .col-lg-1
+        .col-lg-11
+            h9 ② 処理で出力した「クラウド連携_MMDD」のExcelファイルを元に、楽楽販売の請求テーブルに、新規ユーザーの登録、もしくは、廃止ユーザーの削除を行ってください。必ず、新規ユーザーの登録が終わった後に、次の③処理を実行してください。
+    br
+    br
+    .form-group.row
+        .col-lg-1
+            = f.radio_button :kbn_syori, 2, checked: !(chk_kbn), id: 'chk_syori_kbn2'
+        .col-lg-11 
+            h9 ③ 新規施設のExcel出力を行います。
+    br
+    br
+    .form-group.row
+        .col-lg-1
+        .col-lg-11
+            h9 ④ 処理で出力した「クラウド連携_新規更新分_MMDD」のExcelファイルに、新規分の施設データが出力されます。このファイルを編集した後、CSVファイルを作成します。作成したCSVファイルは楽楽販売の施設テーブルにインポートします。その後、楽楽販売側で単価、開始年月の登録を行ってください。
+    .mt-4
+    = f.button type: "submit", class: 'btn btn-primary', id: 'btn_renkei_jikko'
+        i class = "fas fa-rocket"  実行
+
+br
+
+.form-group.row
+    .col-lg-2
+        #lnk_cloud_renkeis1
+            = link_to export_user_con36_cloud_renkeis_path(format: :xlsx),
+                class: 'btn btn-primary'
+                i class = "fa solid fa-download"  Excel ユーザ
+
+.form-group.row
+    .col-lg-2
+        #lnk_cloud_renkeis2
+            = link_to export_shisetu_con36_cloud_renkeis_path(format: :xlsx),
+                class: 'btn btn-primary'
+                i class = "fa solid fa-download"  Excel 施設

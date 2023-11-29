@@ -1,14 +1,58 @@
 
+# ---------------------------------------------------------
+# 
+# ---------------------------------------------------------
+def test_set
+    
+    aa = Dir.pwd            # フルパス
+    bb = Dir.chdir("/vagrant")
+    puts bb
+    
 
-
-
-def aaa(*aa)
-
-    # puts aa
-    return aa[0][2]
+    
 end
 
-puts aaa([1,2,3])
+test_set
+
+# ---------------------------------------------------------
+# 配列の中のハッシュの取得
+# ---------------------------------------------------------
+def test_hash
+    
+    arry = [{"no"=>"1","key"=>"11"},{"no"=>"2","key"=>"22"},{"no"=>"3","key"=>"33"}]
+    
+    arry.each_with_index do |ret, i|
+        
+        arry2 = []
+        arry2 << ret["no"]
+        arry2 << ret["key"]
+        # puts "#{arry2}"
+        puts "#{ret["no"]}"
+    end
+end
+
+# ---------------------------------------------------------
+# 1日前の日付を取得
+# ---------------------------------------------------------
+def test_date(w_nyukin_ymd)
+
+    require 'date'
+
+    aa = w_nyukin_ymd.to_s.slice(0, 6) + "01"
+    bb = Date.parse(aa)
+    cc = bb.prev_day(1)
+
+    puts aa
+    puts bb
+    puts cc
+
+    dd = Date.parse(w_nyukin_ymd.to_s.slice(0, 6) + "01").prev_day(1)
+    ee = Date.parse(w_nyukin_ymd.to_s.slice(0, 6) + "01").prev_day(1).to_s
+    puts dd.class
+    puts ee.class
+end
+
+#puts test_date(20230331)
 
 
 

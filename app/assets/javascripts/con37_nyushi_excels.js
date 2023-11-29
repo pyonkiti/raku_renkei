@@ -5,9 +5,7 @@ var lnk_exl = "";
 document.addEventListener('turbolinks:load', function() {
     
     // 別画面でエラーになる事象を回避
-    if (document.getElementById('chk_seikyus_kbn1') == null) {
-        return false;
-    }
+    if (document.getElementById('chk_seikyus_kbn1') == null) { return false; }
 
     // リンクの初期表示
      if (document.getElementById('chk_seikyus_kbn1').checked == true) {

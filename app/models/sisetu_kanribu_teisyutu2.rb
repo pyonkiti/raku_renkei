@@ -60,7 +60,7 @@ class SisetuKanribuTeisyutu2 < ApplicationRecord
                     hash["hasu_kbn_seikyu_gaku"] = row[7]
                     hash["hasu_kbn_syouhizei"]   = row[8]
                     hash["id_user"]              = row[9]
-                    
+                    hash["nyukin_out_flg"]       = row[10]
                     sisetu_kanribu_teisyutu2 = new
                     sisetu_kanribu_teisyutu2.attributes = hash
                     sisetu_kanribu_teisyutu2.save!

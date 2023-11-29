@@ -57,6 +57,7 @@ class SeikyuYoteCal < ApplicationRecord
                 # ---------------------------------------------------------
                 ex_shiire = SisetuKanribuTeisyutu0.left_joins(:seikyu_tuki_cals)
                                 .includes(:seikyu_tuki_cals)
+                                .where(siharai_kikan_cd: get_jyoken_siharai(seikyu_ym))
                                 .where("seikyu_tuki_cals.print_flg = '有'")
                                 .where("seikyu_tuki_cals.seikyu_ym = '#{seikyu_ym.delete("-")}'")
                                 .select("sisetu_kanribu_teisyutu0s.id As id")
@@ -68,6 +69,8 @@ class SeikyuYoteCal < ApplicationRecord
                 
                 return false if ( ex_shiire.size == 0 )
                     
+                # @@debug.pri_logger.error(ex_shiire.to_sql)
+
                 kingk_sum = 0
                 asngk_sum = 0
 
@@ -106,11 +109,14 @@ class SeikyuYoteCal < ApplicationRecord
         # ---------------------------------------------------------
         # ActiveRecordからSQL文を生成
         # ---------------------------------------------------------
+        # 不要であれば削除する
         def get_sql(seikyu_ym)
+
             sql = SisetuKanribuTeisyutu0.left_joins(:seikyu_tuki_cals)
                                         .includes(:seikyu_tuki_cals)
                                         .where("seikyu_tuki_cals.print_flg = '有'")
                                         .where("seikyu_tuki_cals.seikyu_ym = '#{seikyu_ym.delete("-")}'")
+                                        .where("sisetu_kanribu_teisyutu0s.siharai_kikan_cd: #{get_jyoken_siharai(seikyu_ym)}")
                                         .select("sisetu_kanribu_teisyutu0s.id As id")
                                         .select("sisetu_kanribu_teisyutu0s.tanka As tanka")
                                         .select("sisetu_kanribu_teisyutu0s.assen_tesuryo As assen_tesuryo")
@@ -128,5 +134,28 @@ class SeikyuYoteCal < ApplicationRecord
         def table_delete
             connection.execute "TRUNCATE TABLE seikyu_yote_cals;"
         end
+
+        # 
+        def get_jyoken_siharai(seikyu_ym)
+
+            res = case seikyu_ym.split("-")[1]
+                when "01" then ["01"]
+                when "02" then ["01", "12"]
+                when "03" then ["01", "11", "21"]
+                when "04" then ["01", "13"]
+                when "05" then ["01"]
+                when "06" then ["01"]
+                when "07" then ["01"]
+                when "08" then ["01", "12"]
+                when "09" then ["01", "11"]
+                when "10" then ["01", "13"]
+                when "11" then ["01"]
+                when "12" then ["01"]
+                else ["01", "11", "12", "13", "21"]
+            end
+            return res
+        end
+
+        private :get_jyoken_siharai
     end
 end

@@ -7,16 +7,16 @@ module  Common
     def self.check_file(file)
 
         if file.nil?
-            return 1
+            return 1, "ファイルが選択されていません。"
         end
 
         content = File.read(file.path)
         if (NKF.guess(content).to_s == "UTF-8")
         else
-            return 2
+            return 2, "UTF-8以外のファイルは取り込みができません。"
         end
 
-        return 0
+        return 0, nil
     end
 
     # ---------------------------------------------------------

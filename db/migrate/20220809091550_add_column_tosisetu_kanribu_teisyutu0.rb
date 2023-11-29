@@ -33,6 +33,7 @@ class AddColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
         add_column :sisetu_kanribu_teisyutu0s, :hasu_kbn_seikyu_gaku, :string   # 端数区分（請求額）
         add_column :sisetu_kanribu_teisyutu0s, :hasu_kbn_syouhizei,   :string   # 端数区分（消費税）
         add_column :sisetu_kanribu_teisyutu0s, :id_user,              :string   # 自動採番（ユーザー）
+        add_column :sisetu_kanribu_teisyutu0s, :nyukin_out_flg,       :string   # 入金一覧出力フラグ
 
         add_column :sisetu_kanribu_teisyutu0s, :created_at,           :datetime # 作成日
     end

@@ -43,4 +43,7 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+    # 標準のログ
+    config.logger = Logger.new("log/test.log", 3, 50 * 1024 * 1024)
 end

@@ -11,7 +11,6 @@ document.addEventListener('turbolinks:load', function() {
 
 }, false)
 
-
 // ヘッダ部 表示
 function head_disp_msur(kbn){
     

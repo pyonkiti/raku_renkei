@@ -91,3 +91,6 @@ gem 'jquery-rails'
 # font-awesome
 # Rails5ではAwesome6以降でないと動作しない
 gem 'font-awesome-sass',   '~> 5.15.0'
+
+# Phusion Passenger
+gem 'passenger',   '~> 6.0.0'

@@ -1,0 +1,42 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "クラウド連携") do |sheet|
+
+    styles = {
+        title: sheet.styles.add_style(font_name: 'メイリオ'),
+        date:  sheet.styles.add_style(font_name: 'Arial', format_code: 'yyyymmdd'),
+        time:  sheet.styles.add_style(font_name: 'Arial', format_code: 'hhmmss')
+    }
+
+    header = %w(請求キーリンク 番号 施設名 ユーザーキー 施設コード 自治体コード 団体名１ 団体名２ 分類名)
+    sheet.add_row header, style: styles[:title]
+
+    # 単一キーの場合
+    @cloudrenwork3s_tanitsu.each do |cloudrenwork3|
+        sheet.add_row do |row|
+            row.add_cell(cloudrenwork3.seikyu_keylink)
+            row.add_cell("")
+            row.add_cell(cloudrenwork3.f_sname)
+            row.add_cell(cloudrenwork3.userkey)
+            row.add_cell(cloudrenwork3.f_scode)
+            row.add_cell(cloudrenwork3.jichitai_cd)
+            row.add_cell(cloudrenwork3.dantai1)
+            row.add_cell(cloudrenwork3.dantai2)
+            row.add_cell(cloudrenwork3.bunrui)
+        end
+    end
+
+    # 重複キーの場合
+    @cloudrenwork3s_jyufuku.each do |cloudrenwork3|
+        sheet.add_row do |row|
+            row.add_cell(cloudrenwork3.seikyu_keylink)
+            row.add_cell("")
+            row.add_cell(cloudrenwork3.f_sname)
+            row.add_cell(cloudrenwork3.userkey)
+            row.add_cell(cloudrenwork3.f_scode)
+            row.add_cell(cloudrenwork3.jichitai_cd)
+            row.add_cell(cloudrenwork3.dantai1)
+            row.add_cell(cloudrenwork3.dantai2)
+            row.add_cell(cloudrenwork3.bunrui)
+        end
+    end
+end

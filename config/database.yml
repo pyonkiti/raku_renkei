@@ -89,5 +89,11 @@ test:
 production:
   <<: *default
   database: raku_renkei_production
-  username: raku_renkei
-  password: <%= ENV['RAKU_RENKEI_DATABASE_PASSWORD'] %>
+  # username: raku_renkei
+  # password: <%= ENV['RAKU_RENKEI_DATABASE_PASSWORD'] %>
+  
+  username: <%= ENV['DATABASE_USER_PRO'] %>
+  password: <%= ENV['DATABASE_PASS_PRO'] %>
+
+  host: 192.168.19.11               # 開発サーバー
+  port: 5432

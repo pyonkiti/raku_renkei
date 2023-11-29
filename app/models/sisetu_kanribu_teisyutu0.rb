@@ -86,6 +86,7 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
                     sql += "hasu_kbn_seikyu_gaku = #{Common.change_kara(table2.hasu_kbn_seikyu_gaku)}, "
                     sql += "hasu_kbn_syouhizei   = #{Common.change_kara(table2.hasu_kbn_syouhizei)}, "
                     sql += "id_user              = #{Common.change_kara(table2.id_user)}, "
+                    sql += "nyukin_out_flg       = #{Common.change_kara(table2.nyukin_out_flg)}, "
                     sql += "created_at           = #{Common.change_kara(Time.current.ago(9.hours))} " 
                     sql += " WHERE id = " + (table2.id).to_s
                     

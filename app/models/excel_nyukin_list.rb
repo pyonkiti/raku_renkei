@@ -1,6 +1,5 @@
 # 入金仕入Excel_入金一覧
 class ExcelNyukinList < ApplicationRecord
-
     class << self
         
         # ---------------------------------------------------------
@@ -74,6 +73,8 @@ class ExcelNyukinList < ApplicationRecord
         # ---------------------------------------------------------
         def proc_syori2(table0, tanka_sum)
 
+            require 'date'
+
             begin
                 w_nyukin_ymd        = get_ymd( table0.siharai_yotei_kbn, table0.siharai_ymd_yokust, table0.siharai_ymd_yokued ) # 入金年月日
                 w_kon_seikyu_kin    = cal_hasuu( table0.hasu_kbn_seikyu_gaku, tanka_sum       )                                 # 今回請求金額
@@ -85,7 +86,8 @@ class ExcelNyukinList < ApplicationRecord
                 hash = {}
                 hash["syodan_nm"]          = table0.seikyu_syo_naiyo_ue.to_s + " " + ret
                 hash["seikyu_no"]          = ""
-                hash["seikyu_ymd"]         = w_nyukin_ymd == "" ? "" : w_nyukin_ymd.delete("/")[0, 6] + "01"
+              # hash["seikyu_ymd"]         = w_nyukin_ymd == "" ? "" : w_nyukin_ymd.delete("/")[0, 6] + "01"
+                hash["seikyu_ymd"]         = w_nyukin_ymd == "" ? "" : Date.parse(w_nyukin_ymd.slice(0, 7) + "/01").prev_day(1).to_s.delete("-")    # 入金年月日の翌月末
                 hash["torihikisaki_cd"]    = table0.tokuisaki_cd
                 hash["seikyusaki_cd"]      = ""
                 hash["seikyusaki_nm"]      = table0.seikyu_saki1

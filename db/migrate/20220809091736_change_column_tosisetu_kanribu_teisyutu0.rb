@@ -43,6 +43,7 @@ class ChangeColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
         change_column_null :sisetu_kanribu_teisyutu0s, :hasu_kbn_seikyu_gaku, flg
         change_column_null :sisetu_kanribu_teisyutu0s, :hasu_kbn_syouhizei,   flg
         change_column_null :sisetu_kanribu_teisyutu0s, :id_user,              flg
+        change_column_null :sisetu_kanribu_teisyutu0s, :nyukin_out_flg,       flg
     end
 
     # デフォルト値を追加
@@ -78,5 +79,6 @@ class ChangeColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
         change_column_default :sisetu_kanribu_teisyutu0s, :hasu_kbn_seikyu_gaku, flg
         change_column_default :sisetu_kanribu_teisyutu0s, :hasu_kbn_syouhizei,   flg
         change_column_default :sisetu_kanribu_teisyutu0s, :id_user,              flg
+        change_column_default :sisetu_kanribu_teisyutu0s, :nyukin_out_flg,       flg
     end
 end
