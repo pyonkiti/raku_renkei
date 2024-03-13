@@ -31,4 +31,6 @@
 /test/ruby*.rb
 /private/*
 /excel/moto/*
-/excel/*
+/excel/*.xlsx
+!/excel/moto/支払手数料明細表_原紙.xlsx
+!/excel/moto/支払手数料明細表_原紙_bkup.xlsx
