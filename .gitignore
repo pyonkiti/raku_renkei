@@ -30,3 +30,5 @@
 /.env
 /test/ruby*.rb
 /private/*
+/excel/moto/*
+/excel/*
