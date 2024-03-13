@@ -3,43 +3,15 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
 
     class << self
 
-        # ---------------------------------------------------------
-        # メイン処理
-        # ---------------------------------------------------------
-        def import_main(file)
-
-            table_delete
-            unless table_import(file)
-                return false
-            end
-            return true
-        end
-        
-        # ---------------------------------------------------------
-        # データ件数を取得
-        # ---------------------------------------------------------
-        def table_count(flg)
-
-            count = SisetuKanribuTeisyutu1
-            case flg
-                when 0
-                    count.to_s
-                when 1
-                    count.count.to_s(:delimited)
-            end
-        end
-
-    private
-
-        # ---------------------------------------------------------
         # CSVファイルをインポート
-        # ---------------------------------------------------------
         def table_import(file)
 
             begin
                 err_id = ""
                 CSV.foreach(file.path, headers: true) do |row|
                     
+                    break if row.size != 20
+
                     hash = {}
                     hash["id"], err_id          = row[0], row[0]
                     hash["seikyu_key_link"]     = row[1]
@@ -66,21 +38,58 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
                     sisetu_kanribu_teisyutu1.attributes = hash
                     sisetu_kanribu_teisyutu1.save!
                 end
-                return true
+
+                if table_count(0) == "0"
+                    return false, "管理部提出データ出力１の取り込み元ファイルに誤りがあります。"
+                end
+
+                return true, "管理部提出データ出力１の取り込みが完了しました。　処理件数は #{table_count(1)} 件です。"
 
             rescue => ex
                 err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
                 err = err + " : " + "自動採番:" + err_id.to_s + "の更新でエラーが発生しています"
                 @@debug.pri_logger.error(err)
-                return false
+                return false, "エラーが発生しました。"
             end
         end
 
-        # ---------------------------------------------------------
+        # データ件数を取得
+        def table_count(flg)
+
+            count = SisetuKanribuTeisyutu1
+            case flg
+                when 0 then count.count.to_s
+                when 1 then count.count.to_s(:delimited)
+            end
+        end
+
         # テーブルを全件削除
-        # ---------------------------------------------------------
         def table_delete
             connection.execute "TRUNCATE TABLE sisetu_kanribu_teisyutu1s;"
+        end
+
+        # sisetu_kanribu_teisyutu1sの全カラム
+        def table_colum1
+            ["id",
+             "seikyu_key_link",
+             "bango",
+             "sisetu_cd", 
+             "sisetu_nm",
+             "yuusyou_kaishi_ym",
+             "yuusyou_syuryo_ym",
+             "tanka", 
+             "assen_tesuryo", 
+             "seikyu_m_su", 
+             "seikyu_syo_naiyo_ue",
+             "tokuisaki_cd",
+             "seikyu_saki1",
+             "siharai_yotei_kbn",
+             "siharai_ymd_yokust",
+             "siharai_ymd_yokued",
+             "ki",
+             "seikyu_m",
+             "tantou_cd",
+             "shiire_cd"]
         end
     end
 end

@@ -2,30 +2,24 @@
 class ExcelNyukinList < ApplicationRecord
     class << self
         
-        # ---------------------------------------------------------
         # 入金仕入Excel_入金一覧の更新  ≪メイン≫
-        # ---------------------------------------------------------
         def proc_main
 
-            table_delete            # 入金仕入Excel_入金一覧の削除
-            unless proc_syori1      # 入金仕入Excel_入金一覧の更新
-                return false
-            end
+            table_delete                                                        # 入金仕入Excel_入金一覧の削除
+            return false if !proc_syori1                                        # 入金仕入Excel_入金一覧の更新
             return true
         end
 
-        # ---------------------------------------------------------
         # 入金仕入Excel_入金一覧の更新
-        # ---------------------------------------------------------
         def proc_syori1
             
             begin
-
                 ary_shiire = get_siharai(Time.current.strftime("%m"))           # 支払期間コードを取得
                 
                 # 施設テーブル_管理部提出データ0_統合を読み込む
                 @table0 = SisetuKanribuTeisyutu0.where(print_flg: '有')
                                                 .where(siharai_kikan_cd: ary_shiire)
+                                                .where(nyukin_out_flg: '出力する')
                                                 .order(:seikyu_key_link)
                                                 .order(:sisetu_cd)
 
@@ -51,7 +45,6 @@ class ExcelNyukinList < ApplicationRecord
                     
                     # 最終行
                     if ( cnt == @table0.size - 1 )
-
                         tanka_sum  += Common.check_integer(table_nxt.tanka) * Common.check_integer(table_nxt.seikyu_m_su)   # 合計：単価×請求月数
                         unless proc_syori2(table_nxt, tanka_sum)                                                            # 更新：入金仕入Excel_入金一覧
                             return false
@@ -68,9 +61,7 @@ class ExcelNyukinList < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # 入金仕入Excel_入金の更新
-        # ---------------------------------------------------------
         def proc_syori2(table0, tanka_sum)
 
             require 'date'
@@ -86,7 +77,6 @@ class ExcelNyukinList < ApplicationRecord
                 hash = {}
                 hash["syodan_nm"]          = table0.seikyu_syo_naiyo_ue.to_s + " " + ret
                 hash["seikyu_no"]          = ""
-              # hash["seikyu_ymd"]         = w_nyukin_ymd == "" ? "" : w_nyukin_ymd.delete("/")[0, 6] + "01"
                 hash["seikyu_ymd"]         = w_nyukin_ymd == "" ? "" : Date.parse(w_nyukin_ymd.slice(0, 7) + "/01").prev_day(1).to_s.delete("-")    # 入金年月日の翌月末
                 hash["torihikisaki_cd"]    = table0.tokuisaki_cd
                 hash["seikyusaki_cd"]      = ""
@@ -118,9 +108,7 @@ class ExcelNyukinList < ApplicationRecord
             end
         end
         
-        # ---------------------------------------------------------
         # 入金仕入Excel_入金一覧の総合計を１行だけ更新（メイン）
-        # ---------------------------------------------------------
         def proc_syori3
 
             begin
@@ -148,9 +136,7 @@ class ExcelNyukinList < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # 入金仕入Excel_入金一覧の総合計を１行だけ更新
-        # ---------------------------------------------------------
         def proc_syori4(ex_nyukin)
             
             begin
@@ -187,30 +173,22 @@ class ExcelNyukinList < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # データ件数を取得
-        # ---------------------------------------------------------
         def table_count(flg)
 
             count = ExcelNyukinList
             case flg
-                when 0
-                    count.to_s
-                when 1
-                    count.count.to_s(:delimited)
+                when 0 then count.count.to_s
+                when 1 then count.count.to_s(:delimited)
             end
         end
 
-        # ---------------------------------------------------------
         # テーブルを全件削除
-        # ---------------------------------------------------------
         def table_delete
             connection.execute "TRUNCATE TABLE excel_nyukin_lists;"
         end
 
-        # ---------------------------------------------------------
         # 支払予定日区分から、支払日（翌月初）or支払日（翌月末）を判断する
-        # ---------------------------------------------------------
         def get_ymd(kbn, *data)
  
             ret = case kbn
@@ -221,9 +199,7 @@ class ExcelNyukinList < ApplicationRecord
             return ret
         end
 
-        # ---------------------------------------------------------
         # 端数区分より、請求額or消費税額の端数処理を行う
-        # ---------------------------------------------------------
         def cal_hasuu(kbn, kingaku)
             case kbn
                 when "四捨五入" then  kingaku.round
@@ -233,9 +209,7 @@ class ExcelNyukinList < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # 支払期間コードの抽出条件をSQLで取得
-        # ---------------------------------------------------------
         def get_siharai(mm)
 
             ret = case mm.to_i
@@ -256,9 +230,7 @@ class ExcelNyukinList < ApplicationRecord
             return ret
         end
 
-        # ---------------------------------------------------------
         # 何月分かの名称を取得
-        # ---------------------------------------------------------
         def get_bun(siharai_kikan_cd, ym)
 
             yy = ym.split('-')[0].to_i                      # 年を取得

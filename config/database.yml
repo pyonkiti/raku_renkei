@@ -29,18 +29,16 @@ development:
   # To create additional roles in postgres see `$ createuser --help`.
   # When left blank, postgres will use the default role. This is
   # the same name as the operating system user that initialized the database.
-  # username: vagrant
   username: <%= ENV['DATABASE_USER'] %>
 
   # The password associated with the postgres role (username).
-  # password: vagrant
   password: <%= ENV['DATABASE_PASS'] %>
-
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
   # domain sockets, so uncomment these lines.
   host: 192.168.33.10
+  # host: 127.0.0.1
 
   # The TCP port the server listens on. Defaults to 5432.
   # If your server runs on a different port number, change accordingly.
@@ -61,9 +59,10 @@ development:
 test:
   <<: *default
   database: raku_renkei_test
-
-  username: vagrant
-  password: vagrant
+# username: vagrant
+# password: vagrant
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASS'] %>
   host: 192.168.33.10
   port: 5432
    
@@ -89,9 +88,9 @@ test:
 production:
   <<: *default
   database: raku_renkei_production
+
   # username: raku_renkei
   # password: <%= ENV['RAKU_RENKEI_DATABASE_PASSWORD'] %>
-  
   username: <%= ENV['DATABASE_USER_PRO'] %>
   password: <%= ENV['DATABASE_PASS_PRO'] %>
 

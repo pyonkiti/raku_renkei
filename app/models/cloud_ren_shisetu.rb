@@ -1,28 +1,22 @@
 class CloudRenShisetu < ApplicationRecord
     class << self
 
-        # ---------------------------------------------------------
         # テーブルを全件削除
-        # ---------------------------------------------------------
         def table_delete
             connection.execute "TRUNCATE TABLE cloud_ren_shisetus CASCADE;"
         end
 
-        # ---------------------------------------------------------
         # Sofinet CloudのWebAPI取得（施設データ取得）
-        # ---------------------------------------------------------
         def table_insert(table)
             begin
-                icnt = 1
-                err_id= ""
-
+                icnt, err_id = 1, ""
                 table.each do |tbl|
+
                     url = "https://www.sofinetcloud.net/api/system/get_all_plants?userkey="
                     respon = Net::HTTP.get_response(URI.parse("#{url}#{tbl.userkey.to_s}"))
                     result = JSON.parse(respon.body)
                     
                     result.each do |res|
-
                         err_id = "#{tbl.userkey} - #{res["F_SCODE"]}"
                         sql  = ""
                         sql += "Insert Into cloud_ren_shisetus( "
@@ -46,7 +40,7 @@ class CloudRenShisetu < ApplicationRecord
                         sql += "#{Common.change_kara(Time.current)}"
                         sql += " )"
                         ret = ActiveRecord::Base.connection.execute(sql)
-                        icnt+=1
+                        icnt += 1
                     end
                 end
                 return true, nil
@@ -58,6 +52,7 @@ class CloudRenShisetu < ApplicationRecord
             end
         end
 
+        # データ件数を取得
         def table_count
             CloudRenShisetu.count
         end

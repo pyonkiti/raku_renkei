@@ -3,6 +3,7 @@ wb.add_worksheet(name: "クラウド連携") do |sheet|
 
     styles = {
         title: sheet.styles.add_style(font_name: 'メイリオ'),
+        body:  sheet.styles.add_style(font_name: 'ＭＳ Ｐゴシック'),
         date:  sheet.styles.add_style(font_name: 'Arial', format_code: 'yyyymmdd'),
         time:  sheet.styles.add_style(font_name: 'Arial', format_code: 'hhmmss')
     }
@@ -13,12 +14,12 @@ wb.add_worksheet(name: "クラウド連携") do |sheet|
     # 単一キーの場合
     @cloudrenwork3s_tanitsu.each do |cloudrenwork3|
         sheet.add_row do |row|
-            row.add_cell(cloudrenwork3.seikyu_keylink)
+            row.add_cell(cloudrenwork3.seikyu_keylink,  type: :string)
             row.add_cell("")
             row.add_cell(cloudrenwork3.f_sname)
             row.add_cell(cloudrenwork3.userkey)
-            row.add_cell(cloudrenwork3.f_scode)
-            row.add_cell(cloudrenwork3.jichitai_cd)
+            row.add_cell(cloudrenwork3.f_scode,         type: :string)
+            row.add_cell(cloudrenwork3.jichitai_cd,     type: :string)
             row.add_cell(cloudrenwork3.dantai1)
             row.add_cell(cloudrenwork3.dantai2)
             row.add_cell(cloudrenwork3.bunrui)
@@ -32,8 +33,8 @@ wb.add_worksheet(name: "クラウド連携") do |sheet|
             row.add_cell("")
             row.add_cell(cloudrenwork3.f_sname)
             row.add_cell(cloudrenwork3.userkey)
-            row.add_cell(cloudrenwork3.f_scode)
-            row.add_cell(cloudrenwork3.jichitai_cd)
+            row.add_cell(cloudrenwork3.f_scode,         type: :string)
+            row.add_cell(cloudrenwork3.jichitai_cd,     type: :string)
             row.add_cell(cloudrenwork3.dantai1)
             row.add_cell(cloudrenwork3.dantai2)
             row.add_cell(cloudrenwork3.bunrui)

@@ -13,7 +13,7 @@ class SeikyuYoteCal < ApplicationRecord
             end
             return true
         end
-
+        
         private
 
         # ---------------------------------------------------------
@@ -155,7 +155,7 @@ class SeikyuYoteCal < ApplicationRecord
             end
             return res
         end
-
+        
         private :get_jyoken_siharai
     end
 end

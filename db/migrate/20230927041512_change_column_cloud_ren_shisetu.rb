@@ -12,21 +12,21 @@ class ChangeColumnCloudRenShisetu < ActiveRecord::Migration[5.2]
 
     # Not Null制約を追加
     def set_null(flg)
-        change_column_default :cloud_ren_shisetus, :userkey,          flg     # ユーザーキー
-        change_column_default :cloud_ren_shisetus, :f_scode,          flg     # 施設コード
-        change_column_default :cloud_ren_shisetus, :f_ttype,          flg     # Tタイプ
-        change_column_default :cloud_ren_shisetus, :f_sname,          flg     # 施設名
-        change_column_default :cloud_ren_shisetus, :f_connect,        flg     # 接続
-        change_column_default :cloud_ren_shisetus, :f_ip,             flg     # IPアドレス
+        change_column_null :cloud_ren_shisetus, :userkey,           flg     # ユーザーキー
+        change_column_null :cloud_ren_shisetus, :f_scode,           flg     # 施設コード
+        change_column_null :cloud_ren_shisetus, :f_ttype,           flg     # Tタイプ
+        change_column_null :cloud_ren_shisetus, :f_sname,           flg     # 施設名
+        change_column_null :cloud_ren_shisetus, :f_connect,         flg     # 接続
+        change_column_null :cloud_ren_shisetus, :f_ip,              flg     # IPアドレス
     end
 
     # デフォルト値を追加
     def set_default(flg)
-        change_column_default :cloud_ren_shisetus, :userkey,          flg     # ユーザーキー
-        change_column_default :cloud_ren_shisetus, :f_scode,          0       # 施設コード
-        change_column_default :cloud_ren_shisetus, :f_ttype,          flg     # Tタイプ
-        change_column_default :cloud_ren_shisetus, :f_sname,          flg     # 施設名
-        change_column_default :cloud_ren_shisetus, :f_connect,        flg     # 接続
-        change_column_default :cloud_ren_shisetus, :f_ip,             flg     # IPアドレス
+        change_column_default :cloud_ren_shisetus, :userkey,        flg     # ユーザーキー
+        change_column_default :cloud_ren_shisetus, :f_scode,        0       # 施設コード
+        change_column_default :cloud_ren_shisetus, :f_ttype,        flg     # Tタイプ
+        change_column_default :cloud_ren_shisetus, :f_sname,        flg     # 施設名
+        change_column_default :cloud_ren_shisetus, :f_connect,      flg     # 接続
+        change_column_default :cloud_ren_shisetus, :f_ip,           flg     # IPアドレス
     end
 end

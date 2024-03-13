@@ -6,77 +6,83 @@ class Con36CloudRenkeisController < ApplicationController
     # 実行
     def create
         
-        # 実行した時にカーソルを砂時計にする処理を記述する
-        # @@debug.pri_logger.error(params[:kbn_syori])
-        
-        case params[:kbn_syori].to_s
-            when "1" then
-        
-                CloudRenUser.table_delete
-                CloudRenShisetu.table_delete
-                CloudRenCheck.table_delete
+        ret, msg = nil, ""
 
-                ret, msg = CloudRenUser.table_insert
+        catch(:goto_err) do
 
-                if ret
+            case params[:kbn_syori].to_s
+                when "1" then
+                    
+                    # テーブルを全件削除
+                    CloudRenUser.table_delete
+                    CloudRenShisetu.table_delete
+                    CloudRenCheck.table_delete
+                    
+                    # SofinetCloudからAPI連携（ユーザー）
+                    ret, msg = CloudRenUser.table_insert
+                    throw :goto_err if !ret
+                    
+                    # SofinetCloudからAPI連携（施設）
                     ret, msg = CloudRenShisetu.table_insert(CloudRenUser.table_select)
+                    throw :goto_err if !ret
+                    
+                    # 新規ユーザーだけを更新（SofinetCloud側：有 楽楽側：無）
+                    cloudrenusers = CloudRenUser.table_select_join
+                    ret, msg = CloudRenCheck.table_insert(cloudrenusers)
+                    throw :goto_err if !ret
+                    
+                    # 既存、廃止ユーザーだけを更新（SofinetCloud側：有 楽楽側：有、 SofinetCloud側：無 楽楽側：有 団体区分=1:自治体）
+                    rakurenseikyus = RakuRenSeikyu.table_select_join(dantai_kbn: 1)
+                    id_max = CloudRenCheck.table_maximum
+                    ret, msg, id_max = CloudRenCheck.table_insert_kizon(rakurenseikyus, id_max, dantai_kbn: 1)
+                    throw :goto_err if !ret
+                    
+                    # 既存、廃止ユーザーだけを更新（SofinetCloud側：有 楽楽側：有 SofinetCloud側：無 楽楽側：有 団体区分=2:民間）
+                    rakurenseikyus = RakuRenSeikyu.table_select_join(dantai_kbn: 2)
+                    ret, msg, id_max = CloudRenCheck.table_insert_kizon(rakurenseikyus, id_max, dantai_kbn: 2)
+                    throw :goto_err if !ret
+                    
+                    # データ区分を更新（ユーザーキーが複数存在する場合、任意に１データを決定する）
+                    rakurenseikyus = RakuRenSeikyu.table_select_group
+                    ret, msg = CloudRenCheck.table_select_save(rakurenseikyus)
 
-                    if ret
-                        cloudrenusers = CloudRenUser.table_select_join
-                        ret, msg = CloudRenCheck.table_insert(cloudrenusers)
-                        
-                        if ret
-                            rakurenseikyus = RakuRenSeikyu.table_select_join(1)
-                            id_max = CloudRenCheck.table_maximum
-                            ret, msg, id_max = CloudRenCheck.table_insert_kizon(rakurenseikyus, 1, id_max)
-                            
-                            # @@debug.pri_logger.error("終わり１")
-                            # @@debug.pri_logger.error("id_max = #{id_max}")
-                            
-                            if ret
-                                rakurenseikyus = RakuRenSeikyu.table_select_join(2)
-                                ret, msg, id_max = CloudRenCheck.table_insert_kizon(rakurenseikyus, 2, id_max)
-                                
-                                if ret
-                                    rakurenseikyus = RakuRenSeikyu.table_select_group
-                                    ret, msg = CloudRenCheck.table_select(rakurenseikyus)
-
-                                    if ret 
-                                        msg = "Sofinet Cloudからローカルテーブルに、一括でデータを取得しました。"
-                                        msg << "既存の請求システムには、データは反映していません。"
-                                        msg << "<pre>"
-                                        msg << "　全ユーザー　：　#{CloudRenUser.table_count.to_s(:delimited).rjust(7)} 件<br>"
-                                        msg << "　全施設　　　：　#{CloudRenShisetu.table_count.to_s(:delimited).rjust(7)} 件"
-                                        msg << "</pre>"
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-
-            when "2" then
-
-                CloudRenWork3.table_delete
-                cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_tanitsu")
-                ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_tanitsu")
-
-                if ret
-                    cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_jyufuku")
-                    ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_jyufuku")
-                    if ret
-                        # 処理結果を出力させる
-                        msg = "新規施設のExcel出力を行いました。"
+                    if ret 
+                        msg = "Sofinet Cloudからローカルテーブルに、一括でデータを取得しました。"
                         msg << "既存の請求システムには、データは反映していません。"
                         msg << "<pre>"
-                        msg << "　単一キー　：　#{CloudRenWork3.table_count(syori: "key_tanitsu").to_s(:delimited).rjust(7)} 件<br>"
-                        msg << "　重複キー　：　#{CloudRenWork3.table_count(syori: "key_jyufuku").to_s(:delimited).rjust(7)} 件"
+                        msg << "　全ユーザー　：　#{CloudRenUser.table_count.to_s(:delimited).rjust(7)} 件<br>"
+                        msg << "　全施設　　　：　#{CloudRenShisetu.table_count.to_s(:delimited).rjust(7)} 件"
                         msg << "</pre>"
                     end
-                end
-            else
-                msg = "処理区分が正しく選択されていないため、処理を中断しました。"
-                ret = false
+                    
+                when "2" then
+                    
+                    catch(:goto_err) do
+                        # テーブルを全件削除
+                        CloudRenWork3.table_delete
+                        
+                        # Excel出力用ワークファイルへのデータ抽出（ユーザーキー：単位）
+                        cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_tanitsu")
+                        ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_tanitsu")
+                        throw :goto_err if !ret
+                        
+                        # Excel出力用ワークファイルへのデータ抽出（ユーザーキー：重複）
+                        cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_jyufuku")
+                        ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_jyufuku")
+                        
+                        if ret
+                            msg = "新規施設のExcel出力を行いました。"
+                            msg << "既存の請求システムには、データは反映していません。"
+                            msg << "<pre>"
+                            msg << "　単一キー　：　#{CloudRenWork3.table_count(syori: "key_tanitsu").to_s(:delimited).rjust(7)} 件<br>"
+                            msg << "　重複キー　：　#{CloudRenWork3.table_count(syori: "key_jyufuku").to_s(:delimited).rjust(7)} 件"
+                            msg << "</pre>"
+                        end
+                    end
+                else
+                    msg = "処理区分が正しく選択されていないため、処理を中断しました。"
+                    ret = false
+            end
         end
 
         if ret
@@ -84,17 +90,15 @@ class Con36CloudRenkeisController < ApplicationController
         else
             flash[:alert] = msg
         end
-        
         redirect_to con36_cloud_renkeis_url(kbn_syori: params[:kbn_syori])
     end
 
-
-    # インポート１（請求）　処理１
+    # 処理１（請求）
     def import_seikyu
 
         # ファイルの取り込みチェック
         ret, msg = Common.check_file(params[:file])
-        flash[:alert] = msg unless ret.zero?
+        flash[:alert] = msg if !ret.zero?
 
         if ret.zero?
             # テーブルの一括削除
@@ -102,18 +106,19 @@ class Con36CloudRenkeisController < ApplicationController
 
             # CSVのインポート
             ret, msg = RakuRenSeikyu.table_import(params[:file])
+
             flash[:notice] = msg if ret
             flash[:alert]  = msg if !ret
         end
         redirect_to con36_cloud_renkeis_url
     end
 
-    # インポート２（施設）　処理２
+    # 処理２（施設）
     def import_shisetu
 
         # ファイルの取り込みチェック
         ret, msg = Common.check_file(params[:file])
-        flash[:alert] = msg unless ret.zero?
+        flash[:alert] = msg if !ret.zero?
 
         if ret.zero?
             # テーブルの一括削除
@@ -127,11 +132,10 @@ class Con36CloudRenkeisController < ApplicationController
         redirect_to con36_cloud_renkeis_url
     end
 
-    # ---------------------------------------------------------
-    # 新規/廃止ユーザーのExcel出力　《Excelユーザー》
-    # ---------------------------------------------------------
+    # Excelユーザー（Excel出力）
     def export_user
 
+        # データ取得
         @cloudrencheck = CloudRenCheck.table_select_forexcel
 
         filename = "クラウド連携_#{Time.current.strftime("%m%d")}"
@@ -143,18 +147,14 @@ class Con36CloudRenkeisController < ApplicationController
         render :export_user
     end
 
-    # ---------------------------------------------------------
-    # 新規施設のExcel出力 《Excel施設》
-    # ---------------------------------------------------------
+    # Excel施設（Excel出力）
+    # コメント：Accessでは単一キー、重複キーの場合とExcelファイルを２つに分けていたが、Railsでは１つのファイルにせざるを得ないこととなった
     def export_shisetu
 
-        # テーブル間のER図を作成
-        # Accessでは単一キー、重複キーの場合とExcelファイルを２つに分けていたが、Railsでは１つのファイルにせざるを得ないこととなった
-
-        # 単一キーの場合
+        # データ取得（単一キーの場合）
         @cloudrenwork3s_tanitsu = CloudRenWork3.table_select_forexcel(syori: "key_tanitsu")
         
-        # 重複キーの場合
+        # データ取得（重複キーの場合）
         @cloudrenwork3s_jyufuku = CloudRenWork3.table_select_forexcel(syori: "key_jyufuku")
 
         filename = "クラウド連携_新規更新分_#{Time.current.strftime("%m%d")}"

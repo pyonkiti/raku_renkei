@@ -1,0 +1,48 @@
+.mt-3
+.display-6 斡旋手数料の請求書出力
+.mb-3
+
+hr
+
+= form_with url: '/assen_tesuuryos', local: true do |f|
+
+    / 画面から遷移してきたときはパラメータの中身はnil
+    - if params[:seikyu_ym].nil?
+       - @txt_seikyu_ym = Time.current.months_ago(1).strftime("%Y-%m")
+    - else
+       - @txt_seikyu_ym = params[:seikyu_ym]
+
+    / 請求年月
+    .form-group.row.mt-4
+        .col-md-2
+            = f.label '請求年月', class: 'control-label', for: 'txt_seikyu_ym'
+        .col-md-3
+            = f.month_field :txt_seikyu_ym,
+                     value: @txt_seikyu_ym,
+                     class: 'form-control',
+                        id: 'txt_seikyu_ym'
+        .col-md-7
+            h9 初期表示はシステム年月の１ヶ月前です。
+
+    br
+
+    / 実行
+    .form-group.row.mt-4
+        .col-md-2
+            = f.button type: "submit", class: 'btn btn-primary', id: 'btn_jikko'
+                i class = "fas fa-rocket"  実行
+        .col-md-10
+            h9 入金仕入処理において、「管理部提出データ出力１～３」でCSVファイルの《インポート》３処理と《実行》を行い、楽楽から最新データを反映させた状態にした後、当処理の《実行》を行ってください。
+               反映されていないと、古いデータの状態で処理がされることになります。
+
+br
+
+/ Excel出力
+.form-group.row
+    .col-lg-2
+        = link_to export_assen_assen_tesuuryos_path(format: :xlsx),
+            class: 'btn btn-primary',
+            id:    'lnk_seikyus_excel'
+            i class = "fa solid fa-download"  Excel出力
+    .col-lg-10
+        h9 「支払手数料明細表.xlsx」を出力します。

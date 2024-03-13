@@ -2,13 +2,17 @@ class Con37NyushiExcelsController < ApplicationController
 
     def index
 
+        # 直近の更新日時を画面表示
+        @table0s = SisetuKanribuTeisyutu0.select(:id, :created_at).order(id: "DESC").limit(1)
         @table1s = SisetuKanribuTeisyutu1.select(:id, :created_at).order(id: "DESC").limit(1)
         @table2s = SisetuKanribuTeisyutu2.select(:id, :created_at).order(id: "DESC").limit(1)
-        @table0s = SisetuKanribuTeisyutu0.select(:id, :created_at).order(id: "DESC").limit(1)
+        @table3s = SisetuKanribuTeisyutu3.select(:id, :created_at).order(id: "DESC").limit(1)
 
-        @tbl1_cnt = SisetuKanribuTeisyutu1.table_count(1)       # テーブル１のデータ件数を取得
-        @tbl2_cnt = SisetuKanribuTeisyutu2.table_count(1)       # テーブル２のデータ件数を取得
-        @tbl0_cnt = SisetuKanribuTeisyutu0.table_count(1)       # テーブル０のデータ件数を取得
+        # 直近のデータ件数を画面表示
+        @tbl0_cnt = SisetuKanribuTeisyutu0.table_count(1)
+        @tbl1_cnt = SisetuKanribuTeisyutu1.table_count(1)
+        @tbl2_cnt = SisetuKanribuTeisyutu2.table_count(1)
+        @tbl3_cnt = SisetuKanribuTeisyutu3.table_count(1)
     end
 
     # ---------------------------------------------------------
@@ -16,18 +20,27 @@ class Con37NyushiExcelsController < ApplicationController
     # ---------------------------------------------------------
     def import1
         
-        # ファイル取り込みのチェック
-        ret, msg = Common.check_file(params[:file])
-        flash[:alert]  = msg unless ret.zero?
+        ret, msg = nil, nil
 
-        if ret.zero?
-            if SisetuKanribuTeisyutu1.import_main(params[:file])
-                flash[:notice] = "管理部提出データ出力１の取り込みが完了しました。　処理件数は #{SisetuKanribuTeisyutu1.table_count(1)} 件です。"
-            else
-                flash[:alert]  = "エラーが発生しました。"
-            end
+        catch(:goto_err) do
+
+            # ファイル取り込みのチェック
+            ret, msg = Common.check_file(params[:file])
+            ret = ret.zero? ? true : false
+            throw :goto_err if !ret
+
+            # 一括削除
+            SisetuKanribuTeisyutu1.table_delete
+
+            # CSVファイルの取り込み
+            ret, msg = SisetuKanribuTeisyutu1.table_import(params[:file])
         end
-
+        
+        if ret
+            flash[:notice] = msg
+        else
+            flash[:alert] = msg
+        end
         redirect_to con37_nyushi_excels_url
     end
 
@@ -37,18 +50,56 @@ class Con37NyushiExcelsController < ApplicationController
     # ---------------------------------------------------------
     def import2
 
-        # ファイル取り込みのチェック
-        ret, msg = Common.check_file(params[:file])
-        flash[:alert] = msg unless ret.zero?
+        ret, msg = nil, nil
 
-        if ret.zero?
-            if SisetuKanribuTeisyutu2.import_main(params[:file])
-                flash[:notice] = "管理部提出データ出力２の取り込みが完了しました。　処理件数は #{SisetuKanribuTeisyutu2.table_count(1)} 件です。"
-            else
-                flash[:alert]  = "エラーが発生しました。"
-            end
+        catch(:goto_err) do
+            
+            # ファイル取り込みのチェック
+            ret, msg = Common.check_file(params[:file])
+            ret = ret.zero? ? true : false
+            throw :goto_err if !ret
+
+            # 一括削除
+            SisetuKanribuTeisyutu2.table_delete
+            
+            # CSVファイルの取り込み
+            ret, msg = SisetuKanribuTeisyutu2.table_import(params[:file])
         end
 
+        if ret
+            flash[:notice] = msg
+        else
+            flash[:alert] = msg
+        end
+        redirect_to con37_nyushi_excels_url
+    end
+
+    # ---------------------------------------------------------
+    # 楽楽からCSVファイル3 《インポート》
+    # ---------------------------------------------------------
+    def import3
+
+        ret, msg = nil, nil
+
+        catch(:goto_err) do
+
+            # ファイル取り込みのチェック
+            ret, msg = Common.check_file(params[:file])
+            ret = ret.zero? ? true : false
+            throw :goto_err if !ret
+
+            # 一括削除
+            SisetuKanribuTeisyutu3.table_delete
+
+            # CSVファイルの取り込み
+            ret, msg = SisetuKanribuTeisyutu3.table_import(params[:file])
+        end
+
+        if ret
+            flash[:notice] = msg
+        else
+            flash[:alert] = msg
+        end
         redirect_to con37_nyushi_excels_url
     end
 
@@ -61,21 +112,21 @@ class Con37NyushiExcelsController < ApplicationController
 
         # インポートした2つのCSVファイルを結合して、テーブル0に更新
         unless SisetuKanribuTeisyutu0.table_insert_main
-            alert  = "管理部提出データ出力１と２の結合処理で、エラーが発生しました。"
+            alert  = "管理部提出データ出力１・２・３の結合処理で、エラーが発生しました。"
         else
-            @msg << "「管理部提出データ出力テーブル１、２」の結合が完了しました。　処理件数は #{SisetuKanribuTeisyutu0.table_count(1)} 件です。"
+            @msg << "「管理部提出データ出力テーブル１・２・３」の結合が完了しました。　処理件数は #{SisetuKanribuTeisyutu0.table_count(1)} 件です。"
 
             # 入金仕入Excel_仕入一覧の更新
             unless ExcelShiireList.proc_main
                 alert  = "入金仕入Excel_仕入一覧の更新処理で、エラーが発生しました。"
             else
-                @msg << "「入金仕入Excel_仕入一覧テーブル」の更新が完了しました。　　 処理件数は #{ExcelShiireList.table_count(1)} 件です。"
+                @msg << "「仕入一覧テーブル」の更新が完了しました。　処理件数は #{ExcelShiireList.table_count(1)} 件です。"
 
                 # 入金仕入Excel_入金一覧の更新
                 unless ExcelNyukinList.proc_main
                     alert  = "入金仕入Excel_入金一覧の更新処理で、エラーが発生しました。"
                 else
-                    @msg << "「入金仕入Excel_入金一覧テーブル」の更新が完了しました。　　 処理件数は #{ExcelNyukinList.table_count(1)} 件です。"
+                    @msg << "「入金一覧テーブル」の更新が完了しました。　処理件数は #{ExcelNyukinList.table_count(1)} 件です。"
                 
                     # 入金仕入Excel_入金一覧の総合計の１行を更新
                     unless ExcelNyukinList.proc_syori3
@@ -103,8 +154,9 @@ class Con37NyushiExcelsController < ApplicationController
     # ---------------------------------------------------------
     def export_nyu
 
+        # 入金仕入Excel_入金一覧の読み込み
         sql = "Select * From excel_nyukin_lists Order By seikyu_key_link"
-        @ex_nyukin = ExcelNyukinList.find_by_sql(sql)                       # 入金仕入Excel_入金一覧の読み込み
+        @ex_nyukin = ExcelNyukinList.find_by_sql(sql)
         
         if ( @ex_nyukin.size == 0 )
             flash[:alert]  = "入金一覧表のデータ件数が0件のため、ダウンロードできません。"
@@ -126,6 +178,7 @@ class Con37NyushiExcelsController < ApplicationController
     # ---------------------------------------------------------
     def export_shi
 
+        # 入金仕入Excel_仕入一覧の読み込み
         sql = "Select * From excel_shiire_lists Order by seikyu_key_link"
         @ex_shiire = ExcelShiireList.find_by_sql(sql)
         

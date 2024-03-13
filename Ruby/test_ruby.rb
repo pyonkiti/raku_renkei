@@ -1,18 +1,205 @@
 
 # ---------------------------------------------------------
-# 
+# ハッシュの中に配列を作成する
 # ---------------------------------------------------------
-def test_set
-    
-    aa = Dir.pwd            # フルパス
-    bb = Dir.chdir("/vagrant")
-    puts bb
-    
+def test_hash_create
 
-    
+    hash = {}
+    hash["err"] = []
+    hash["err"] << "エラーです"
+    hash["err"] << "エラーですよ"
+
+    hash["ok"] = []
+    hash["ok"] << "OKです"
+    hash["ok"] << "OKですよ"
+
+    puts hash
 end
 
-test_set
+# ---------------------------------------------------------
+# ハッシュの取得方法
+# ---------------------------------------------------------
+def test_hash(col)
+
+    if col == 10
+        column = {head: {yyy: 53, tiy: 36, siy: 3, sum: 31}, meisai: {kis: 6, kok: 16, ser: 30, tan: 39, suu: 47, kin: 52}}
+    else
+        column = {head: {yyy: 40, tiy: 29, siy: 1, sum: 24}, meisai: {kis: 4, kok: 12, ser: 25, tan: 32, suu: 37, kin: 42}}
+    end
+
+    
+    column = {head: {yyy: 53, tiy: 36, siy: 3, sum: 31}, meisai: {kis: 6, kok: 16, ser: 30, tan: 39, suu: 47, kin: 52}} if col == 10
+    column = {head: {yyy: 40, tiy: 29, siy: 1, sum: 24}, meisai: {kis: 4, kok: 12, ser: 25, tan: 32, suu: 37, kin: 42}} if col == 10
+
+    # column[:head]
+    # column[:head][:tiy]
+end
+
+# ---------------------------------------------------------
+# ハッシュの作り方
+# ---------------------------------------------------------
+def test_hash2
+
+    # ret = {"a" => "111","b" => "b"}       # OK
+    # ret = {1 => 111, 2 => 55}             # OK
+    # ret = {1 => "111", 2 => "55"}         # OK
+    # ret = {1 => "aa", 2 => "bb"}          # OK
+    # ret = {a => "111", b => "b"}          # エラー
+
+    # ret = {a: "111", b: "b"}              # OK
+    # ret = {a: 111, b: 222}                # OK
+    # ret = {a: 111, b: b}                  # エラー
+
+    return ret
+end
+
+# ---------------------------------------------------------
+# case文の使い方
+# ---------------------------------------------------------
+def test_case(kbn)
+    
+    aa = []
+    aa << case kbn
+        when 1 
+            ["111","b"]
+        when 2
+            ["222","c"]
+    end
+
+    bb = {}
+    bb = case kbn
+        when 1 
+            {"a" => "111","b" => "b"}
+        when 2
+            {"a" => "112","b" => "bb"}
+    end
+    return aa, bb
+end
+
+# ---------------------------------------------------------
+# Excel罫線の種類を調べる
+# ---------------------------------------------------------
+def test_rubyxl
+
+    require 'rubyXL'
+    require 'rubyXL/convenience_methods'
+
+    workbook = RubyXL::Workbook.new
+    worksheet = workbook[0]
+
+    sT_BorderStyle = %w{ none thin medium dashed dotted thick double hair mediumDashed dashDot mediumDashDot dashDotDot slantDashDot }
+    sT_BorderStyle.each_with_index do |val, idx|
+         worksheet.add_cell(idx, 0, val).change_border(:bottom, val)
+    end
+    workbook.write('./Ruby/sample_1.xlsx')
+end
+
+# ---------------------------------------------------------
+# ブロック内の変数の有効範囲の確認
+# ---------------------------------------------------------
+def test_idx
+    idx = 100
+    5.times do |idx|
+        puts "idx1 = #{idx}"
+        if idx == 3
+            3.times do |idx|
+                puts "idx2 = #{idx}"
+            end
+        end
+    end
+    puts "idx3 = #{idx}"
+end
+
+# ---------------------------------------------------------
+# ファイル存在チェック
+# ---------------------------------------------------------
+def test_exists
+    
+    require 'fileutils'
+
+    # puts File.exists?("./excel/moto/支払手数料明細表.xlsx")
+    # puts File.exists?("./excel/サンプル.xlsx")
+
+    msg  = nil
+    hash = {"moto_path" => "./excel/moto/", "saki_path" => "./excel/"}
+    file = ["支払手数料明細表(10明細)_元.xlsx", "支払手数料明細表(21明細)_元.xlsx"]
+    
+    file.each do |file|
+        if !File.exists?(hash.fetch("moto_path") + file)
+            msg = "「#{file}」 が存在しません。雛形となるファイルを所定のフォルダにセットしてください。"
+            return false, msg
+        end
+    end
+    return true, msg
+end
+
+# ---------------------------------------------------------
+# ファイルコピー
+# ---------------------------------------------------------
+def test_filecopy
+
+    require 'fileutils'
+
+    hash = {"moto_path" => "./excel/moto/", "saki_path" => "./excel/"}
+    file = ["支払手数料明細表(10明細)_元.xlsx", "支払手数料明細表(21明細)_元.xlsx"]
+
+    # FileUtils.cp("./excel/moto/支払手数料明細表.xlsx", "./excel/サンプル.xlsx")
+
+    # コピー先に同名のファイルがあれば上書きされるだけなので事前削除は不要
+    file.each do |file|
+        FileUtils.cp(hash.fetch("moto_path") + file, hash.fetch("saki_path") + file.delete("_元"))
+    end
+end
+
+
+
+# ---------------------------------------------------------
+# 文字置換
+# ---------------------------------------------------------
+def test_delete
+    aa.gsub!(/ＮＥＣプラットフォームズ株式会社/, "").strip!
+    puts aa
+end
+
+# ---------------------------------------------------------
+# ファイル削除
+# ---------------------------------------------------------
+def test_filemove
+    
+    require 'fileutils'
+
+    FileUtils.rm("./excel/サンプル.xlsx")
+    FileUtils.rm("./excel/bb.xlsx")
+end
+
+# ---------------------------------------------------------
+# 引数に名前を付ける
+# ---------------------------------------------------------
+def test_hikisu(a,b,aa:, bb:)
+
+    if aa == 1
+        puts "#{aa}#{bb}"
+    else
+        puts "ちがう"
+    end
+end
+
+# ---------------------------------------------------------
+# GoTo文
+# ---------------------------------------------------------
+def test_goto(aa)
+    
+    catch(:goto) do
+        case aa
+            when 1 then 
+                puts "11"
+                throw :goto
+            when 2 then 
+                puts "22"
+        end
+        puts "終わり"
+    end
+end
 
 # ---------------------------------------------------------
 # 配列の中のハッシュの取得
@@ -109,5 +296,3 @@ class Test_class
         end
     end
 end
-
-

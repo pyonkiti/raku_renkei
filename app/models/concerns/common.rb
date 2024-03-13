@@ -2,6 +2,37 @@
 module  Common
     
     # ---------------------------------------------------------
+    # ファイル存在チェック
+    # ---------------------------------------------------------
+    def self.check_file_exist(file)
+        
+        if (file.to_s == "")
+            msg = "ファイルの存在チェックを行うパラメータの指定に誤りがあります。"
+            return false, msg
+        end
+
+        if !File.exists?(file)
+            msg = "「#{file}」 が存在しません。"
+            return false, msg
+        end
+        return true, nil
+    end
+    
+    # ---------------------------------------------------------
+    # ファイルコピー
+    # ---------------------------------------------------------
+    def self.check_file_copy(file)
+        
+        begin
+            # コピー先に同名のファイルがあれば上書きされる
+            FileUtils.cp(file, file.gsub(/.xlsx/, "") + "_bkup.xlsx")
+            return true, nil
+        rescue => ex
+            return false, "Excelの原紙ファイルのバックアップに失敗しました。"
+        end
+    end
+
+    # ---------------------------------------------------------
     # ファイルの取り込みをチェックをする
     # ---------------------------------------------------------
     def self.check_file(file)

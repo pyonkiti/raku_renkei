@@ -15,7 +15,6 @@ wb.add_worksheet(name: "クラウド連携") do |sheet|
                 row.add_cell(cloudrencheck.jichitai_cd)
                 row.add_cell(cloudrencheck.dantai1)
                 row.add_cell(cloudrencheck.dantai2)
-                row.add_cell(cloudrencheck.bunrui_cd)
                 row.add_cell(cloudrencheck.bunrui)
                 row.add_cell(cloudrencheck.userkey)
                 row.add_cell(cloudrencheck.deta_kbn1)

@@ -35,6 +35,11 @@ class AddColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
         add_column :sisetu_kanribu_teisyutu0s, :id_user,              :string   # 自動採番（ユーザー）
         add_column :sisetu_kanribu_teisyutu0s, :nyukin_out_flg,       :string   # 入金一覧出力フラグ
 
-        add_column :sisetu_kanribu_teisyutu0s, :created_at,           :datetime # 作成日
+        # カラムを追加（テーブル３より連携）
+        add_column :sisetu_kanribu_teisyutu0s, :todoufuken,          :string   # 都道府県名
+        add_column :sisetu_kanribu_teisyutu0s, :shikutyouson,        :string   # 市区町村名
+        add_column :sisetu_kanribu_teisyutu0s, :kigyou,              :string   # 企業名
+        add_column :sisetu_kanribu_teisyutu0s, :seikyu_saki2,        :string   # 請求先２
+        add_column :sisetu_kanribu_teisyutu0s, :created_at,          :datetime # 作成日
     end
 end

@@ -11,15 +11,15 @@ class ChangeColumnRakuRenSeikyu < ActiveRecord::Migration[5.2]
     end
 
     def set_null(flg)
-        change_column_default :raku_ren_seikyus, :jido_renban,  flg     # 自動採番
-        change_column_default :raku_ren_seikyus, :dantai_kbn,   flg     # 団体区分
-        change_column_default :raku_ren_seikyus, :jichitai_cd,  flg     # 自治体コード
-        change_column_default :raku_ren_seikyus, :todoufuken,   flg     # 都道府県名
-        change_column_default :raku_ren_seikyus, :shikutyouson, flg     # 市区町村名
-        change_column_default :raku_ren_seikyus, :kigyou_cd,    flg     # 企業コード
-        change_column_default :raku_ren_seikyus, :kigyou,       flg     # 企業名
-        change_column_default :raku_ren_seikyus, :bunrui,       flg     # 分類名
-        change_column_default :raku_ren_seikyus, :userkey,      flg     # ユーザーキー
+        change_column_null  :raku_ren_seikyus,  :jido_renban,   flg     # 自動採番
+        change_column_null  :raku_ren_seikyus,  :dantai_kbn,    flg     # 団体区分
+        change_column_null  :raku_ren_seikyus,  :jichitai_cd,   flg     # 自治体コード
+        change_column_null  :raku_ren_seikyus,  :todoufuken,    flg     # 都道府県名
+        change_column_null  :raku_ren_seikyus,  :shikutyouson,  flg     # 市区町村名
+        change_column_null  :raku_ren_seikyus,  :kigyou_cd,     flg     # 企業コード
+        change_column_null  :raku_ren_seikyus,  :kigyou,        flg     # 企業名
+        change_column_null  :raku_ren_seikyus,  :bunrui,        flg     # 分類名
+        change_column_null  :raku_ren_seikyus,  :userkey,       flg     # ユーザーキー
     end
 
     def set_default(flg)

@@ -11,17 +11,17 @@ class ChangeColumnCloudRenCheck < ActiveRecord::Migration[5.2]
     end
 
     def set_null(flg)
-        change_column_default :cloud_ren_checks, :dantai_kbn,   flg     # 団体区分
-        change_column_default :cloud_ren_checks, :jichitai_cd,  flg     # 自治体コード
-        change_column_default :cloud_ren_checks, :dantai1,      flg     # 団体名１
-        change_column_default :cloud_ren_checks, :dantai2,      flg     # 団体名２
-        change_column_default :cloud_ren_checks, :bunrui_cd,    flg     # 分類
-        change_column_default :cloud_ren_checks, :bunrui,       flg     # 分類名
-        change_column_default :cloud_ren_checks, :userkey,      flg     # ユーザーキー
-        change_column_default :cloud_ren_checks, :deta_kbn1,    flg     # データ区分１
-        change_column_default :cloud_ren_checks, :deta_kbn2,    flg     # データ区分２
-        change_column_default :cloud_ren_checks, :deta_kbn3,    flg     # データ区分３
-        change_column_default :cloud_ren_checks, :msg,          flg     # メッセージ
+        change_column_null :cloud_ren_checks,   :dantai_kbn,    flg     # 団体区分
+        change_column_null :cloud_ren_checks,   :jichitai_cd,   flg     # 自治体コード
+        change_column_null :cloud_ren_checks,   :dantai1,       flg     # 団体名１
+        change_column_null :cloud_ren_checks,   :dantai2,       flg     # 団体名２
+        change_column_null :cloud_ren_checks,   :bunrui_cd,     flg     # 分類
+        change_column_null :cloud_ren_checks,   :bunrui,        flg     # 分類名
+        change_column_null :cloud_ren_checks,   :userkey,       flg     # ユーザーキー
+        change_column_null :cloud_ren_checks,   :deta_kbn1,     flg     # データ区分１
+        change_column_null :cloud_ren_checks,   :deta_kbn2,     flg     # データ区分２
+        change_column_null :cloud_ren_checks,   :deta_kbn3,     flg     # データ区分３
+        change_column_null :cloud_ren_checks,   :msg,           flg     # メッセージ
     end
 
     def set_default(flg)

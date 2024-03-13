@@ -3,21 +3,15 @@ class ExcelShiireList < ApplicationRecord
 
     class << self
 
-        # ---------------------------------------------------------
         # 入金仕入Excel_仕入一覧の更新　≪メイン≫
-        # ---------------------------------------------------------
         def proc_main
 
-            table_delete            # 入金仕入Excel_仕入一覧の削除
-            unless proc_syori1      # 入金仕入Excel_仕入一覧の更新
-                return false
-            end
+            table_delete                                                # 入金仕入Excel_仕入一覧の削除
+            return false if !proc_syori1                                # 入金仕入Excel_仕入一覧の更新
             return true
         end
 
-        # ---------------------------------------------------------
         # 入金仕入Excel_仕入一覧の更新
-        # ---------------------------------------------------------
         def proc_syori1
             
             begin
@@ -31,7 +25,7 @@ class ExcelShiireList < ApplicationRecord
 
                 err_seikyu_key_link = ""                                # 初期化：請求キーリンク
                 assen_sum           = 0                                 # 初期化：斡旋手数料
-            cnt                 = 0                                     # 件数：ループ
+                cnt                 = 0                                 # 件数：ループ
 
                 @table0.each_cons(2) do |table0, table_nxt|
                     
@@ -65,9 +59,7 @@ class ExcelShiireList < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # 入金仕入Excel_仕入の更新
-        # ---------------------------------------------------------
         def proc_syori2(table0, assen_sum)
 
             begin
@@ -106,15 +98,13 @@ class ExcelShiireList < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # CSVに出力
-        # ---------------------------------------------------------
         def proc_csv(ex_shiire)
 
-            CSV.generate( headers: true ) do |csv|
+            CSV.generate( headers: true, force_quotes: true ) do |csv|
 
                 csv << %w(伝票区切 補助科目 取引先 適用（１） 適用（２） 適用（３） 備考 金額 税 部門 借方科目 消費税 合計金額 買掛金 日付 取引先C)
-                
+
                 ex_shiire.each do |shiire|
                     arry = ["denpyo_kugiri", 
                             "hojyo_kamoku",
@@ -132,29 +122,22 @@ class ExcelShiireList < ApplicationRecord
                             "kaikake_kin",
                             "hizuke",
                             "torihikisaki_c"]
-
                     csv << arry.map { |var| shiire.send(var) }
                 end
             end
         end
         
-        # ---------------------------------------------------------
         # データ件数を取得
-        # ---------------------------------------------------------
         def table_count(flg)
 
             count = ExcelShiireList
             case flg
-                when 0
-                    count.to_s
-                when 1
-                    count.count.to_s(:delimited)
+                when 0 then count.count.to_s
+                when 1 then count.count.to_s(:delimited)
             end
         end
 
-        # ---------------------------------------------------------
         # テーブルを全件削除
-        # ---------------------------------------------------------
         def table_delete
             connection.execute "TRUNCATE TABLE excel_shiire_lists;"
         end
@@ -162,6 +145,5 @@ class ExcelShiireList < ApplicationRecord
         private :proc_syori1
         private :proc_syori2
         private :table_delete
-
     end
 end

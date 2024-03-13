@@ -3,36 +3,45 @@
 /     = link_to '切替', con37_nyushi_seikyus_path, class: 'nav-link'
 
 .mt-3
-.display-6 楽楽販売よりCSVデータをインポート
+.display-6 楽楽のCSVインポート/入金仕入出力
 .mb-3
 
+hr
+h4 楽楽よりCSVデータのインポート
+br
+
 .form-group.row
     .col-md-6
-        = form_tag import1_con37_nyushi_excels_path, multipart: true, class: 'mb-3', id: 'tag_nyushi_form1' do 
+        = form_tag import1_con37_nyushi_excels_path, multipart: true, class: 'mb-3', id: 'tag_nyushi_form1' do
             = file_field_tag :file, id: 'tag_nyushi_file1'
             = submit_tag "インポート１", class: 'btn btn-primary', id: 'tag_nyushi_submit1'
-
     .col-md-6
-        h9 楽楽の、「請求処理－施設テーブル－管理部提出データ出力１」より出力した、CSVファイルをインポートします。
+        h9 楽楽の「請求処理－施設テーブル－管理部提出データ出力<b><u>１</u></b>」より出力した、CSVファイルをインポートします。
 
 .form-group.row
     .col-lg-6
-        = form_tag import2_con37_nyushi_excels_path, multipart: true, class: 'mb-3', id: 'tag_nyushi_form2' do 
-            = file_field_tag :file ,id: 'tag_nyushi_file2'
+        = form_tag import2_con37_nyushi_excels_path, multipart: true, class: 'mb-3', id: 'tag_nyushi_form2' do
+            = file_field_tag :file , id: 'tag_nyushi_file2'
             = submit_tag "インポート２", class: 'btn btn-primary', id: 'tag_nyushi_submit2'
-
     .col-lg-6
-        h9 楽楽の、「請求処理－施設テーブル－管理部提出データ出力２」より出力した、CSVファイルをインポートします。
+        h9 楽楽の「請求処理－施設テーブル－管理部提出データ出力<b><u>２</u></b>」より出力した、CSVファイルをインポートします。
+
+.form-group.row
+    .col-lg-6
+        =form_tag import3_con37_nyushi_excels_path, multipart: true, class: 'mb-3', id: 'tag_nyushi_form3' do
+            = file_field_tag :file, id: 'tag_nyushi_file3'
+            = submit_tag "インポート３", class: 'btn btn-primary', id: 'tag_nyushi_submit3'
+    .col-lg-6
+        h9 楽楽の「請求処理－施設テーブル－管理部提出データ出力<b><u>３</u></b>」より出力した、CSVファイルをインポートします。
 
 .form-group.row
     .col-lg-6
         = button_to syori0_con37_nyushi_excels_path, class: 'btn btn-primary', id: 'btn_nyushi_jikko'
             i class = "fas fa-rocket"  実行
-
     .col-lg-6
         h9 下記の３処理を行います。
         ol
-            li インポートした２つのCSVファイル（管理部提出データ出力１と管理部提出データ出力２）を結合します。
+            li 上記でインポートした３つのCSVファイル（管理部提出データ出力１～３）を結合します。
             li 入金一覧表（Excel）を出力する前処理を行います。
             li 仕入一覧表（CSV）を出力する前処理を行います。
 
@@ -41,15 +50,17 @@ h4 前回実行時の履歴
 br
 
 .form-group.row
-    .col-lg-4
+    .col-lg-3
         h6 ・ 管理部提出データ１
-    .col-lg-4
+    .col-lg-3
         h6 ・ 管理部提出データ２
-    .col-lg-4
+    .col-lg-3
+        h6 ・ 管理部提出データ３
+    .col-lg-3
         h6 ・ 管理部提出データ結合
 
 .form-group.row
-    .col-lg-4
+    .col-lg-3
         / インポートしたデータを表示
         table
             thead
@@ -73,7 +84,7 @@ br
                             = "　　　"
                         td
                             = @tbl1_cnt
-    .col-lg-4
+    .col-lg-3
         table
             thead
                 tr
@@ -96,7 +107,30 @@ br
                             = "　　　"
                         td
                             = @tbl2_cnt
-    .col-lg-4
+    .col-lg-3
+        table
+            thead
+                tr
+                    th
+                        | 
+                    th
+                        | 　作成日
+                    th
+                        | 
+                    th
+                        | 件数
+            tbody
+                - @table3s.each do |table3|
+                    tr
+                        td
+                            = "　"
+                        td
+                            = (table3.created_at).nil? ? "aa" : table3.created_at.strftime("%m/%d %H:%M")
+                        td
+                            = "　　　"
+                        td
+                            = @tbl3_cnt
+    .col-lg-3
         table
             thead
                 tr
@@ -135,3 +169,5 @@ br
                 i class ="fa solid fa-download"  CSV出力
     .col-lg-4
         h9 「仕入一覧表」を出力します。
+
+br

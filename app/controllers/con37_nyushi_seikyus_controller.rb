@@ -79,6 +79,5 @@ class Con37NyushiSeikyusController < ApplicationController
             end
         end
     end
-
 end
  

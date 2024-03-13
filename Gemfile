@@ -50,6 +50,8 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  # ER図を生成
+  gem 'rails-erd'
 end
 
 group :test do
@@ -81,6 +83,7 @@ gem 'pry-rails'
 # gem 'rubyzip'　　　不要
 # gem 'axlsx'　　　　不要
 gem 'caxlsx_rails'
+gem 'rubyXL'        # Excel出力 斡旋手数料テスト用
 
 # 環境変数を設定
 gem 'dotenv-rails'

@@ -1,16 +1,15 @@
 class CloudRenWork3 < ApplicationRecord
     class << self
 
-        # 
+        # テーブルを全件削除
         def table_delete
             connection.execute "TRUNCATE TABLE cloud_ren_work3s;"
         end
         
-
-        # 
+        # 更新処理
         def table_insert(cloudrenchecks, syori:)
+
             begin
-                
                 unless cloudrenchecks.empty?
 
                     err_id = ""
@@ -52,7 +51,6 @@ class CloudRenWork3 < ApplicationRecord
                         sql += "#{res.deta_kbn2}"
                         sql += " ) "
 
-                        # @@debug.pri_logger.error(sql)
                         ret = ActiveRecord::Base.connection.execute(sql)
                     end
                 end
@@ -76,7 +74,7 @@ class CloudRenWork3 < ApplicationRecord
             CloudRenWork3.select("*").where(wsql).order("userkey, f_scode")
         end
 
-        # 
+        # データ件数を取得
         def table_count(syori:)
             
             wsql = case syori

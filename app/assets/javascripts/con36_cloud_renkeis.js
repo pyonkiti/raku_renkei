@@ -5,14 +5,14 @@ document.addEventListener('turbolinks:load', function() {
     if (document.getElementById('chk_syori_kbn1') == null) { return false; }
 
     // 初期表示
-    if (document.getElementById('chk_syori_kbn1').checked == null) {
+    if (document.getElementById('chk_syori_kbn1').checked == null || document.getElementById('chk_syori_kbn1').checked == true) {
         head_disp_cloud_ren(1);
     } else {
         head_disp_cloud_ren(2);
     }
 
     // インポート１
-    document.getElementById('tag_submit_seikyu').addEventListener('change', function() {
+    document.getElementById('tag_submit_seikyu').addEventListener('click', function() {
         // マウスカーソルを砂時計
         document.body.parentElement.style.cursor = "wait";
     })
