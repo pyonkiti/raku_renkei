@@ -30,6 +30,7 @@
 /.env
 /test/ruby*.rb
 /private/*
+/_excel/moto/*
 /excel/moto/*
 /excel/*.xlsx
 !/excel/moto/支払手数料明細表_原紙.xlsx
