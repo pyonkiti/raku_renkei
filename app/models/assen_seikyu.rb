@@ -1,3 +1,4 @@
+# 斡旋手数料の請求書
 class AssenSeikyu < ApplicationRecord
     class << self
 

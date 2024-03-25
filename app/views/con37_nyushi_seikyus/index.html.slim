@@ -1,7 +1,3 @@
-/ ナビバーで表示するため不要とした
-/ .nav.justify-content-end
-/     = link_to '切替', con37_nyushi_excels_path, class: 'nav-link'
-
 .mt-3
 .display-6 請求月計算 ／ 請求予定額計算
 .mb-3
@@ -39,12 +35,12 @@ hr
     .form-group.row.mt-4
         .col-md-2
             = f.label '請求年月', class: 'control-label', for: 'txt_seikyus_ymd'
-        .col-md-2
+        .col-md-3
             = f.month_field :txt_seikyu_ym, 
                     value: @txt_seikyu_ym,
                     class: 'form-control', 
                     id:    'txt_seikyus_ym'
-        .col-md-6
+        .col-md-7
     
     .form-group.row.mt-4
         .col-md-2

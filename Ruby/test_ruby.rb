@@ -1,5 +1,36 @@
 
 # ---------------------------------------------------------
+# 配列の最後の要素だけ書き換える
+# ---------------------------------------------------------
+def test_arry
+
+    msg = []
+    msg << "111"
+    msg << "222"
+    msg << "333"
+
+    msg[-1] = msg[-1] + "444"
+    puts msg
+end
+
+# ---------------------------------------------------------
+# 処理の経過時間を計測する
+# ---------------------------------------------------------
+def test_runtime
+
+    time_measure = {str: 0, end: 0}
+
+    time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+    sleep (5)
+
+    time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+    aa = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime('%M分%S秒')
+    puts aa
+end
+
+# ---------------------------------------------------------
 # ハッシュの中に配列を作成する
 # ---------------------------------------------------------
 def test_hash_create

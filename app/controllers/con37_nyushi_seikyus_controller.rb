@@ -3,39 +3,40 @@ class Con37NyushiSeikyusController < ApplicationController
     def index
     end
 
-    # ---------------------------------------------------------
     # 請求月計算 ／ 請求予定額計算 《実行》
-    # ---------------------------------------------------------
     def syori_main
         
-        # ---------------------------------------------------------
+        time_measure = {str: 0, end: 0}
+        
         # 請求年月の入力チェック
-        # ---------------------------------------------------------
         unless params[:txt_seikyu_ym].present?
             flash[:alert]  = "請求年月が空白です。"
         else
-            
+            time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)    # 時間計測の開始
+
             ret = case params[:kbn_seikyu]
                 when "1" then SeikyuTukiCal.proc_main(0, params[:txt_seikyu_ym])    # 請求月数計算
                 when "2" then SeikyuYoteCal.proc_main(params[:txt_seikyu_ym])       # 請求予定額計算
             end
-
+            
             msg = "「請求月計算テーブル」" if params[:kbn_seikyu] == "1"
             msg = "「請求予定額テーブル」" if params[:kbn_seikyu] == "2"
 
-            unless ret
+            time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)    # 時間計測の終了
+
+            measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+            measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+
+            if !ret
                 flash[:alert]  = "#{msg}の更新でエラーが発生しました。"
             else
-                flash[:notice] = "#{msg}の更新が完了しました。"
+                flash[:notice] = "#{msg}の更新が完了しました。" + "　（処理時間 #{measure_msg}）"
             end
         end
-        
         redirect_to con37_nyushi_seikyus_url(seikyu_ym: params[:txt_seikyu_ym], kbn_seikyu: params[:kbn_seikyu])
     end
     
-    # ---------------------------------------------------------
     # 請求月計算 《CSV出力》
-    # ---------------------------------------------------------
     def export_tuki
         
         sql = "Select * From seikyu_tuki_cals Order by sisetu_kanribu_teisyutu0_id"
@@ -56,10 +57,7 @@ class Con37NyushiSeikyusController < ApplicationController
         end
     end
 
-
-    # ---------------------------------------------------------
     # 請求予定額計算 《Excel出力》
-    # ---------------------------------------------------------
     def export_yote
 
         sql = "Select * From seikyu_yote_cals Order by id"

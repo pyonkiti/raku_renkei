@@ -7,7 +7,6 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
 
         # データ件数を取得
         def table_count(flg)
-
             count = SisetuKanribuTeisyutu0
             case flg
                 when 0 then count.to_s

@@ -19,7 +19,7 @@ class CloudRenWork3 < ApplicationRecord
                     cloudrenchecks.each_with_index do |res, icnt|
                     
                         err_id = "#{start_cnt + icnt + 1} - #{res.userkey} - #{res.f_scode}"
-                        # ユーザーキーがユニークの場合は、請求キーリンクをセットするが、複数存在する場合は空白
+                        # ユーザーキーがユニークの場合は、請求キーリンクをセットするが、複数存在する場合は空白をセット
                         seikyu_keylink = syori == "key_tanitsu" ? res.jido_renban : ""
                         
                         sql  = "Insert Into cloud_ren_work3s ( "
@@ -63,7 +63,8 @@ class CloudRenWork3 < ApplicationRecord
             end
         end
 
-        # Q_クラウド連携_連携施設02_楽楽1  / Q_クラウド連携_連携施設02_楽楽2
+        # Excel出力のためのデータ抽出
+        # Q_クラウド連携_連携施設02_楽楽1  / Q_クラウド連携_連携施設02_楽楽2 (Accessの元ネタ)
         def table_select_forexcel(syori:)
             
             wsql = case syori
@@ -84,6 +85,5 @@ class CloudRenWork3 < ApplicationRecord
             end
             CloudRenWork3.where(wsql).count
         end
-
     end
 end

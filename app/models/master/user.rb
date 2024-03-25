@@ -5,9 +5,6 @@ class Master::User < ApplicationRecord
     validates :name,    presence: true
     validates :name_id, presence: true, uniqueness: true
 
-
-    
-
     class << self
     end
 end

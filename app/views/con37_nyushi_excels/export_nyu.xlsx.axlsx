@@ -4,24 +4,18 @@ wb = xlsx_package.workbook
 # ワークブックにシートを挿入
 wb.add_worksheet(name: "入金一覧") do |sheet|
 
-    # ---------------------------------------------------------
     # スタイルの設定
-    # ---------------------------------------------------------
     styles = {
         title: sheet.styles.add_style(font_name: 'メイリオ'),
         date:  sheet.styles.add_style(font_name: 'Arial', format_code: 'yyyymmdd'),
         time:  sheet.styles.add_style(font_name: 'Arial', format_code: 'hhmmss')
     }
 
-    # ---------------------------------------------------------
     # ヘッダー行の出力
-    # ---------------------------------------------------------
     header = %w(商談名 請求No 請求年月日 取引先コード 請求先コード 請求先名称 入金年月日 入金月 今回請求金額 今回消費税 税込請求金額 期 部門 請求月 担当者 連番 枝番)
     sheet.add_row header, style: styles[:title]
 
-    # ---------------------------------------------------------
     # 明細行の出力
-    # ---------------------------------------------------------
     @ex_nyukin.each do |ex_nyukin|
         sheet.add_row do |row|
             row.add_cell(ex_nyukin.syodan_nm)

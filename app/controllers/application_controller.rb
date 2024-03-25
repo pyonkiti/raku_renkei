@@ -3,8 +3,7 @@ class ApplicationController < ActionController::Base
     helper_method :current_user
     before_action :login_required
     
-    @@debug = Rails.application.config       # デバック用
-
+    @@debug          = Rails.application.config                                           # デバック用
     @@assen_file_mot = "./excel/moto/支払手数料明細表_原紙.xlsx"                            # 斡旋手数料のExcelファイル（元）
     @@assen_file_out = "./excel/支払手数料明細表_#{Time.current.strftime("%Y%m")}.xlsx"     # 斡旋手数料のExcelファイル（先）
 

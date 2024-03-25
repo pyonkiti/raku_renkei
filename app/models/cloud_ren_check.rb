@@ -133,18 +133,13 @@ class CloudRenCheck < ApplicationRecord
             CloudRenCheck.maximum('id')
         end
 
-        # データ区分で、ユーザーキーがユニークか複数存在するか判別できるようにする
+        # データ区分でユーザーキーがユニークか複数存在するか判別できるようにする
         def table_select_save(rakurenseikyus)
 
             begin
                 err_id = ""
                 rakurenseikyus.each do |ret_raku|
 
-                    # SQLのサンプル
-                    # SQL = "Select * From W_クラウド連携_請求チェック "
-                    # SQL = SQL & "Where ユーザーキー = '" & NullPadS(Rs1.Fields("ユーザーキー").Value) & "' "
-                    # SQL = SQL & "Order by 団体区分, 自治体コード"
-                    
                     cloudrencheck = CloudRenCheck.select(:id, :deta_kbn2, :deta_kbn3)
                                                  .where(userkey: ret_raku[0])
                                                  .order(:dantai_kbn, :jichitai_cd, :id)
@@ -175,11 +170,13 @@ class CloudRenCheck < ApplicationRecord
             cloudrencheck = CloudRenCheck.order(:deta_kbn1, :dantai_kbn, :jichitai_cd, :bunrui_cd, :userkey)
         end
 
+        # 新規施設分のデータ抽出
         def table_select_newshisetu(syori:)
             
             cloudrenchecks = case syori
-                # Q_クラウド連携_新規施設01_楽楽1
-                # Q_クラウド連携_新規施設02_楽楽1
+                
+                # Q_クラウド連携_新規施設01_楽楽1 （Accessの元ネタ）
+                # Q_クラウド連携_新規施設02_楽楽1 （Accessの元ネタ）
                 when "key_tanitsu"                                  # ユーザーキーがユニーク
                     
                     ssql  = "cloud_ren_shisetus.userkey,"
@@ -204,8 +201,8 @@ class CloudRenCheck < ApplicationRecord
                             .where("cloud_ren_checks.deta_kbn1 = \'既存\'")
                             .order("cloud_ren_shisetus.userkey, cloud_ren_shisetus.f_scode")
 
-                # Q_クラウド連携_新規施設01_楽楽2
-                # Q_クラウド連携_新規施設02_楽楽2
+                # Q_クラウド連携_新規施設01_楽楽2 （Accessの元ネタ）
+                # Q_クラウド連携_新規施設02_楽楽2 （Accessの元ネタ）
                 when "key_jyufuku"                                  # ユーザーキーが複数存在
 
                     ssql  = "cloud_ren_shisetus.userkey,"

@@ -1,10 +1,7 @@
 class SeikyuYoteCal < ApplicationRecord
-
     class << self
 
-        # ---------------------------------------------------------
         # 請求予定額計算のメイン処理
-        # ---------------------------------------------------------
         def proc_main(seikyu_ym)
 
             table_delete
@@ -16,9 +13,7 @@ class SeikyuYoteCal < ApplicationRecord
         
         private
 
-        # ---------------------------------------------------------
         # 請求月テーブル、請求予定額テーブルを１月単位で、１２月分作成
-        # ---------------------------------------------------------
         def proc1(seikyu_ym)
             
             # 0 ～ 11の範囲
@@ -33,13 +28,11 @@ class SeikyuYoteCal < ApplicationRecord
             return true
         end
 
-        # ---------------------------------------------------------
         # 請求予定額テーブルの更新
-        # ---------------------------------------------------------
         def proc2(icnt, seikyu_ym)
 
             begin
-                # sql = ""
+                # Accessの元SQL
                 # sql += "Select "
                 # sql += "te0.id            As id, "
                 # sql += "te0.tanka         As tanka, "
@@ -52,9 +45,7 @@ class SeikyuYoteCal < ApplicationRecord
                 # sql += "Order by te0.id"
                 # ex_shiire = SisetuKanribuTeisyutu0.find_by_sql(sql)
 
-                # ---------------------------------------------------------
                 # 管理部提出データ0_統合 + 請求月計算 （金額合計を計算）
-                # ---------------------------------------------------------
                 ex_shiire = SisetuKanribuTeisyutu0.left_joins(:seikyu_tuki_cals)
                                 .includes(:seikyu_tuki_cals)
                                 .where(siharai_kikan_cd: get_jyoken_siharai(seikyu_ym))
@@ -69,8 +60,6 @@ class SeikyuYoteCal < ApplicationRecord
                 
                 return false if ( ex_shiire.size == 0 )
                     
-                # @@debug.pri_logger.error(ex_shiire.to_sql)
-
                 kingk_sum = 0
                 asngk_sum = 0
 
@@ -79,10 +68,8 @@ class SeikyuYoteCal < ApplicationRecord
                     asngk_sum += Common.check_integer("#{shiire.assen_tesuryo}")                                            # 斡旋手数料
                 end
                 
-                # ---------------------------------------------------------
                 # 請求予定額の更新
                 # メモ：Insert文で更新する時、text型は''で囲まないと更新されない、時間型、数値型は''で囲まないこと
-                # ---------------------------------------------------------
                 sql  = ""
                 sql += "Insert Into seikyu_yote_cals( "
                 sql += "id,"
@@ -106,36 +93,31 @@ class SeikyuYoteCal < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # ActiveRecordからSQL文を生成
-        # ---------------------------------------------------------
         # 不要であれば削除する
-        def get_sql(seikyu_ym)
+        # def get_sql(seikyu_ym)
+        #     sql = SisetuKanribuTeisyutu0.left_joins(:seikyu_tuki_cals)
+        #                                 .includes(:seikyu_tuki_cals)
+        #                                 .where("seikyu_tuki_cals.print_flg = '有'")
+        #                                 .where("seikyu_tuki_cals.seikyu_ym = '#{seikyu_ym.delete("-")}'")
+        #                                 .where("sisetu_kanribu_teisyutu0s.siharai_kikan_cd: #{get_jyoken_siharai(seikyu_ym)}")
+        #                                 .select("sisetu_kanribu_teisyutu0s.id As id")
+        #                                 .select("sisetu_kanribu_teisyutu0s.tanka As tanka")
+        #                                 .select("sisetu_kanribu_teisyutu0s.assen_tesuryo As assen_tesuryo")
+        #                                 .select("sisetu_kanribu_teisyutu0s.seikyu_m_su As seikyu_m_su_test")
+        #                                 .select("seikyu_tuki_cals.seikyu_m_su As seikyu_m_su")
+        #                                 .select("seikyu_tuki_cals.print_flg As print_flg")
+        #                                 .order("seikyu_tuki_cals.id")
+        #                                 .to_sql
+        #     return sql
+        # end
 
-            sql = SisetuKanribuTeisyutu0.left_joins(:seikyu_tuki_cals)
-                                        .includes(:seikyu_tuki_cals)
-                                        .where("seikyu_tuki_cals.print_flg = '有'")
-                                        .where("seikyu_tuki_cals.seikyu_ym = '#{seikyu_ym.delete("-")}'")
-                                        .where("sisetu_kanribu_teisyutu0s.siharai_kikan_cd: #{get_jyoken_siharai(seikyu_ym)}")
-                                        .select("sisetu_kanribu_teisyutu0s.id As id")
-                                        .select("sisetu_kanribu_teisyutu0s.tanka As tanka")
-                                        .select("sisetu_kanribu_teisyutu0s.assen_tesuryo As assen_tesuryo")
-                                        .select("sisetu_kanribu_teisyutu0s.seikyu_m_su As seikyu_m_su_test")
-                                        .select("seikyu_tuki_cals.seikyu_m_su As seikyu_m_su")
-                                        .select("seikyu_tuki_cals.print_flg As print_flg")
-                                        .order("seikyu_tuki_cals.id")
-                                        .to_sql
-            return sql
-        end
-
-        # ---------------------------------------------------------
         # 請求予定額テーブルを全件削除
-        # ---------------------------------------------------------
         def table_delete
             connection.execute "TRUNCATE TABLE seikyu_yote_cals;"
         end
 
-        # 
+        # 月から支払期間コードを取得
         def get_jyoken_siharai(seikyu_ym)
 
             res = case seikyu_ym.split("-")[1]

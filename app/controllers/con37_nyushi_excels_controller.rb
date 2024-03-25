@@ -15,9 +15,7 @@ class Con37NyushiExcelsController < ApplicationController
         @tbl3_cnt = SisetuKanribuTeisyutu3.table_count(1)
     end
 
-    # ---------------------------------------------------------
     # 楽楽からCSVファイル1 《インポート》
-    # ---------------------------------------------------------
     def import1
         
         ret, msg = nil, nil
@@ -44,10 +42,7 @@ class Con37NyushiExcelsController < ApplicationController
         redirect_to con37_nyushi_excels_url
     end
 
-
-    # ---------------------------------------------------------
     # 楽楽からCSVファイル2 《インポート》
-    # ---------------------------------------------------------
     def import2
 
         ret, msg = nil, nil
@@ -74,9 +69,7 @@ class Con37NyushiExcelsController < ApplicationController
         redirect_to con37_nyushi_excels_url
     end
 
-    # ---------------------------------------------------------
     # 楽楽からCSVファイル3 《インポート》
-    # ---------------------------------------------------------
     def import3
 
         ret, msg = nil, nil
@@ -103,12 +96,13 @@ class Con37NyushiExcelsController < ApplicationController
         redirect_to con37_nyushi_excels_url
     end
 
-    # ---------------------------------------------------------
     # 《実行》
-    # ---------------------------------------------------------
     def syori0
         
         @msg = []
+        time_measure = {str: 0, end: 0}
+
+        time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)                # 時間計測の開始
 
         # インポートした2つのCSVファイルを結合して、テーブル0に更新
         unless SisetuKanribuTeisyutu0.table_insert_main
@@ -128,6 +122,13 @@ class Con37NyushiExcelsController < ApplicationController
                 else
                     @msg << "「入金一覧テーブル」の更新が完了しました。　処理件数は #{ExcelNyukinList.table_count(1)} 件です。"
                 
+                    time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)    # 時間計測の終了
+                    
+                    measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+                    measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+
+                    @msg[-1] = @msg[-1] + "　（処理時間 #{measure_msg}）"
+
                     # 入金仕入Excel_入金一覧の総合計の１行を更新
                     unless ExcelNyukinList.proc_syori3
                         alert = "入金仕入Excel_入金一覧の総合計の更新処理で、エラーが発生しました。"
@@ -135,7 +136,7 @@ class Con37NyushiExcelsController < ApplicationController
                 end
             end
         end
-
+       
         # メッセージに改行を付ける
         notice = ""
         @msg.each_with_index do |val, idx|
@@ -149,9 +150,7 @@ class Con37NyushiExcelsController < ApplicationController
         redirect_to con37_nyushi_excels_url
     end
 
-    # ---------------------------------------------------------
     # 入金仕入Excel_入金一覧 《Excel出力》
-    # ---------------------------------------------------------
     def export_nyu
 
         # 入金仕入Excel_入金一覧の読み込み
@@ -173,9 +172,7 @@ class Con37NyushiExcelsController < ApplicationController
         end
     end
 
-    # ---------------------------------------------------------
     # 入金仕入Excel_仕入一覧 《CSV出力》
-    # ---------------------------------------------------------
     def export_shi
 
         # 入金仕入Excel_仕入一覧の読み込み

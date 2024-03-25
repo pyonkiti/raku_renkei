@@ -7,8 +7,12 @@ class AssenTesuuryosController < ApplicationController
     def create
 
         ret, msg, msg_ary = nil, "", []
+        time_measure = {str: 0, end: 0}
 
         catch(:goto_err) do
+
+            # 時間計測の開始
+            time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
             # 請求年月の入力チェック
             ret = params[:txt_seikyu_ym].present?
@@ -35,6 +39,14 @@ class AssenTesuuryosController < ApplicationController
             throw :goto_err if !ret
 
             msg_ary << "Excelファイルの作成が完了しました。"
+
+            # 時間計測の終了
+            time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+            measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+            measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+
+            msg_ary[-1] = msg_ary[-1] + "　（処理時間 #{measure_msg}）"
         end
         
         if ret
@@ -49,7 +61,6 @@ class AssenTesuuryosController < ApplicationController
         end
         
         redirect_to assen_tesuuryos_url(seikyu_ym: params[:txt_seikyu_ym])
-        
     end
     
     # Excelダウンロード
@@ -291,7 +302,7 @@ class AssenTesuuryosController < ApplicationController
         end
     end
 
-    # Rubyxlの出力テストです
+    # Rubyxlの出力テスト
     def test
 
         book  = RubyXL::Workbook.new
@@ -305,19 +316,16 @@ class AssenTesuuryosController < ApplicationController
         rs1.change_horizontal_alignment('center')
         rs1.change_border(:top, 'thin')
 
-        # instance_execメソッドを利用しない場合
         rs = sheet.add_cell(10, 0, '2024/03/01')
         rs.set_number_format('yyyy/mm/dd')
         rs.change_border(:bottom, 'hair')
         rs.change_horizontal_alignment('center')
         
-        # instance_execメソッドを利用した場合
-        sheet.add_cell(11, 0, '2024/04/01').instance_exec {
+         sheet.add_cell(11, 0, '2024/04/01').instance_exec {
             set_number_format('yyyy/mm/dd')
             change_border(:bottom, 'hair')
             change_horizontal_alignment('center')
         }
-        
         book.write('foo.xlsx')
     end
 end

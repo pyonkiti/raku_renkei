@@ -7,8 +7,11 @@ class Con36CloudRenkeisController < ApplicationController
     def create
         
         ret, msg = nil, ""
+        time_measure = {str: 0, end: 0}
 
         catch(:goto_err) do
+
+            time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)    # 時間計測の開始
 
             case params[:kbn_syori].to_s
                 when "1" then
@@ -45,43 +48,46 @@ class Con36CloudRenkeisController < ApplicationController
                     # データ区分を更新（ユーザーキーが複数存在する場合、任意に１データを決定する）
                     rakurenseikyus = RakuRenSeikyu.table_select_group
                     ret, msg = CloudRenCheck.table_select_save(rakurenseikyus)
-
-                    if ret 
-                        msg = "Sofinet Cloudからローカルテーブルに、一括でデータを取得しました。"
-                        msg << "既存の請求システムには、データは反映していません。"
-                        msg << "<pre>"
-                        msg << "　全ユーザー　：　#{CloudRenUser.table_count.to_s(:delimited).rjust(7)} 件<br>"
-                        msg << "　全施設　　　：　#{CloudRenShisetu.table_count.to_s(:delimited).rjust(7)} 件"
-                        msg << "</pre>"
-                    end
+                    throw :goto_err if !ret
                     
                 when "2" then
                     
-                    catch(:goto_err) do
-                        # テーブルを全件削除
-                        CloudRenWork3.table_delete
-                        
-                        # Excel出力用ワークファイルへのデータ抽出（ユーザーキー：単位）
-                        cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_tanitsu")
-                        ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_tanitsu")
-                        throw :goto_err if !ret
-                        
-                        # Excel出力用ワークファイルへのデータ抽出（ユーザーキー：重複）
-                        cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_jyufuku")
-                        ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_jyufuku")
-                        
-                        if ret
-                            msg = "新規施設のExcel出力を行いました。"
-                            msg << "既存の請求システムには、データは反映していません。"
-                            msg << "<pre>"
-                            msg << "　単一キー　：　#{CloudRenWork3.table_count(syori: "key_tanitsu").to_s(:delimited).rjust(7)} 件<br>"
-                            msg << "　重複キー　：　#{CloudRenWork3.table_count(syori: "key_jyufuku").to_s(:delimited).rjust(7)} 件"
-                            msg << "</pre>"
-                        end
-                    end
+                    # テーブルを全件削除
+                    CloudRenWork3.table_delete
+                    
+                    # Excel出力用ワークファイルへのデータ抽出（ユーザーキー：単位）
+                    cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_tanitsu")
+                    ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_tanitsu")
+                    throw :goto_err if !ret
+                    
+                    # Excel出力用ワークファイルへのデータ抽出（ユーザーキー：重複）
+                    cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_jyufuku")
+                    ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_jyufuku")
+                    throw :goto_err if !ret
                 else
                     msg = "処理区分が正しく選択されていないため、処理を中断しました。"
                     ret = false
+                    throw :goto_err if !ret
+            end
+            
+            time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)    # 時間計測の終了
+            
+            measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+            measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+            
+            case params[:kbn_syori].to_s
+                when "1"
+                    msg = "Sofinet Cloudからローカルテーブルに、一括でデータを取得しました。" + "　（処理時間 #{measure_msg}）"
+                    msg << "<pre>"
+                    msg << "　ユーザー数　：　#{CloudRenUser.table_count.to_s(:delimited).rjust(7)} 件<br>"
+                    msg << "　施設数　　　：　#{CloudRenShisetu.table_count.to_s(:delimited).rjust(7)} 件"
+                    msg << "</pre>"
+                when "2"
+                    msg = "新規施設のExcel出力を行いました。" + "　（処理時間 #{measure_msg}）"
+                    msg << "<pre>"
+                    msg << "　単一キー　：　#{CloudRenWork3.table_count(syori: "key_tanitsu").to_s(:delimited).rjust(7)} 件<br>"
+                    msg << "　重複キー　：　#{CloudRenWork3.table_count(syori: "key_jyufuku").to_s(:delimited).rjust(7)} 件"
+                    msg << "</pre>"
             end
         end
 
@@ -90,6 +96,7 @@ class Con36CloudRenkeisController < ApplicationController
         else
             flash[:alert] = msg
         end
+
         redirect_to con36_cloud_renkeis_url(kbn_syori: params[:kbn_syori])
     end
 

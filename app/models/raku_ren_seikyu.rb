@@ -32,11 +32,9 @@ class RakuRenSeikyu < ApplicationRecord
                 end
                 
                 if table_count(0) == "0"
-                    @@debug.pri_logger.error("aa")
                     return false, "Access連携出力（請求）の取り込み元ファイルに誤りがあります。"
                 end
 
-                @@debug.pri_logger.error("bb")
                 return true, "Access連携出力（請求）の取り込みが完了しました。　処理件数は #{table_count(1)} 件です。"
             rescue => ex
                 err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
@@ -59,7 +57,7 @@ class RakuRenSeikyu < ApplicationRecord
 
             case dantai_kbn
                 when 1
-                    # Accessのサンプル
+                    # Accessの元SQL
                     # SQL = "Select T_請求テーブル_楽楽.団体区分     As 請求_団体区分, "
                     # SQL = SQL & " T_請求テーブル_楽楽.自治体コード As 請求_自治体コード, "
                     # SQL = SQL & " T_請求テーブル_楽楽.ユーザーキー As 請求_ユーザーキー, "
@@ -84,7 +82,7 @@ class RakuRenSeikyu < ApplicationRecord
                     sql_select << "cloud_ren_users.userkey as userkey_c"    # W_クラウド連携_ユーザー.ユーザーキー
                     
                 when 2
-                    # Accessのサンプル
+                    # Accessの元SQL
                     # SQL = "Select T_請求テーブル_楽楽.団体区分     As 請求_団体区分, "
                     # SQL = SQL & " T_請求テーブル_楽楽.企業コード   As 請求_自治体コード, "
                     # SQL = SQL & " T_請求テーブル_楽楽.ユーザーキー As 請求_ユーザーキー, "
@@ -112,13 +110,11 @@ class RakuRenSeikyu < ApplicationRecord
                                         .select(sql_select.join(","))
                                         .where("raku_ren_seikyus.dantai_kbn = #{dantai_kbn}")
                                         .order("raku_ren_seikyus.jido_renban")
-            
             return rakurenseikyus
         end
         
         # ユーザーキーでグループ化して抽出
         def table_select_group
-            
             rakurenseikyus = RakuRenSeikyu.group("userkey").count
             return rakurenseikyus
         end

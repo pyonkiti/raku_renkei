@@ -25,13 +25,13 @@ class ExcelShiireList < ApplicationRecord
 
                 err_seikyu_key_link = ""                                # 初期化：請求キーリンク
                 assen_sum           = 0                                 # 初期化：斡旋手数料
-                cnt                 = 0                                 # 件数：ループ
+                cnt                 = 0                                 # 件　数：ループ
 
                 @table0.each_cons(2) do |table0, table_nxt|
                     
                     err_seikyu_key_link  = table0.seikyu_key_link       # エラー：請求キーリンク
-                    assen_sum           += table0.assen_tesuryo         # 合計：斡旋手数料
-                    cnt                 += 1                            # 件数：ループ
+                    assen_sum           += table0.assen_tesuryo         # 合　計：斡旋手数料
+                    cnt                 += 1                            # 件　数：ループ
 
                     if ( table0.seikyu_key_link == table_nxt.seikyu_key_link )
                     else

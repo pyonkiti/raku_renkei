@@ -4,9 +4,7 @@ class SeikyuTukiCal < ApplicationRecord
 
     class << self
         
-        # ---------------------------------------------------------
         # 請求月計算のメイン処理
-        # ---------------------------------------------------------
         def proc_main(icnt, seikyu_ym)
 
             table_delete if (icnt == 0)
@@ -16,9 +14,7 @@ class SeikyuTukiCal < ApplicationRecord
             return true
         end
 
-        # ---------------------------------------------------------
         # 請求月計算のCSVに出力
-        # ---------------------------------------------------------
         def proc_csv(ex_seikyu)
 
             CSV.generate( headers: true, force_quotes: true) do |csv|
@@ -37,9 +33,7 @@ class SeikyuTukiCal < ApplicationRecord
 
         private
 
-        # ---------------------------------------------------------
         # 管理部提出データ0_統合 ⇒ 請求月計算への更新
-        # ---------------------------------------------------------
         def proc1(seikyu_ym)
 
             begin
@@ -87,9 +81,7 @@ class SeikyuTukiCal < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # 請求月計算テーブルを全件削除
-        # ---------------------------------------------------------
         def table_delete
             connection.execute "TRUNCATE TABLE seikyu_tuki_cals;"
         end
@@ -134,9 +126,7 @@ class SeikyuTukiCal < ApplicationRecord
                     strYM = 0 if strYM <= bb
                     endYM = 0 if endYM >  aa
 
-                    # ---------------------------------------------------------
                     # 前月請求日 ＜ 有償開始年月,有償終了年月 ≦ 請求日
-                    # ---------------------------------------------------------
                     if strYM != 0
                         if endYM != 0
                             tuki = Common.datediff(strYM, endYM) + 1
@@ -146,9 +136,7 @@ class SeikyuTukiCal < ApplicationRecord
                         end
                     end
 
-                    # ---------------------------------------------------------
                     # 前月請求日 ＜ 有償開始年月 ≦ 請求
-                    # ---------------------------------------------------------
                     if strYM != 0
                         if bb < strYM and strYM <= aa
                             tuki = Common.datediff(strYM, aa) + 1
@@ -156,9 +144,7 @@ class SeikyuTukiCal < ApplicationRecord
                         end
                     end
 
-                    # ---------------------------------------------------------
                     # 前月請求日 ＜ 有償終了年月 ≦ 請求日
-                    # ---------------------------------------------------------
                     if endYM != 0
                         if bb < endYM and endYM <= aa
                             tuki = Common.datediff(bb, endYM)
@@ -169,10 +155,8 @@ class SeikyuTukiCal < ApplicationRecord
             end
         end
 
-        # ---------------------------------------------------------
         # 印刷フラグの算出
         # ary[0] : 支払区分コード ary[1]: 有償開始年月  ary[2]: 有償終了年月
-        # ---------------------------------------------------------
         def get_outjyoken(ary, seikyu_ym)
 
             case ary[0]
@@ -191,19 +175,15 @@ class SeikyuTukiCal < ApplicationRecord
                             iTuki = 12
                     end
 
-                    # ---------------------------------------------------------
                     #【パターン２、６の場合】
                     # 開始年月がどうであれ、終了年月（終了年月が空白でない場合のみ）≧ 画面年月－6(12)ヶ月の場合は請求しない
-                    # ---------------------------------------------------------
                     if ary[2].delete("/").to_i != 0
                         iDifYmd = Common.datediff(ary[2].delete("/").to_i, seikyu_ym.delete("-").to_i)
                         return "無" if iDifYmd >= iTuki
                     end
 
-                    # ---------------------------------------------------------
                     #【パターン１３～１６の場合】
                     # 終了年月がどうであれ、開始年月 > 画面年月の場合は請求しない
-                    # ---------------------------------------------------------
                     if Common.get_strendym(0, ary[1]) > seikyu_ym.delete("-").to_i
                         return "無"
                     end

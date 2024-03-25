@@ -27,17 +27,17 @@ class ExcelNyukinList < ApplicationRecord
                 
                 err_seikyu_key_link = ""                                        # 初期化：請求キーリンク
                 tanka_sum           = 0                                         # 初期化：単価
-                cnt                 = 0                                         # 件数：ループ
+                cnt                 = 0                                         # 件　数：ループ
 
                 @table0.each_cons(2) do |table0, table_nxt|
                     
                     err_seikyu_key_link  = table0.seikyu_key_link                                                           # エラー：請求キーリンク
-                    tanka_sum           += Common.check_integer(table0.tanka) * Common.check_integer(table0.seikyu_m_su)    # 合計：単価×請求月数
-                    cnt                 += 1                                                                                # 件数：ループ
+                    tanka_sum           += Common.check_integer(table0.tanka) * Common.check_integer(table0.seikyu_m_su)    # 合　計：単価×請求月数
+                    cnt                 += 1                                                                                # 件　数：ループ
 
                     if ( table0.seikyu_key_link == table_nxt.seikyu_key_link )
                     else
-                        unless proc_syori2(table0, tanka_sum)                   # 更新：入金仕入Excel_入金一覧
+                        unless proc_syori2(table0, tanka_sum)                   # 更　新：入金仕入Excel_入金一覧
                             return false
                         end
                         tanka_sum = 0                                           # 初期化：単価
@@ -123,7 +123,7 @@ class ExcelNyukinList < ApplicationRecord
                 end
 
                 @ex_nyukin.each_with_index do |ex_nyukin, idx|
-                    unless proc_syori4(ex_nyukin)                       # 更新：入金仕入Excel_入金一覧
+                    unless proc_syori4(ex_nyukin)                           # 更新：入金仕入Excel_入金一覧
                         return false
                     end
                 end

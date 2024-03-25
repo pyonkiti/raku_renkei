@@ -10,6 +10,7 @@ document.addEventListener('turbolinks:load', function() {
     
     // 実行
     document.getElementById('btn_jikko').addEventListener('click', function(){
+
         // マウスカーソルを砂時計
         document.body.parentElement.style.cursor = "wait";
     })
