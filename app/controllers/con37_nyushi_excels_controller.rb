@@ -19,6 +19,7 @@ class Con37NyushiExcelsController < ApplicationController
     def import1
         
         ret, msg = nil, nil
+        time_measure = {str: 0, end: 0}
 
         catch(:goto_err) do
 
@@ -27,15 +28,24 @@ class Con37NyushiExcelsController < ApplicationController
             ret = ret.zero? ? true : false
             throw :goto_err if !ret
 
+            # 時間計測の開始
+            time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
             # 一括削除
             SisetuKanribuTeisyutu1.table_delete
 
             # CSVファイルの取り込み
             ret, msg = SisetuKanribuTeisyutu1.table_import(params[:file])
+
+            # 時間計測の終了
+            time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         end
         
+        measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+        measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+
         if ret
-            flash[:notice] = msg
+            flash[:notice] = msg + "　（処理時間 #{measure_msg}）"
         else
             flash[:alert] = msg
         end
@@ -46,6 +56,7 @@ class Con37NyushiExcelsController < ApplicationController
     def import2
 
         ret, msg = nil, nil
+        time_measure = {str: 0, end: 0}
 
         catch(:goto_err) do
             
@@ -54,15 +65,24 @@ class Con37NyushiExcelsController < ApplicationController
             ret = ret.zero? ? true : false
             throw :goto_err if !ret
 
+            # 時間計測の開始
+            time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
             # 一括削除
             SisetuKanribuTeisyutu2.table_delete
             
             # CSVファイルの取り込み
             ret, msg = SisetuKanribuTeisyutu2.table_import(params[:file])
+
+            # 時間計測の終了
+            time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         end
 
+        measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+        measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+
         if ret
-            flash[:notice] = msg
+            flash[:notice] = msg + "　（処理時間 #{measure_msg}）"
         else
             flash[:alert] = msg
         end
@@ -73,6 +93,7 @@ class Con37NyushiExcelsController < ApplicationController
     def import3
 
         ret, msg = nil, nil
+        time_measure = {str: 0, end: 0}
 
         catch(:goto_err) do
 
@@ -81,15 +102,24 @@ class Con37NyushiExcelsController < ApplicationController
             ret = ret.zero? ? true : false
             throw :goto_err if !ret
 
+            # 時間計測の開始
+            time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
             # 一括削除
             SisetuKanribuTeisyutu3.table_delete
 
             # CSVファイルの取り込み
             ret, msg = SisetuKanribuTeisyutu3.table_import(params[:file])
+
+            # 時間計測の終了
+            time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
         end
 
+        measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+        measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+
         if ret
-            flash[:notice] = msg
+            flash[:notice] = msg + "　（処理時間 #{measure_msg}）"
         else
             flash[:alert] = msg
         end

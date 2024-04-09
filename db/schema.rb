@@ -159,6 +159,7 @@ ActiveRecord::Schema.define(version: 2024_01_10_043639) do
   end
 
   create_table "sisetu_kanribu_teisyutu0s", force: :cascade do |t|
+    t.datetime "update_raku", null: false
     t.string "seikyu_key_link", default: "", null: false
     t.string "bango", default: "", null: false
     t.integer "sisetu_cd", null: false
@@ -192,10 +193,12 @@ ActiveRecord::Schema.define(version: 2024_01_10_043639) do
     t.string "shikutyouson", default: "", null: false
     t.string "kigyou", default: "", null: false
     t.string "seikyu_saki2", default: "", null: false
+    t.string "bunrui", default: "", null: false
     t.datetime "created_at"
   end
 
   create_table "sisetu_kanribu_teisyutu1s", force: :cascade do |t|
+    t.datetime "update_raku", null: false
     t.string "seikyu_key_link", default: "", null: false
     t.string "bango", default: "", null: false
     t.integer "sisetu_cd", null: false
@@ -219,6 +222,7 @@ ActiveRecord::Schema.define(version: 2024_01_10_043639) do
   end
 
   create_table "sisetu_kanribu_teisyutu2s", force: :cascade do |t|
+    t.datetime "update_raku", null: false
     t.string "shiire_nm", default: "", null: false
     t.string "uri_m", default: "", null: false
     t.string "siharai_kikan_cd", default: "", null: false
@@ -233,10 +237,12 @@ ActiveRecord::Schema.define(version: 2024_01_10_043639) do
   end
 
   create_table "sisetu_kanribu_teisyutu3s", force: :cascade do |t|
+    t.datetime "update_raku", null: false
     t.string "todoufuken", default: "", null: false
     t.string "shikutyouson", default: "", null: false
     t.string "kigyou", default: "", null: false
     t.string "seikyu_saki2", default: "", null: false
+    t.string "bunrui", default: "", null: false
     t.datetime "created_at"
   end
 

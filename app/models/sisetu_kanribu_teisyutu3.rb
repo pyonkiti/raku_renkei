@@ -20,14 +20,16 @@ class SisetuKanribuTeisyutu3 < ApplicationRecord
 
                 CSV.foreach(file.path, headers: true) do |row|
 
-                    break if row.size != 5
+                    break if row.size != 7
 
                     hash = {}
-                    hash["id"], err_id      = row[0], row[0]
-                    hash["todoufuken"]      = row[1]
-                    hash["shikutyouson"]    = row[2]
-                    hash["kigyou"]          = row[3]
-                    hash["seikyu_saki2"]    = row[4]
+                    hash["id"], err_id      = row[1], row[1]
+                    hash["update_raku"]     = Time.zone.parse(row[0])
+                    hash["todoufuken"]      = row[2]
+                    hash["shikutyouson"]    = row[3]
+                    hash["kigyou"]          = row[4]
+                    hash["seikyu_saki2"]    = row[5]
+                    hash["bunrui"]          = row[6]
 
                     sisetu_kanribu_teisyutu3 = new
                     sisetu_kanribu_teisyutu3.attributes = hash

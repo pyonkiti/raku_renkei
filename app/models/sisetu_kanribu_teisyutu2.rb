@@ -25,20 +25,21 @@ class SisetuKanribuTeisyutu2 < ApplicationRecord
                 err_id = ""
                 CSV.foreach(file.path, headers: true) do |row|
 
-                    break if row.size != 11
+                    break if row.size != 12
 
                     hash = {}
-                    hash["id"], err_id           = row[0], row[0]
-                    hash["shiire_nm"]            = row[1]
-                    hash["uri_m"]                = row[2]
-                    hash["siharai_kikan_cd"]     = row[3]
-                    hash["seikyu_basho"]         = row[4]
-                    hash["hakko_flg_seikyu_syo"] = row[5]
-                    hash["print_flg"]            = row[6]
-                    hash["hasu_kbn_seikyu_gaku"] = row[7]
-                    hash["hasu_kbn_syouhizei"]   = row[8]
-                    hash["id_user"]              = row[9]
-                    hash["nyukin_out_flg"]       = row[10]
+                    hash["id"], err_id           = row[1], row[1]
+                    hash["update_raku"]          = Time.zone.parse(row[0])
+                    hash["shiire_nm"]            = row[2]
+                    hash["uri_m"]                = row[3]
+                    hash["siharai_kikan_cd"]     = row[4]
+                    hash["seikyu_basho"]         = row[5]
+                    hash["hakko_flg_seikyu_syo"] = row[6]
+                    hash["print_flg"]            = row[7]
+                    hash["hasu_kbn_seikyu_gaku"] = row[8]
+                    hash["hasu_kbn_syouhizei"]   = row[9]
+                    hash["id_user"]              = row[10]
+                    hash["nyukin_out_flg"]       = row[11]
 
                     sisetu_kanribu_teisyutu2 = new
                     sisetu_kanribu_teisyutu2.attributes = hash

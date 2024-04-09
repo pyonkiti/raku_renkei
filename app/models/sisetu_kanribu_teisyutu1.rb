@@ -10,29 +10,30 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
                 err_id = ""
                 CSV.foreach(file.path, headers: true) do |row|
                     
-                    break if row.size != 20
+                    break if row.size != 21
 
                     hash = {}
-                    hash["id"], err_id          = row[0], row[0]
-                    hash["seikyu_key_link"]     = row[1]
-                    hash["bango"]               = row[2]
-                    hash["sisetu_cd"]           = Common.check_integer(row[3])
-                    hash["sisetu_nm"]           = row[4]
-                    hash["yuusyou_kaishi_ym"]   = row[5]
-                    hash["yuusyou_syuryo_ym"]   = row[6]
-                    hash["tanka"]               = Common.check_integer(row[7])
-                    hash["assen_tesuryo"]       = Common.check_integer(row[8])
-                    hash["seikyu_m_su"]         = Common.check_integer(row[9])
-                    hash["seikyu_syo_naiyo_ue"] = row[10]
-                    hash["tokuisaki_cd"]        = row[11]
-                    hash["seikyu_saki1"]        = row[12]
-                    hash["siharai_yotei_kbn"]   = row[13]
-                    hash["siharai_ymd_yokust"]  = row[14]
-                    hash["siharai_ymd_yokued"]  = row[15]
-                    hash["ki"]                  = row[16]
-                    hash["seikyu_m"]            = row[17]
-                    hash["tantou_cd"]           = row[18]
-                    hash["shiire_cd"]           = row[19]
+                    hash["id"], err_id          = row[1], row[1]
+                    hash["update_raku"]         = Time.zone.parse(row[0])
+                    hash["seikyu_key_link"]     = row[2]
+                    hash["bango"]               = row[3]
+                    hash["sisetu_cd"]           = Common.check_integer(row[4])
+                    hash["sisetu_nm"]           = row[5]
+                    hash["yuusyou_kaishi_ym"]   = row[6]
+                    hash["yuusyou_syuryo_ym"]   = row[7]
+                    hash["tanka"]               = Common.check_integer(row[8])
+                    hash["assen_tesuryo"]       = Common.check_integer(row[9])
+                    hash["seikyu_m_su"]         = Common.check_integer(row[10])
+                    hash["seikyu_syo_naiyo_ue"] = row[11]
+                    hash["tokuisaki_cd"]        = row[12]
+                    hash["seikyu_saki1"]        = row[13]
+                    hash["siharai_yotei_kbn"]   = row[14]
+                    hash["siharai_ymd_yokust"]  = row[15]
+                    hash["siharai_ymd_yokued"]  = row[16]
+                    hash["ki"]                  = row[17]
+                    hash["seikyu_m"]            = row[18]
+                    hash["tantou_cd"]           = row[19]
+                    hash["shiire_cd"]           = row[20]
                     
                     sisetu_kanribu_teisyutu1 = new
                     sisetu_kanribu_teisyutu1.attributes = hash
@@ -71,6 +72,7 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
         # sisetu_kanribu_teisyutu1sの全カラム
         def table_colum1
             ["id",
+             "update_raku",
              "seikyu_key_link",
              "bango",
              "sisetu_cd", 

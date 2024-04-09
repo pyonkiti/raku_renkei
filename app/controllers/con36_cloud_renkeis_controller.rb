@@ -3,6 +3,82 @@ class Con36CloudRenkeisController < ApplicationController
     def index
     end
 
+    # 処理１（請求）
+    def import_seikyu
+
+        ret, msg = nil, nil
+        time_measure = {str: 0, end: 0}
+
+        catch(:goto_err) do
+
+            # ファイルの取り込みチェック
+            ret, msg = Common.check_file(params[:file])
+            ret = ret.zero? ? true : false
+            throw :goto_err if !ret
+
+            # 時間計測の開始
+            time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+            # テーブルの一括削除
+            RakuRenSeikyu.table_delete
+
+            # CSVのインポート
+            ret, msg = RakuRenSeikyu.table_import(params[:file])
+            throw :goto_err if !ret
+
+            # 時間計測の終了
+            time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        end
+        
+        measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+        measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+
+        if ret
+            flash[:notice] = msg + "　（処理時間 #{measure_msg}）"
+        else
+            flash[:alert] = msg
+        end
+        redirect_to con36_cloud_renkeis_url
+    end
+
+    # 処理２（施設）
+    def import_shisetu
+
+        ret, msg = nil, nil
+        time_measure = {str: 0, end: 0}
+
+        catch(:goto_err) do
+
+            # ファイルの取り込みチェック
+            ret, msg = Common.check_file(params[:file])
+            ret = ret.zero? ? true : false
+            throw :goto_err if !ret
+
+            # 時間計測の開始
+            time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+            # テーブルの一括削除
+            RakuRenShisetu.table_delete
+
+            # CSVのインポート
+            ret, msg = RakuRenShisetu.table_import(params[:file])
+            throw :goto_err if !ret
+
+            # 時間計測の終了
+            time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        end
+
+        measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
+        measure_msg = Time.at(time_measure[:end] - time_measure[:str]).utc.strftime(measure_frm)
+
+        if ret
+            flash[:notice] = msg + "　（処理時間 #{measure_msg}）"
+        else
+            flash[:alert] = msg
+        end
+        redirect_to con36_cloud_renkeis_url
+    end
+
     # 実行
     def create
         
@@ -99,46 +175,7 @@ class Con36CloudRenkeisController < ApplicationController
 
         redirect_to con36_cloud_renkeis_url(kbn_syori: params[:kbn_syori])
     end
-
-    # 処理１（請求）
-    def import_seikyu
-
-        # ファイルの取り込みチェック
-        ret, msg = Common.check_file(params[:file])
-        flash[:alert] = msg if !ret.zero?
-
-        if ret.zero?
-            # テーブルの一括削除
-            RakuRenSeikyu.table_delete
-
-            # CSVのインポート
-            ret, msg = RakuRenSeikyu.table_import(params[:file])
-
-            flash[:notice] = msg if ret
-            flash[:alert]  = msg if !ret
-        end
-        redirect_to con36_cloud_renkeis_url
-    end
-
-    # 処理２（施設）
-    def import_shisetu
-
-        # ファイルの取り込みチェック
-        ret, msg = Common.check_file(params[:file])
-        flash[:alert] = msg if !ret.zero?
-
-        if ret.zero?
-            # テーブルの一括削除
-            RakuRenShisetu.table_delete
-
-            # CSVのインポート
-            ret, msg = RakuRenShisetu.table_import(params[:file])
-            flash[:notice] = msg if ret
-            flash[:alert]  = msg if !ret
-        end
-        redirect_to con36_cloud_renkeis_url
-    end
-
+    
     # Excelユーザー（Excel出力）
     def export_user
 

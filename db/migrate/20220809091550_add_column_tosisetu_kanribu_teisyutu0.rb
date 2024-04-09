@@ -3,6 +3,7 @@ class AddColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
     def change
 
         # カラムを追加（テーブル１より連携）
+        add_column :sisetu_kanribu_teisyutu0s, :update_raku,         :datetime  # 更新日
         add_column :sisetu_kanribu_teisyutu0s, :seikyu_key_link,     :string    # 請求キーリンク
         add_column :sisetu_kanribu_teisyutu0s, :bango,               :string    # 番号
         add_column :sisetu_kanribu_teisyutu0s, :sisetu_cd,           :integer   # 施設コード
@@ -40,6 +41,7 @@ class AddColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
         add_column :sisetu_kanribu_teisyutu0s, :shikutyouson,        :string   # 市区町村名
         add_column :sisetu_kanribu_teisyutu0s, :kigyou,              :string   # 企業名
         add_column :sisetu_kanribu_teisyutu0s, :seikyu_saki2,        :string   # 請求先２
+        add_column :sisetu_kanribu_teisyutu0s, :bunrui,              :string   # 分類名
         add_column :sisetu_kanribu_teisyutu0s, :created_at,          :datetime # 作成日
     end
 end

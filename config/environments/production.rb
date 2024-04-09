@@ -92,7 +92,9 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
     config.logger    = Logger.new("log/production.log", 5, 10 * 1024 * 1024)
   end
-
+  
+  config.pri_logger = Logger.new(Rails.root.join('log/debug.log'), 3, 50 * 1024 * 1024)   # デバック用のログ
+  
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 end

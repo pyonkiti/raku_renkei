@@ -1,5 +1,6 @@
 class AddColumnTosisetuKanribuTeisyutu1 < ActiveRecord::Migration[5.2]
     def change
+        add_column :sisetu_kanribu_teisyutu1s, :update_raku,         :datetime # 更新日
         add_column :sisetu_kanribu_teisyutu1s, :seikyu_key_link,     :string   # 請求キーリンク
         add_column :sisetu_kanribu_teisyutu1s, :bango,               :string   # 番号
         add_column :sisetu_kanribu_teisyutu1s, :sisetu_cd,           :integer  # 施設コード

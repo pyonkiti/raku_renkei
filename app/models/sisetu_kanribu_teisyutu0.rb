@@ -9,7 +9,7 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
         def table_count(flg)
             count = SisetuKanribuTeisyutu0
             case flg
-                when 0 then count.to_s
+                when 0 then count.count.to_s
                 when 1 then count.count.to_s(:delimited)
             end
         end
@@ -137,7 +137,8 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
                     sql += "shikutyouson        = #{Common.change_kara(table3.shikutyouson)}, "
                     sql += "kigyou              = #{Common.change_kara(table3.kigyou)}, "
                     sql += "seikyu_saki2        = #{Common.change_kara(table3.seikyu_saki2)}, "
-                    sql += "created_at          = #{Common.change_kara(Time.current.ago(9.hours))} " 
+                    sql += "bunrui              = #{Common.change_kara(table3.bunrui)}, "
+                    sql += "created_at          = #{Common.change_kara(Time.current.ago(9.hours))} "
                     sql += " WHERE id = " + (table3.id).to_s
 
                     res = ActiveRecord::Base.connection.execute(sql)

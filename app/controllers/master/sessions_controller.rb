@@ -20,6 +20,7 @@ class Master::SessionsController < ApplicationController
     end
 
     def destroy
+
         reset_session
         flash[:notice] = "ログアウトしました。"
         redirect_to master_login_url

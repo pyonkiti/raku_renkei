@@ -12,7 +12,7 @@ class ChangeColumnTosisetuKanribuTeisyutu1 < ActiveRecord::Migration[5.2]
 
     # Not Null制約を追加
     def set_null(flg)
-        # カラム
+        change_column_null :sisetu_kanribu_teisyutu1s, :update_raku,         flg
         change_column_null :sisetu_kanribu_teisyutu1s, :seikyu_key_link,     flg
         change_column_null :sisetu_kanribu_teisyutu1s, :bango,               flg
         change_column_null :sisetu_kanribu_teisyutu1s, :sisetu_cd,           flg
@@ -36,7 +36,7 @@ class ChangeColumnTosisetuKanribuTeisyutu1 < ActiveRecord::Migration[5.2]
 
     # デフォルト値を追加
     def set_default(flg)
-        # カラム
+        change_column_default :sisetu_kanribu_teisyutu1s, :update_raku,         flg
         change_column_default :sisetu_kanribu_teisyutu1s, :seikyu_key_link,     flg
         change_column_default :sisetu_kanribu_teisyutu1s, :bango,               flg
         change_column_default :sisetu_kanribu_teisyutu1s, :sisetu_cd,           flg

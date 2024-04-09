@@ -75,7 +75,8 @@ class ExcelNyukinList < ApplicationRecord
                 ret = get_bun(table0.siharai_kikan_cd, Time.current.strftime("%Y-%m"))                                          # 何月分かの名称を取得
 
                 hash = {}
-                hash["syodan_nm"]          = table0.seikyu_syo_naiyo_ue.to_s + " " + ret
+              # hash["syodan_nm"]          = table0.seikyu_syo_naiyo_ue.to_s + " " + ret
+                hash["syodan_nm"]          = (table0.bunrui.to_s.strip == "" ? "" : table0.bunrui.to_s + " ") + table0.seikyu_syo_naiyo_ue.to_s + " " + ret
                 hash["seikyu_no"]          = ""
                 hash["seikyu_ymd"]         = w_nyukin_ymd == "" ? "" : Date.parse(w_nyukin_ymd.slice(0, 7) + "/01").prev_day(1).to_s.delete("-")    # 入金年月日の翌月末
                 hash["torihikisaki_cd"]    = table0.tokuisaki_cd
@@ -118,13 +119,11 @@ class ExcelNyukinList < ApplicationRecord
                 sql += "SUM(zeikomi_seikyu_kin) AS zeikomi_seikyu_kin "
                 @ex_nyukin = ExcelNyukinList.all.select(sql)
 
-                if ( @ex_nyukin.size == 0 )
-                    return false
-                end
-
-                @ex_nyukin.each_with_index do |ex_nyukin, idx|
-                    unless proc_syori4(ex_nyukin)                           # 更新：入金仕入Excel_入金一覧
-                        return false
+                if ( @ex_nyukin.size > 0 )
+                    @ex_nyukin.each_with_index do |ex_nyukin, idx|
+                        unless proc_syori4(ex_nyukin)                           # 更新：入金仕入Excel_入金一覧
+                            return false
+                        end
                     end
                 end
                 return true

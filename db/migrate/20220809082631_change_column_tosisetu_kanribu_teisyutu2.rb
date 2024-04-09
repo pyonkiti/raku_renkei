@@ -14,6 +14,7 @@ class ChangeColumnTosisetuKanribuTeisyutu2 < ActiveRecord::Migration[5.2]
 
     # Not Null制約を追加
     def set_null(flg)
+        change_column_null :sisetu_kanribu_teisyutu2s, :update_raku,          flg
         change_column_null :sisetu_kanribu_teisyutu2s, :shiire_nm,            flg
         change_column_null :sisetu_kanribu_teisyutu2s, :uri_m,                flg
         change_column_null :sisetu_kanribu_teisyutu2s, :siharai_kikan_cd,     flg
@@ -28,6 +29,7 @@ class ChangeColumnTosisetuKanribuTeisyutu2 < ActiveRecord::Migration[5.2]
 
     # デフォルト値を追加
     def set_default(flg)
+        change_column_default :sisetu_kanribu_teisyutu2s, :update_raku,          flg
         change_column_default :sisetu_kanribu_teisyutu2s, :shiire_nm,            flg
         change_column_default :sisetu_kanribu_teisyutu2s, :uri_m,                flg
         change_column_default :sisetu_kanribu_teisyutu2s, :siharai_kikan_cd,     flg

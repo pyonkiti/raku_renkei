@@ -13,6 +13,7 @@ class ChangeColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
     # Not Null制約を追加
     def set_null(flg)
         # カラム（テーブル１より連携）
+        change_column_null :sisetu_kanribu_teisyutu0s, :update_raku,         flg
         change_column_null :sisetu_kanribu_teisyutu0s, :seikyu_key_link,     flg
         change_column_null :sisetu_kanribu_teisyutu0s, :bango,               flg
         change_column_null :sisetu_kanribu_teisyutu0s, :sisetu_cd,           flg
@@ -50,11 +51,13 @@ class ChangeColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
         change_column_null :sisetu_kanribu_teisyutu0s, :shikutyouson,         flg
         change_column_null :sisetu_kanribu_teisyutu0s, :kigyou,               flg
         change_column_null :sisetu_kanribu_teisyutu0s, :seikyu_saki2,         flg
+        change_column_null :sisetu_kanribu_teisyutu0s, :bunrui,               flg
     end
 
     # デフォルト値を追加
     def set_default(flg)
         # カラム（テーブル１より連携）
+        change_column_default :sisetu_kanribu_teisyutu0s, :update_raku,         flg
         change_column_default :sisetu_kanribu_teisyutu0s, :seikyu_key_link,     flg
         change_column_default :sisetu_kanribu_teisyutu0s, :bango,               flg
         change_column_default :sisetu_kanribu_teisyutu0s, :sisetu_cd,           flg
@@ -92,5 +95,6 @@ class ChangeColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
         change_column_default :sisetu_kanribu_teisyutu0s, :shikutyouson,         flg
         change_column_default :sisetu_kanribu_teisyutu0s, :kigyou,               flg
         change_column_default :sisetu_kanribu_teisyutu0s, :seikyu_saki2,         flg
+        change_column_default :sisetu_kanribu_teisyutu0s, :bunrui,               flg
     end
 end
