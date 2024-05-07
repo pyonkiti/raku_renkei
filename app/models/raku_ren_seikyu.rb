@@ -1,3 +1,4 @@
+# 楽楽との連携（請求）
 class RakuRenSeikyu < ApplicationRecord
     class << self
 

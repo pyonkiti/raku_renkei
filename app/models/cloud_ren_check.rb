@@ -1,3 +1,4 @@
+# クラウド連携（請求チェック）
 class CloudRenCheck < ApplicationRecord
     class << self
 

@@ -1,0 +1,59 @@
+/- if seikyutukireigai.errors.present?
+/    ul#error_explanation
+/        - seikyutukireigai.errors.full_messages.each do |msg|
+/            li = msg
+
+- tgl_title = {seikyu_key_link: "施設テーブルの請求キーリンクを登録します。先頭0埋め、9桁で登録します。",
+               sisetu_nm: "施設テーブルに登録されている施設名を登録します。",
+               seikyu_m_su: "例外となる請求月数を登録します。1～12の範囲で登録します。",
+               biko_user: "請求テーブルの市区町村名（または企業名）と分類とを登録します。",
+               biko_siyou: "例外登録を行う理由を登録します。"}
+
+= form_with model: seikyutukireigai, local: true do |f|
+
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :name, '請求キーリンク', class: 'form-label', id: 'lbl_seikyu_key_link',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:seikyu_key_link]
+                    
+            .col-md-2
+                = f.text_field :seikyu_key_link, class: 'form-control', id: 'txt_seikyu_key_link',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:seikyu_key_link]
+                    
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :name, '施設名', class: 'form-label', id: 'lbl_sisetu_nm',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:sisetu_nm]
+            .col-md-4
+                = f.text_field :sisetu_nm, class: 'form-control', id: 'txt_sietu_nm',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:sisetu_nm]
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :name, '請求月数', class: 'form-label', id: 'lbl_seikyu_m_su',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:seikyu_m_su]
+            .col-md-2
+                = f.text_field :seikyu_m_su, class: 'form-control', id: 'txt_seikyu_m_su',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:seikyu_m_su]
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :name, '備考（ユーザー名）', class: 'form-label', id: 'lbl_biko_user',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:biko_user]
+            .col-md-4
+                = f.text_field :biko_user, class: 'form-control', id: 'txt_biko_user',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:biko_user]
+    .form-group
+        .row.mt-4
+            .col-md-2
+                = f.label :name, '備考（仕様の説明）', class: 'form-label', id: 'lbl_biko_siyou',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:biko_siyou]
+            .col-md-8
+                = f.text_field :biko_siyou, class: 'form-control', id: 'txt_biko_siyou',
+                    'data-toggle' => 'tooltip', 'title' => tgl_title[:biko_siyou]
+    .mt-5
+
+    = f.button type: "submit", class: 'btn btn-primary'
+        i class = "far fa-edit"  登録

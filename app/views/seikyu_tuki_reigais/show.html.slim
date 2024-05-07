@@ -1,0 +1,32 @@
+h2 請求月の例外の詳細
+
+.nav.justify-content-end
+    = link_to '一覧', seikyu_tuki_reigais_path, class: 'nav-link'
+
+table.table.table-hover
+    tbody
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:id)
+            td = @seikyutukireigai.id
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:seikyu_key_link)
+            td = @seikyutukireigai.seikyu_key_link
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:sisetu_nm)
+            td = @seikyutukireigai.sisetu_nm
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:seikyu_m_su)
+            td = @seikyutukireigai.seikyu_m_su
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:biko_user)
+            td = @seikyutukireigai.biko_user
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:biko_siyou)
+            td = @seikyutukireigai.biko_siyou
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:created_at)
+            td = @seikyutukireigai.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:updated_at)
+            td = @seikyutukireigai.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+

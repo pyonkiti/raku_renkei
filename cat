@@ -1,0 +1,54 @@
+
+database: raku_renkei_development
+
+ Status   Migration ID    Migration Name
+--------------------------------------------------
+   up     20220809075253  Create sisetu kanribu teisyutu1s
+   up     20220809075456  Add column tosisetu kanribu teisyutu1
+   up     20220809075812  Change column tosisetu kanribu teisyutu1
+   up     20220809082542  Create sisetu kanribu teisyutu2s
+   up     20220809082619  Add column tosisetu kanribu teisyutu2
+   up     20220809082631  Change column tosisetu kanribu teisyutu2
+   up     20220809091202  Create sisetu kanribu teisyutu0s
+   up     20220809091550  Add column tosisetu kanribu teisyutu0
+   up     20220809091736  Change column tosisetu kanribu teisyutu0
+   up     20220901051741  Create excel shiire lists
+   up     20220901051837  Add column toexcel shiire list
+   up     20220901052428  Change column toexcel shiire list
+   up     20220901053413  Create excel nyukin lists
+   up     20220901053440  Add column toexcel nyukin list
+   up     20220901054041  Change column toexcel nyukin list
+   up     20221011054547  Create seikyu tuki cals
+   up     20221011054647  Add column toseikyu tuki cal
+   up     20221011055303  Change column toseikyu tuki cal
+   up     20221011061026  Create seikyu yote cals
+   up     20221011061049  Add column toseikyu yote cal
+   up     20221011061101  Change column toseikyu yote cal
+   up     20221226024628  Create users
+   up     20221226044651  Add column user
+   up     20221226045223  Change column user
+   up     20230626073434  Create cloud ren users
+   up     20230626074023  Add column cloud ren user
+   up     20230627002238  Change column cloud ren user
+   up     20230927041238  Create cloud ren shisetus
+   up     20230927041453  Add column cloud ren shisetu
+   up     20230927041512  Change column cloud ren shisetu
+   up     20231002072842  Create cloud ren checks
+   up     20231002072923  Add column cloud ren check
+   up     20231002073642  Change column cloud ren check
+   up     20231002080045  Create raku ren seikyus
+   up     20231002080232  Add column raku ren seikyu
+   up     20231002080304  Change column raku ren seikyu
+   up     20231002081736  Create raku ren shisetus
+   up     20231002081747  Add column raku ren shisetu
+   up     20231002081757  Change column raku ren shisetu
+   up     20231102081617  Create cloud ren work3s
+   up     20231102081713  Add column cloud ren work3
+   up     20231102081729  Change column ren work3
+   up     20240105050416  Create assen seikyus
+   up     20240105050728  Add column assen seikyu
+   up     20240105050759  Change column assen seikyu
+   up     20240110042916  Create sisetu kanribu teisyutu3s
+   up     20240110043109  Add column to sisetu kanribu teisyutu3
+   up     20240110043639  Change column to sisetu kanribu teisyutu3
+

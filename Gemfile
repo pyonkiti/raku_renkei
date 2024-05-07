@@ -41,6 +41,8 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 3.7.0'
   gem 'factory_bot_rails', '~> 4.11'
+  # rails cが起動しないトラブルシュート用
+  gem 'rb-readline'
 end
 
 group :development do
@@ -80,8 +82,6 @@ gem 'roo'
 gem 'pry-rails'
 
 # Excel出力
-# gem 'rubyzip'　　　不要
-# gem 'axlsx'　　　　不要
 gem 'caxlsx_rails'
 gem 'rubyXL'        # Excel出力 斡旋手数料テスト用
 

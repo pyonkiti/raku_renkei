@@ -64,4 +64,7 @@ Rails.application.routes.draw do
     namespace :master do
         resources :users
     end
+
+    # 請求月計算の例外登録
+    resources :seikyu_tuki_reigais
 end

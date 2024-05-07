@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_10_043639) do
+ActiveRecord::Schema.define(version: 2024_04_17_014411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,6 +150,16 @@ ActiveRecord::Schema.define(version: 2024_01_10_043639) do
     t.string "seikyu_ym", default: "", null: false
     t.bigint "sisetu_kanribu_teisyutu0_id", null: false
     t.index ["sisetu_kanribu_teisyutu0_id"], name: "index_seikyu_tuki_cals_on_sisetu_kanribu_teisyutu0_id"
+  end
+
+  create_table "seikyu_tuki_reigais", force: :cascade do |t|
+    t.string "seikyu_key_link", default: "", null: false
+    t.string "sisetu_nm", default: "", null: false
+    t.integer "seikyu_m_su", default: 0, null: false
+    t.string "biko_user", default: "", null: false
+    t.string "biko_siyou", default: "", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "seikyu_yote_cals", force: :cascade do |t|

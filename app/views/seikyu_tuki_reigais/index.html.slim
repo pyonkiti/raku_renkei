@@ -1,0 +1,37 @@
+.mt-3
+.display-6 請求月計算の例外登録
+.mb-3
+
+= link_to  new_seikyu_tuki_reigai_path, class: 'btn btn-primary'
+    i class = "far fa-edit"  新規
+
+.mb-3
+
+table.table.table-hover
+    thead.thead-default
+        tr
+            th = SeikyuTukiReigai.human_attribute_name(:id)
+            th = SeikyuTukiReigai.human_attribute_name(:seikyu_key_link)
+            th = SeikyuTukiReigai.human_attribute_name(:sisetu_nm)
+            th = SeikyuTukiReigai.human_attribute_name(:seikyu_m_su)
+            th = SeikyuTukiReigai.human_attribute_name(:biko_user)
+            th = SeikyuTukiReigai.human_attribute_name(:biko_siyou)
+            th
+            th
+
+    tbody
+        - @seikyutukireigais.each do |tbl|
+            tr
+                td = link_to tbl.id, tbl
+                td = tbl.seikyu_key_link
+                td = truncate(tbl.sisetu_nm, length: 16)
+                td = tbl.seikyu_m_su
+                td = truncate(tbl.biko_user, length: 20)
+                td = truncate(tbl.biko_siyou,length: 20)
+                td = link_to edit_seikyu_tuki_reigai_path(tbl), class: 'btn btn-primary'
+                        i class = "far fa-edit"  編集
+                td = link_to seikyu_tuki_reigai_path(tbl), method: :delete,
+                        data: { confirm: "「ID : #{tbl.id}」  を削除します。よろしいですか？" }, 
+                        class: 'btn btn-danger'
+                        i class = "fas fa-trash-alt"  削除
+

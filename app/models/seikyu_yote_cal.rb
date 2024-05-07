@@ -1,3 +1,4 @@
+# 請求予定額計算
 class SeikyuYoteCal < ApplicationRecord
     class << self
 

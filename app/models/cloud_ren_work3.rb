@@ -1,3 +1,4 @@
+# クラウド連携（キュー重複チェック）
 class CloudRenWork3 < ApplicationRecord
     class << self
 

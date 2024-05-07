@@ -1,3 +1,4 @@
+# クラウド連携（施設）
 class CloudRenShisetu < ApplicationRecord
     class << self
 

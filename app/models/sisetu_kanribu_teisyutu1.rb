@@ -11,6 +11,9 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
                 CSV.foreach(file.path, headers: true) do |row|
                     
                     break if row.size != 21
+                    
+                    # ゴミデータは更新しない
+                    next if row[2].to_s == ""
 
                     hash = {}
                     hash["id"], err_id          = row[1], row[1]

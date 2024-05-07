@@ -14,12 +14,22 @@ ja:
       excel_nyukin_list: 入金仕入Excel_入金一覧
       excel_shiire_list: 入金仕入Excel_仕入一覧
       user:
+      seikyu_tuki_reigai:
     attributes:
       master/user:
         id: ID
         name: ユーザー
         name_id: ユーザーID
         admin: 管理者権限
+        created_at: 登録日
+        updated_at: 更新日
+      seikyu_tuki_reigai:
+        id: ID
+        seikyu_key_link: 請求キーリンク
+        sisetu_nm: 施設名
+        seikyu_m_su: 請求月数
+        biko_user: 備考（ユーザー）
+        biko_siyou: 備考（仕様）
         created_at: 登録日
         updated_at: 更新日
   date:

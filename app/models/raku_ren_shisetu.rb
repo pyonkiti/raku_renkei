@@ -1,3 +1,4 @@
+# 楽楽との連携（施設）
 class RakuRenShisetu < ApplicationRecord
     class << self
 

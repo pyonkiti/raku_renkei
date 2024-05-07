@@ -1,3 +1,4 @@
+# クラウド連携（ユーザー）
 class CloudRenUser < ApplicationRecord
 
     class << self

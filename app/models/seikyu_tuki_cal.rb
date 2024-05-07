@@ -1,3 +1,4 @@
+# 請求月計算
 class SeikyuTukiCal < ApplicationRecord
 
     belongs_to :sisetu_kanribu_teisyutu0                             # 施設管理部提出_結合
@@ -6,7 +7,7 @@ class SeikyuTukiCal < ApplicationRecord
         
         # 請求月計算のメイン処理
         def proc_main(icnt, seikyu_ym)
-
+            
             table_delete if (icnt == 0)
             unless proc1(seikyu_ym)
                 return false
@@ -37,6 +38,9 @@ class SeikyuTukiCal < ApplicationRecord
         def proc1(seikyu_ym)
 
             begin
+                # 請求月数の登録例外の取得
+                reigai_sisetu_nm, reigai_seikyu_m_su = set_reigai
+
                 table0 = SisetuKanribuTeisyutu0.all.order(:seikyu_key_link).order(:sisetu_cd)
                 
                 table0.each do |tbl0|
@@ -45,6 +49,13 @@ class SeikyuTukiCal < ApplicationRecord
                     ary = ["#{tbl0.siharai_kikan_cd}", "#{tbl0.yuusyou_kaishi_ym}", "#{tbl0.yuusyou_syuryo_ym}"]
                     
                     ituki = get_calctuki(ary, seikyu_ym)                        # 請求月数の計算
+
+                    # 例外登録が適用されれば請求月数を変更
+                    if reigai_sisetu_nm != {}
+                        res = get_reigai(tbl0.seikyu_key_link, tbl0.sisetu_nm, reigai_sisetu_nm, reigai_seikyu_m_su)
+                        ituki = res if !res.nil?
+                    end
+
                     sprnt = get_outjyoken(ary, seikyu_ym)                       # 印刷フラグの算出
                     ituki = 0 if (sprnt == "無")
                     
@@ -188,6 +199,62 @@ class SeikyuTukiCal < ApplicationRecord
                         return "無"
                     end
                     return "有"
+            end
+        end
+
+        # 請求月計算の例外登録の取得
+        def set_reigai
+            
+            arry_si, hash_si = [], {}               # 施設名
+            arry_se, hash_se = [], {}               # 請求月数
+            
+            seikyu_key_link = nil
+
+            res = SeikyuTukiReigai.table_select
+
+            if res.size > 0
+                res.each_with_index do |tbl, idx|
+                    if idx > 0
+                        if seikyu_key_link != tbl.seikyu_key_link
+                            hash_si[seikyu_key_link] = arry_si
+                            hash_se[seikyu_key_link] = arry_se
+                            arry_si, arry_se = [], []
+                        end
+                    end
+                    
+                    arry_si << tbl.sisetu_nm
+                    arry_se << tbl.seikyu_m_su
+                    seikyu_key_link = tbl.seikyu_key_link
+                end
+
+                hash_si[seikyu_key_link] = arry_si
+                hash_se[seikyu_key_link] = arry_se
+            end
+            return hash_si, hash_se
+        end
+
+        # 請求月計算の例外登録の適用
+        def get_reigai(seikyu_key_link, sisetu_nm, reigai_sisetu_nm, reigai_seikyu_m_su)
+                
+            # 請求キーリンクの存在確認
+            if reigai_sisetu_nm[seikyu_key_link].nil?
+                return nil
+            else
+                # 施設名の存在確認
+                if reigai_sisetu_nm[seikyu_key_link].index(sisetu_nm).nil?
+                    return nil
+                else
+                    # 施設名が存在した場合要素を取得
+                    idx = reigai_sisetu_nm[seikyu_key_link].index(sisetu_nm)
+                    
+                    # 請求月数の存在確認
+                    if reigai_seikyu_m_su[seikyu_key_link][idx].nil?
+                        return nil
+                    else
+                        # 請求月数を取得
+                        return reigai_seikyu_m_su[seikyu_key_link][idx]
+                    end
+                end
             end
         end
     end

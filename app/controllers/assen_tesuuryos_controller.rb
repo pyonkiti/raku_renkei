@@ -162,7 +162,7 @@ class AssenTesuuryosController < ApplicationController
                             when "中部支社"     then {tag_name: "請求書 (中部)",   column: 10}
                             when "神奈川支店"   then {tag_name: "請求書 (神奈川)", column: 10}
                             when "長野支店"     then {tag_name: "請求書 (長野)",   column: 10}
-                            when "静岡支店"     then {tag_name: "請求書 (静岡)",   column: 10}
+                          # when "静岡支店"     then {tag_name: "請求書 (静岡)",   column: 10}
                             when "中国支店"     then {tag_name: "請求書 (中国)",   column: 21}
                             when "四国支店"     then {tag_name: "請求書 (四国)",   column: 10}
                             when "西日本支社"   then {tag_name: "請求書 (西日本)", column: 10}
