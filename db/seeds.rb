@@ -14,9 +14,9 @@ class Seeds_User
         # データを登録
         def tbl_create
             ary_tst = [{name: "テスト", name_id: "test", password: "test", password_digest: "test", admin: true}]
-            ary_hon = [{name: "管理者", name_id: "admin", password: "admin", password_confirmation: "admin", admin: true},
-                       {name: "南部",   name_id: "nanbu", password: "nanbu", password_confirmation: "nanbu", admin: true},
-                       {name: "浅井",   name_id: "asai",  password: "asai",  password_confirmation: "asai",  admin: true}]
+            ary_hon = [{id: 1, name: "管理者", name_id: "admin", password: "admin", password_confirmation: "admin", admin: true},
+                       {id: 2, name: "南部",   name_id: "nanbu", password: "nanbu", password_confirmation: "nanbu", admin: true},
+                       {id: 3, name: "営業",   name_id: "eigyou",  password: "eigyou",  password_confirmation: "eigyou",  admin: true}]
             ary_hon.each { |ary| Master::User.create([ ary ]) }
         end
 
@@ -77,13 +77,14 @@ end
 
 # Usersテーブルの操作
 Seeds_User.instance_exec {
-    # display
+    display
+    # tbl_delete
     # tbl_create
 }
 
 # seikyu_tuki_reigaisテーブルの操作
 Seeds_SeikyuTukiReigai.instance_exec {
-    # display
+    display
     # tbl_delete
     # display
     # tbl_create

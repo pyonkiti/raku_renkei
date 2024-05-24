@@ -88,14 +88,9 @@ test:
 production:
   <<: *default
   database: raku_renkei_production
+  username: <%= ENV['DATABASE_USER_PRO'] %>
+  password: <%= ENV['DATABASE_PASS_PRO'] %>
 
-#   username: <%= ENV['DATABASE_USER_PRO'] %>
-# password: <%= ENV['DATABASE_PASS_PRO'] %>
-
-  username: <%= ENV['DATABASE_USER'] %>
-  password: <%= ENV['DATABASE_PASS'] %>
-
-# host: 192.168.19.11               # 開発サーバー（本番）
-
-  host: 192.168.33.10               # 自分のPC（開発）
+  host: 192.168.19.11               # 開発サーバー（本番）
+# host: 192.168.33.10               # 自分のPC（開発）
   port: 5432
