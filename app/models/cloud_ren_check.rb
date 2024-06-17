@@ -200,6 +200,7 @@ class CloudRenCheck < ApplicationRecord
                             .where("raku_ren_shisetus.shisetu IS NULL")
                             .where("cloud_ren_checks.deta_kbn2 = 1")
                             .where("cloud_ren_checks.deta_kbn1 = \'既存\'")
+                            .where("upper(cloud_ren_shisetus.f_connect) != \'V\'")              # テスト施設のため請求しない
                             .order("cloud_ren_shisetus.userkey, cloud_ren_shisetus.f_scode")
 
                 # Q_クラウド連携_新規施設01_楽楽2 （Accessの元ネタ）
@@ -225,6 +226,7 @@ class CloudRenCheck < ApplicationRecord
                             .where("cloud_ren_checks.deta_kbn3 = 1")
                             .where("cloud_ren_checks.deta_kbn2 = 2")
                             .where("cloud_ren_checks.deta_kbn1 = \'既存\'")
+                            .where("upper(cloud_ren_shisetus.f_connect) != \'V\'")              # テスト施設のため請求しない
                             .order("cloud_ren_shisetus.userkey, cloud_ren_shisetus.f_scode")
             end
             return cloudrenchecks
