@@ -28,6 +28,7 @@
 
 # 自作ファイル
 /.env
+/routes.txt
 /test/ruby*.rb
 /private/*
 /_excel/moto/*
