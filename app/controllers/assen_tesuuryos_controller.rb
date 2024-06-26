@@ -158,18 +158,18 @@ class AssenTesuuryosController < ApplicationController
                     # 初期設定（タグ名を取得）
                     hash_tag = {}
                     hash_tag = case tbl.shiire_nm
-                            when "東日本支社"   then {tag_name: "請求書 (東日本)", column: 10}
-                            when "中部支社"     then {tag_name: "請求書 (中部)",   column: 10}
-                            when "神奈川支店"   then {tag_name: "請求書 (神奈川)", column: 10}
-                            when "長野支店"     then {tag_name: "請求書 (長野)",   column: 10}
-                          # when "静岡支店"     then {tag_name: "請求書 (静岡)",   column: 10}
-                            when "中国支店"     then {tag_name: "請求書 (中国)",   column: 21}
-                            when "四国支店"     then {tag_name: "請求書 (四国)",   column: 10}
-                            when "西日本支社"   then {tag_name: "請求書 (西日本)", column: 10}
-                            when "北陸支店"     then {tag_name: "請求書 (北陸)",   column: 10}
-                            when "北東北支店"   then {tag_name: "請求書 (北東北)", column: 10}
-                            when "北関東支店"   then {tag_name: "請求書 (北関東)", column: 10}
-                            when "関西支社"     then {tag_name: "請求書 (関西)",   column: 21}
+                            when "東日本支社"   then {tag_name: "請求書 (東日本)",      column: 11}
+                            when "北関東支店"   then {tag_name: "請求書 (北関東)",      column: 11}
+                            when "神奈川支店"   then {tag_name: "請求書 (神奈川)",      column: 11}
+                            when "中部支社"     then {tag_name: "請求書 (中部)",        column: 11}
+                            when "関西支社"     then {tag_name: "請求書 (関西)",        column: 23}
+                            when "四国支店"     then {tag_name: "請求書 (関西・旧四国)", column: 11}
+                            when "中国支店"     then {tag_name: "請求書 (中国)",        column: 23}
+                            when "西日本支社"   then {tag_name: "請求書 (西日本)",      column: 11}
+                          # when "北陸支店"     then {tag_name: "請求書 (北陸)",        column: 11}
+                          # when "北東北支店"   then {tag_name: "請求書 (北東北)",      column: 11}
+                          # when "長野支店"     then {tag_name: "請求書 (長野)",        column: 11}
+                          # when "静岡支店"     then {tag_name: "請求書 (静岡)",        column: 11}
                             else next
                     end
                     
@@ -185,8 +185,8 @@ class AssenTesuuryosController < ApplicationController
                     
                     # 初期設定（開始列をセット）
                     col = {}
-                    col = {stcl: 40, head: {yyy: 53, tiy: 36, siy: 3, sum: 31}, body: {kis: 6, kok: 16, ser: 30, tan: 39, suu: 47, kin: 52}} if hash_tag[:column] == 10     # 10明細
-                    col = {stcl: 62, head: {yyy: 40, tiy: 29, siy: 1, sum: 24}, body: {kis: 4, kok: 12, ser: 25, tan: 32, suu: 37, kin: 42}} if hash_tag[:column] == 21     # 21明細
+                    col = {stcl: 42, head: {yyy: 53, tiy: 36, siy: 3, sum: 31}, body: {kis: 6, kok: 16, ser: 30, tan: 39, suu: 47, kin: 52}} if hash_tag[:column] == 11     # 11明細
+                    col = {stcl: 66, head: {yyy: 40, tiy: 29, siy: 1, sum: 24}, body: {kis: 4, kok: 12, ser: 25, tan: 32, suu: 37, kin: 42}} if hash_tag[:column] == 23     # 23明細
 
                     # ヘッダ情報を出力
                     2.times do |icnt| 
@@ -213,13 +213,14 @@ class AssenTesuuryosController < ApplicationController
                 2.times do |icnt|
                     if tbl.assen_tesuryo == 500
                         # 貴社拠点名
-                        rs1 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:kis], tbl.shiire_nm)
+                        rs1 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:kis], tbl.shiire_nm == "四国支店" ? "関西支社" : tbl.shiire_nm)
                         rs1.change_horizontal_alignment('center')
                         
                         # 顧客名
                         rs2 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:kok], tbl.kokyaku)
                         rs2.change_horizontal_alignment('center')
                         rs2.change_border(:left, 'thin')
+                        rs2.change_shrink_to_fit(true)
                     end
                 
                     if tbl.suuryou != 0
