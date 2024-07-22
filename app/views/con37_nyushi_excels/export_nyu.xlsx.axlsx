@@ -21,7 +21,7 @@ wb.add_worksheet(name: "入金一覧") do |sheet|
             row.add_cell(ex_nyukin.syodan_nm)
             row.add_cell(ex_nyukin.seikyu_no)
             row.add_cell(ex_nyukin.seikyu_ymd)
-            row.add_cell(ex_nyukin.torihikisaki_cd)
+            row.add_cell(ex_nyukin.torihikisaki_cd,     type: :string)
             row.add_cell(ex_nyukin.seikyusaki_cd)
             row.add_cell(ex_nyukin.seikyusaki_nm)
             row.add_cell(ex_nyukin.nyukin_ymd)
