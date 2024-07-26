@@ -159,10 +159,10 @@ class AssenTesuuryosController < ApplicationController
                     hash_tag = {}
                     hash_tag = case tbl.shiire_nm
                             when "東日本支社"   then {tag_name: "請求書 (東日本)",      column: 11}
-                            when "北関東支店"   then {tag_name: "請求書 (北関東)",      column: 11}
+                            when "北関東支店"   then {tag_name: "請求書 (北関東)",      column: 23}
                             when "神奈川支店"   then {tag_name: "請求書 (神奈川)",      column: 11}
                             when "中部支社"     then {tag_name: "請求書 (中部)",        column: 11}
-                            when "関西支社"     then {tag_name: "請求書 (関西)",        column: 23}
+                            when "関西支社"     then {tag_name: "請求書 (関西)",        column: 30}
                             when "四国支店"     then {tag_name: "請求書 (関西・旧四国)", column: 11}
                             when "中国支店"     then {tag_name: "請求書 (中国)",        column: 23}
                             when "西日本支社"   then {tag_name: "請求書 (西日本)",      column: 11}
@@ -187,6 +187,7 @@ class AssenTesuuryosController < ApplicationController
                     col = {}
                     col = {stcl: 42, head: {yyy: 53, tiy: 36, siy: 3, sum: 31}, body: {kis: 6, kok: 16, ser: 30, tan: 39, suu: 47, kin: 52}} if hash_tag[:column] == 11     # 11明細
                     col = {stcl: 66, head: {yyy: 40, tiy: 29, siy: 1, sum: 24}, body: {kis: 4, kok: 12, ser: 25, tan: 32, suu: 37, kin: 42}} if hash_tag[:column] == 23     # 23明細
+                    col = {stcl: 80, head: {yyy: 40, tiy: 29, siy: 1, sum: 24}, body: {kis: 4, kok: 12, ser: 25, tan: 32, suu: 37, kin: 42}} if hash_tag[:column] == 30     # 30明細
 
                     # ヘッダ情報を出力
                     2.times do |icnt| 
@@ -226,6 +227,7 @@ class AssenTesuuryosController < ApplicationController
                     if tbl.suuryou != 0
                         # サービス名
                         rs1 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:ser], "#{tbl.assen_tesuryo}円プラン")
+                        rs1.change_font_size(10)
 
                         # サービス名（罫線）
                         rs1.change_border(:bottom, 'hair') if tbl.assen_tesuryo == 500
@@ -234,7 +236,8 @@ class AssenTesuuryosController < ApplicationController
                         # 単価
                         rs2 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:tan], tbl.assen_tesuryo)
                         rs2.set_number_format('#,##0')
-                        
+                        rs2.change_font_size(10)
+
                         # 単価（罫線）
                         rs2.change_border(:bottom, 'hair') if tbl.assen_tesuryo == 500
                         rs2.change_border(:bottom, 'thin') if tbl.assen_tesuryo != 500
@@ -242,6 +245,7 @@ class AssenTesuuryosController < ApplicationController
                         # 数量
                         rs3 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:suu], tbl.suuryou)
                         rs3.set_number_format('#,##0')
+                        rs3.change_font_size(10)
 
                         # 数量（罫線）
                         rs3.change_border(:bottom, 'hair') if tbl.assen_tesuryo == 500
@@ -253,7 +257,8 @@ class AssenTesuuryosController < ApplicationController
                         # 金額
                         rs4 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:kin], kingaku)
                         rs4.set_number_format('#,###,##0')
-                        
+                        rs4.change_font_size(10)
+
                         # 金額（罫線）
                         rs4.change_border(:bottom, 'hair') if tbl.assen_tesuryo == 500
                         rs4.change_border(:bottom, 'thin') if tbl.assen_tesuryo != 500
