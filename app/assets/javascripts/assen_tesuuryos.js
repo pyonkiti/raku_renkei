@@ -1,6 +1,9 @@
 // 斡旋手数料の請求書出力
 document.addEventListener('turbolinks:load', function() {
 
+    // 別画面でエラーになる事象を回避
+    if (document.getElementById('txt_seikyu_ym') == null) { return false; }
+
     // マウスカーソルをデフォルト
     document.body.parentElement.style.cursor = "default";
 

@@ -4,7 +4,9 @@ class ExcelShiireList < ApplicationRecord
     class << self
 
         # 入金仕入Excel_仕入一覧の更新　≪メイン≫
-        def proc_main
+        def proc_main(chk_zengetu)
+
+            @chk_zengetu = chk_zengetu                                  # 前月として実行チェック
 
             table_delete                                                # 入金仕入Excel_仕入一覧の削除
             return false if !proc_syori1                                # 入金仕入Excel_仕入一覧の更新
@@ -81,7 +83,8 @@ class ExcelShiireList < ApplicationRecord
                 hash["syouhizei"]       = 10
                 hash["gokei_kingaku"]   = assen_sum + (assen_sum * 0.1)
                 hash["kaikake_kin"]     = "4050"
-                hash["hizuke"]          = Time.current.strftime("%Y/%m") + "/01"
+                ym = @chk_zengetu? Time.current.prev_month.strftime("%Y/%m") : Time.current.strftime("%Y/%m")
+                hash["hizuke"]          = Time.current.strftime(ym) + "/01"
                 hash["torihikisaki_c"]  = (Common.check_integer(table0.shiire_cd) + 4000).to_s
                 hash["seikyu_key_link"] = table0.seikyu_key_link
 

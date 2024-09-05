@@ -47,7 +47,7 @@ Rails.application.routes.draw do
         post  :import1,         on: :collection
         post  :import2,         on: :collection
         post  :import3,         on: :collection
-        post  :syori0,          on: :collection
+        get  :syori0,          on: :collection
         get   :export_shi,      on: :collection
         get   :export_nyu,      on: :collection
     end

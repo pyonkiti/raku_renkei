@@ -131,6 +131,7 @@ class Con37NyushiExcelsController < ApplicationController
         
         @msg = []
         time_measure = {str: 0, end: 0}
+        chk_zengetu = params[:chk_zengetu] == "true"                                        # 前月処理のチェック
 
         time_measure[:str] = Process.clock_gettime(Process::CLOCK_MONOTONIC)                # 時間計測の開始
 
@@ -141,17 +142,23 @@ class Con37NyushiExcelsController < ApplicationController
             @msg << "「管理部提出データ出力テーブル１・２・３」の結合が完了しました。　処理件数は #{SisetuKanribuTeisyutu0.table_count(1)} 件です。"
 
             # 入金仕入Excel_仕入一覧の更新
-            unless ExcelShiireList.proc_main
+            unless ExcelShiireList.proc_main(chk_zengetu)
                 alert  = "入金仕入Excel_仕入一覧の更新処理で、エラーが発生しました。"
             else
                 @msg << "「仕入一覧テーブル」の更新が完了しました。　処理件数は #{ExcelShiireList.table_count(1)} 件です。"
 
                 # 入金仕入Excel_入金一覧の更新
-                unless ExcelNyukinList.proc_main
+                unless ExcelNyukinList.proc_main(chk_zengetu)
                     alert  = "入金仕入Excel_入金一覧の更新処理で、エラーが発生しました。"
                 else
                     @msg << "「入金一覧テーブル」の更新が完了しました。　処理件数は #{ExcelNyukinList.table_count(1)} 件です。"
-                
+                    
+                    if chk_zengetu == true
+                        @msg << "前月（#{Time.current.prev_month.strftime("%m")}月）分として処理が行われました。ご注意ください。"
+                    else
+                        @msg << "当月（#{Time.current.strftime("%m")}月）分として処理が行われました。"
+                    end
+                    
                     time_measure[:end] = Process.clock_gettime(Process::CLOCK_MONOTONIC)    # 時間計測の終了
                     
                     measure_frm = time_measure[:end] - time_measure[:str] >= 60 ? "%M分%S秒" : "%S秒"
@@ -177,7 +184,7 @@ class Con37NyushiExcelsController < ApplicationController
         flash[:notice] = notice
         flash[:alert]  = alert
         
-        redirect_to con37_nyushi_excels_url
+        redirect_to con37_nyushi_excels_url(chk_zengetu: params[:chk_zengetu])
     end
 
     # 入金仕入Excel_入金一覧 《Excel出力》

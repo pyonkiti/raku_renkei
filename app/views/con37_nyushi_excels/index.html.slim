@@ -6,6 +6,12 @@ hr
 h4 楽楽よりCSVデータのインポート
 br
 
+// 実行後に画面が初期化されることを防ぐ
+- if params[:chk_zengetu] == "true"
+    - chk_zengetu = true
+- else
+    - chk_zengetu = false
+
 .form-group.row
     .col-md-6
         = form_tag import1_con37_nyushi_excels_path, multipart: true, class: 'mb-3', id: 'tag_nyushi_form1' do
@@ -31,15 +37,20 @@ br
         h9 楽楽の「請求処理－施設テーブル－管理部提出データ出力<b><u>３</u></b>」より出力した、CSVファイルをインポートします。
 
 .form-group.row
-    .col-lg-6
-        = button_to syori0_con37_nyushi_excels_path, class: 'btn btn-primary', id: 'btn_nyushi_jikko'
+    .col-md-12
+        = check_box_tag :for_zengetu, true, chk_zengetu, {class: 'form-check-input', id: 'chk_zengetu'}
+        = label_tag :for_zengetu, '　前月として処理を行います', for: 'chk_zengetu'
+        <br>　　・　チェックを付けると、例えば８月の処理を忘れて９月になった場合、チェックを付けると８月に処理を行ったことにできます
+        <br>　　・　チェックは実行をクリックする直前に行ってください
+br
+
+.form-group.row
+    .col-lg-4
+        = link_to syori0_con37_nyushi_excels_path, class: 'btn btn-primary',
+            class: 'btn btn-primary',
+            id:    'lnk_nyushi_jikko'
             i class = "fas fa-rocket"  実行
-    .col-lg-6
-        h9 下記の３処理を行います。
-        ol
-            li 上記でインポートした３つのCSVファイル（管理部提出データ出力１～３）を結合します。
-            li 入金一覧表（Excel）を出力する前処理を行います。
-            li 仕入一覧表（CSV）を出力する前処理を行います。
+    .col-lg-8
 
 hr
 h4 前回実行時の履歴
@@ -165,5 +176,4 @@ br
                 i class ="fa solid fa-download"  CSV出力
     .col-lg-4
         h9 「仕入一覧表」を出力します。
-
 br

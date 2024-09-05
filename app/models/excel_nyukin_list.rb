@@ -3,7 +3,9 @@ class ExcelNyukinList < ApplicationRecord
     class << self
         
         # 入金仕入Excel_入金一覧の更新  ≪メイン≫
-        def proc_main
+        def proc_main(chk_zengetu)
+
+            @chk_zengetu = chk_zengetu                                          # 前月として実行チェック
 
             table_delete                                                        # 入金仕入Excel_入金一覧の削除
             return false if !proc_syori1                                        # 入金仕入Excel_入金一覧の更新
@@ -14,7 +16,8 @@ class ExcelNyukinList < ApplicationRecord
         def proc_syori1
             
             begin
-                ary_shiire = get_siharai(Time.current.strftime("%m"))           # 支払期間コードを取得
+                mm = @chk_zengetu? Time.current.prev_month.strftime("%m") : Time.current.strftime("%m")
+                ary_shiire = get_siharai(mm)                                    # 支払期間コードを取得
                 
                 # 施設テーブル_管理部提出データ0_統合を読み込む
                 @table0 = SisetuKanribuTeisyutu0.where(print_flg: '有')
@@ -28,7 +31,7 @@ class ExcelNyukinList < ApplicationRecord
                 err_seikyu_key_link = ""                                        # 初期化：請求キーリンク
                 tanka_sum           = 0                                         # 初期化：単価
                 cnt                 = 0                                         # 件　数：ループ
-
+                
                 @table0.each_cons(2) do |table0, table_nxt|
                     
                     err_seikyu_key_link  = table0.seikyu_key_link                                                           # エラー：請求キーリンク
@@ -72,10 +75,11 @@ class ExcelNyukinList < ApplicationRecord
                 w_kon_syouhizei     = cal_hasuu( table0.hasu_kbn_syouhizei,   tanka_sum * 0.1 )                                 # 今回消費税
 
                 err_seikyu_key_link = table0.seikyu_key_link
-                ret = get_bun(table0.siharai_kikan_cd, Time.current.strftime("%Y-%m"))                                          # 何月分かの名称を取得
-
+                
+                ym = @chk_zengetu? Time.current.prev_month.strftime("%Y-%m") : Time.current.strftime("%Y-%m")
+                ret = get_bun(table0.siharai_kikan_cd, ym)                                                                      # 何月分かの名称を取得
+                
                 hash = {}
-              # hash["syodan_nm"]          = table0.seikyu_syo_naiyo_ue.to_s + " " + ret
                 hash["syodan_nm"]          = (table0.bunrui.to_s.strip == "" ? "" : table0.bunrui.to_s + " ") + table0.seikyu_syo_naiyo_ue.to_s + " " + ret
                 hash["seikyu_no"]          = ""
                 hash["seikyu_ymd"]         = w_nyukin_ymd == "" ? "" : Date.parse(w_nyukin_ymd.slice(0, 7) + "/01").prev_day(1).to_s.delete("-")    # 入金年月日の翌月末
