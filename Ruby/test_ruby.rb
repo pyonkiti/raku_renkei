@@ -1,6 +1,290 @@
 
 
 
+
+# ---------------------------------------------------------
+# 三項演算子で行頭、行末に共通文字列を追加する
+# ---------------------------------------------------------
+def test_sannkou(cnt)
+
+    msg = "行頭" + "#{(cnt == 0) ? "処理１" : "処理２"}" + "行末に追加"
+    puts msg
+end
+
+# ---------------------------------------------------------
+# Aクラスで定義した変数を別のクラスで利用する
+# ---------------------------------------------------------
+class ACLASS
+    class << self
+        attr_reader :aaa
+        def atest
+            @aaa = 1
+            puts "a"
+            puts @aaa
+        end
+    end
+end
+
+class BCLASS
+    class << self
+        # attr_reader :aaa
+        def btest
+            puts "b"
+            puts "#{ACLASS::aaa}"
+        end
+    end
+end
+
+# ---------------------------------------------------------
+# catchはthrowが発生しなかった場合、最後にnilを渡してやらないと途中でセットした変数が返ってきてしまう
+# ---------------------------------------------------------
+def test_catch
+
+    cat = catch(:goto_err) do
+        ret = 1
+        bbbb = "bb"
+        # throw :goto_err, [ret, "chk"]
+        throw :goto_err, nil
+    end
+    puts "#{cat}"
+end
+
+# ---------------------------------------------------------
+# 三項演算子の使い方
+# ---------------------------------------------------------
+def test_3kouenzan
+
+    3.times do |cnt|
+        
+        aa = case cnt
+            when 0, 1
+                (cnt == 0) ? "chk_syori_kbn1" : "chk_syori_kbn2"
+            when 2
+        end
+        puts aa
+    end
+end
+
+# ---------------------------------------------------------
+# 例外の使い方
+# ---------------------------------------------------------
+def test_raise(kbn)
+    begin
+        cnt = 0
+        puts "1"
+        
+        begin
+            puts "3"
+            aa = 1 /0
+        rescue => ex
+            if ex.message == "divided by 0"
+                cnt += 1
+                puts "bb"
+                if ex.class = ZeroDivisionError
+                    puts "c"
+                end 
+                return if cnt > 3 
+                retry
+            end
+        end
+        puts "2"
+    rescue => ex
+        puts "err"
+    end
+end
+
+# ---------------------------------------------------------
+# timesの中でbreak、nextは使える
+# ---------------------------------------------------------
+def test_times
+    3.times do |cnt|
+        next if ( cnt == 1 )
+        puts cnt
+    end
+end
+
+# ---------------------------------------------------------
+# ハッシュの使い方
+# ---------------------------------------------------------
+def test_hash
+
+    syori_arry = [{tbl: "請求", id: "seikyu", syori_kbn: ["a"]}, 
+                  {tbl: "施設", id: "sisetu", syori_kbn: ["a", "s", "k"]}
+                 ]
+    syori_kbn = "a"
+
+    syori_arry.each_with_index do |res, cnt|
+        # puts "aa" if res[:id] == "sisetu"
+        # syori_arry.delete_at(cnt) if res[:id] == "sisetu"
+        next if res[:id] == "sisetu"
+        puts res
+        # puts res[:syori_kbn].include?(syori_kbn)
+        # puts res[:syori_kbn][0]
+    end
+end
+
+# ---------------------------------------------------------
+# eachはberak、nextが使える
+# ---------------------------------------------------------
+def test_each
+
+    arry = ["1","2","3","4"]
+    arry.each do |res|
+        if res == "2"
+            break
+        end
+        if res == "1"
+            next
+        end
+        puts res
+    end
+end
+
+# ---------------------------------------------------------
+# fileutilsを使ったファイル削除
+# ---------------------------------------------------------
+def test_rm
+
+    require 'fileutils'
+    arry = ["a1.csv", "a2.csv", "a3.csv"]
+
+    arry.each do |res|
+        # force: trueを付けるとないファイルをrmしてもエラーにならない
+        # パスの区切りは/にすること。\にするとエラーになる
+        FileUtils.rm("D:/vagrant/rpa_win/test/#{res}", force: true)
+    end
+end
+
+# ---------------------------------------------------------
+# 配列の要素に対し、後ろからn文字目を削除
+# ---------------------------------------------------------
+def test_string
+
+    csv_arry = ["施設テーブル：管理部提出データ出力120240918102627_0.csv",
+                "施設テーブル：管理部提出データ出力220240918102627_0.csv",
+                "施設テーブル：管理部提出データ出力320240918102627_0.csv"]
+    csv_arrw = ["施設テーブル：Access連携出力20240918100257_0.csv"]
+
+    csv_arry.map! { |res| "#{res[0..-21]}" + ".csv" }
+    csv_arrw.map! { |res| "#{res[0..-21]}" + ".csv" }
+
+    puts csv_arry
+    puts csv_arrw
+end
+
+# ---------------------------------------------------------
+# クラス変数をクラスの外で拾う
+# ---------------------------------------------------------
+class AAA
+    @bb = "BBB"
+    class << self
+        attr_reader :bb
+        def test_aaa
+            @bb = "BB"
+        end
+    end
+end
+
+# ---------------------------------------------------------
+# catch～throwの変数確認
+# ---------------------------------------------------------
+def test_catch
+
+    cat = []
+    cat = catch(:goto_err) do
+        throw :goto_err
+    end
+    # puts "#{cat}"
+    puts cat.nil?
+    puts cat.is_a?(Array)
+end
+
+# ---------------------------------------------------------
+# catch-throw で引数を渡す
+# ---------------------------------------------------------
+def test_catch
+    # ret = []                  # これはなくてOK
+    ret = catch(:goto_err) do
+        aa = 1
+        if aa == 1
+            puts "--1--"
+            throw :goto_err, ["bb", "b"]
+            puts "2"
+        else
+            puts "3"
+        end
+    end
+    puts ret[1]
+    puts ret[0]
+end
+
+# ---------------------------------------------------------
+# 例外エラーの変数を取得する
+# ---------------------------------------------------------
+def test_err
+    begin
+        aa = 1 / 0
+    rescue ZeroDivisionError => ex
+        puts ex
+        puts ex.class
+        puts ex.message
+        case ex.class
+            when ZeroDivisionError
+                puts "bb"
+        end
+    rescue => ex
+        puts ex
+    end
+end
+
+# ---------------------------------------------------------
+# 半角を全角に変換する
+# ---------------------------------------------------------
+def test_zenkaku
+    cnt = 0
+    # ret = {"1" => "１", "2" => "２", "3" => "３"}
+    ret = {"1" => "１", "2" => "２", "3" => "３"}
+    puts ret[cnt+1]
+end
+
+# ---------------------------------------------------------
+# 文字列の末尾から特定の桁数を除去する
+# ---------------------------------------------------------
+def test_string
+    input_string = "施設テーブル：管理部提出データ出力320240802130805_0.csv"
+    output_string = input_string[0..-21]            # 末尾から20桁を削除
+    puts output_string
+end
+
+# ---------------------------------------------------------
+# 文字列をBoolean型に変換
+# ---------------------------------------------------------
+def test_boolean
+
+    params = {checkflg: "true"}
+    boolean = params[:checkflg] == "true"
+
+    if boolean.is_a?(TrueClass)
+        puts "trueです"
+    elsif boolean.is_a?(FalseClass)
+        puts "falseです"
+    elsif
+        puts "Boolean型ではありません"
+    end
+end
+
+# ---------------------------------------------------------
+# true or falseの判断
+# ---------------------------------------------------------
+def test_boolean_torf
+
+    if params.is_a?(FalseClass) or params.is_a?(TrueClass)
+        puts "Boolean型です"
+    else
+        puts "Boolean型ではありません"
+    end
+end
+
 # ---------------------------------------------------------
 # 経過時間（分:秒）を計測
 # ---------------------------------------------------------

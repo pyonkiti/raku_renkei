@@ -160,7 +160,7 @@ class AssenTesuuryosController < ApplicationController
                     hash_tag = case tbl.shiire_nm
                             when "東日本支社"   then {tag_name: "請求書 (東日本)",      column: 11}
                             when "北関東支店"   then {tag_name: "請求書 (北関東)",      column: 23}
-                            when "神奈川支店"   then {tag_name: "請求書 (神奈川)",      column: 11}
+                            when "東京支店"     then {tag_name: "請求書 (東京)",        column: 11}
                             when "中部支社"     then {tag_name: "請求書 (中部)",        column: 11}
                             when "関西支社"     then {tag_name: "請求書 (関西)",        column: 30}
                             when "四国支店"     then {tag_name: "請求書 (関西・旧四国)", column: 11}
@@ -212,7 +212,7 @@ class AssenTesuuryosController < ApplicationController
 
                 # 明細情報を出力
                 2.times do |icnt|
-                    if tbl.assen_tesuryo == 500
+                    if (tbl.assen_tesuryo == 500 or tbl.assen_tesuryo == 200)
                         # 貴社拠点名
                         rs1 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:kis], tbl.shiire_nm == "四国支店" ? "関西支社" : tbl.shiire_nm)
                         rs1.change_horizontal_alignment('center')
@@ -230,8 +230,8 @@ class AssenTesuuryosController < ApplicationController
                         rs1.change_font_size(10)
 
                         # サービス名（罫線）
-                        rs1.change_border(:bottom, 'hair') if tbl.assen_tesuryo == 500
-                        rs1.change_border(:bottom, 'thin') if tbl.assen_tesuryo != 500
+                        rs1.change_border(:bottom, 'hair') if (tbl.assen_tesuryo == 500 or tbl.assen_tesuryo == 200)
+                        rs1.change_border(:bottom, 'thin') if (tbl.assen_tesuryo == 1000)
 
                         # 単価
                         rs2 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:tan], tbl.assen_tesuryo)
@@ -239,8 +239,8 @@ class AssenTesuuryosController < ApplicationController
                         rs2.change_font_size(10)
 
                         # 単価（罫線）
-                        rs2.change_border(:bottom, 'hair') if tbl.assen_tesuryo == 500
-                        rs2.change_border(:bottom, 'thin') if tbl.assen_tesuryo != 500
+                        rs2.change_border(:bottom, 'hair') if (tbl.assen_tesuryo == 500 or tbl.assen_tesuryo == 200)
+                        rs2.change_border(:bottom, 'thin') if (tbl.assen_tesuryo == 1000)
 
                         # 数量
                         rs3 = worksheet.add_cell(col[:stcl] * icnt + 13 + row_cnt, col[:body][:suu], tbl.suuryou)
@@ -248,8 +248,8 @@ class AssenTesuuryosController < ApplicationController
                         rs3.change_font_size(10)
 
                         # 数量（罫線）
-                        rs3.change_border(:bottom, 'hair') if tbl.assen_tesuryo == 500
-                        rs3.change_border(:bottom, 'thin') if tbl.assen_tesuryo != 500
+                        rs3.change_border(:bottom, 'hair') if (tbl.assen_tesuryo == 500 or tbl.assen_tesuryo == 200)
+                        rs3.change_border(:bottom, 'thin') if (tbl.assen_tesuryo == 1000)
 
                         kingaku = Common.check_integer(tbl.assen_tesuryo) * Common.check_integer(tbl.suuryou)
                         kingaku_sum = kingaku_sum + kingaku if icnt == 0
@@ -260,8 +260,8 @@ class AssenTesuuryosController < ApplicationController
                         rs4.change_font_size(10)
 
                         # 金額（罫線）
-                        rs4.change_border(:bottom, 'hair') if tbl.assen_tesuryo == 500
-                        rs4.change_border(:bottom, 'thin') if tbl.assen_tesuryo != 500
+                        rs4.change_border(:bottom, 'hair') if (tbl.assen_tesuryo == 500 or tbl.assen_tesuryo == 200)
+                        rs4.change_border(:bottom, 'thin') if (tbl.assen_tesuryo == 1000)
                     end
                 end
                 

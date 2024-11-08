@@ -14,7 +14,7 @@ class AssenSeikyu < ApplicationRecord
                 # 初期値を設定
                 keybrk = {}
                 cnt_id = 1
-                cnt_500, cnt_1000 = 0, 0
+                cnt_200, cnt_500, cnt_1000 = 0, 0, 0
 
                 table.each_with_index do |tbl, idx|
                     
@@ -38,18 +38,25 @@ class AssenSeikyu < ApplicationRecord
                         if (keybrk["shiire_nm"] != tbl.shiire_nm or keybrk["kokyaku"] != kokyaku)
                             2.times do |idx|
                                 hash = {}
-                                hash["id"]              = cnt_id
-                                hash["shiire_nm"]       = keybrk["shiire_nm"]
-                                hash["kokyaku"]         = keybrk["kokyaku"]
-                                hash["assen_tesuryo"]   = idx == 0 ? 500 : 1000
-                                hash["suuryou"]         = idx == 0 ? cnt_500 : cnt_1000
+                                hash["id"]                  = cnt_id
+                                hash["shiire_nm"]           = keybrk["shiire_nm"]
+                                hash["kokyaku"]             = keybrk["kokyaku"]
+
+                                # 200円は伊丹市だけに発生（200円のペアになる1000円はダミー）
+                                if cnt_200 > 0
+                                    hash["assen_tesuryo"]   = idx == 0 ? 200 : 1000
+                                    hash["suuryou"]         = idx == 0 ? cnt_200 : cnt_1000
+                                else
+                                    hash["assen_tesuryo"]   = idx == 0 ? 500 : 1000
+                                    hash["suuryou"]         = idx == 0 ? cnt_500 : cnt_1000
+                                end
 
                                 assen_seikyu = new
                                 assen_seikyu.attributes = hash
                                 assen_seikyu.save!
                                 cnt_id += 1
                             end
-                            cnt_500, cnt_1000 = 0, 0
+                            cnt_200, cnt_500, cnt_1000 = 0, 0, 0
                         end
                     end
                     
@@ -59,6 +66,7 @@ class AssenSeikyu < ApplicationRecord
                     # ブレイクキーをセット：顧客名
                     keybrk["kokyaku"] = kokyaku
                     
+                    cnt_200  += 1 if tbl.assen_tesuryo.to_i == 200
                     cnt_500  += 1 if tbl.assen_tesuryo.to_i == 500
                     cnt_1000 += 1 if tbl.assen_tesuryo.to_i == 1000
 
@@ -66,11 +74,17 @@ class AssenSeikyu < ApplicationRecord
                     if (idx == table.size - 1)
                         2.times do |idx|
                             hash = {}
-                            hash["id"]              = cnt_id
-                            hash["shiire_nm"]       = keybrk["shiire_nm"]
-                            hash["kokyaku"]         = keybrk["kokyaku"]
-                            hash["assen_tesuryo"]   = idx == 0 ? 500 : 1000
-                            hash["suuryou"]         = idx == 0 ? cnt_500 : cnt_1000
+                            hash["id"]                  = cnt_id
+                            hash["shiire_nm"]           = keybrk["shiire_nm"]
+                            hash["kokyaku"]             = keybrk["kokyaku"]
+
+                            if cnt_200 > 0
+                                hash["assen_tesuryo"]   = idx == 0 ? 200 : 1000
+                                hash["suuryou"]         = idx == 0 ? cnt_200 : cnt_1000
+                            else
+                                hash["assen_tesuryo"]   = idx == 0 ? 500 : 1000
+                                hash["suuryou"]         = idx == 0 ? cnt_500 : cnt_1000
+                            end
 
                             assen_seikyu = new
                             assen_seikyu.attributes = hash
