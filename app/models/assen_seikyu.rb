@@ -7,6 +7,50 @@ class AssenSeikyu < ApplicationRecord
             connection.execute "TRUNCATE TABLE assen_seikyus;"
         end
 
+        # テーブルをGroup化（重複データをまとめる）
+        def table_group
+            begin
+                tbl = AssenSeikyu.group(:shiire_nm, :kokyaku, :assen_tesuryo)
+                                 .order(:shiire_nm, :kokyaku, :assen_tesuryo)
+                                 .sum(:suuryou)
+                return true, tbl, nil
+
+            rescue => ex
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                @@debug.pri_logger.error(err)
+                return false, nil, "斡旋手数料の請求書テーブルのGroup化でエラーが発生しました。"
+            end
+        end
+
+        # データを更新（Excelファイルに同じデータが別々に出力されるため、Group化して再更新する）
+        def table_group_insert(table)
+
+            begin
+                cnt_id = 1
+
+                table.each do |key, val|
+
+                    hash = {}
+                    hash["id"]             = cnt_id
+                    hash["shiire_nm"]      = key[0]
+                    hash["kokyaku"]        = key[1]
+                    hash["assen_tesuryo"]  = key[2]
+                    hash["suuryou"]        = val
+
+                    assen_seikyu = new
+                    assen_seikyu.attributes = hash
+                    assen_seikyu.save!
+                    cnt_id += 1
+                end
+                return true, nil
+            rescue => ex
+                err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+                err = err + " : " + "id:" + cnt_id.to_s + "の更新でエラーが発生しています"
+                @@debug.pri_logger.error(err)
+                return false, "斡旋手数料の請求書テーブルの更新でエラーが発生しました。"
+            end
+        end
+
         # データを更新
         def table_insert(table)
 

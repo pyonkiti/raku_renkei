@@ -42,8 +42,8 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
                         .where.not(assen_tesuryo: 0)
                         .where(print_flg: '有')
                         .select(:shiire_nm, :kigyou, :seikyu_saki1, :seikyu_saki2, :assen_tesuryo)
-                        .order(:shiire_nm, :seikyu_saki1)
-                        
+                        .order(:shiire_nm, :seikyu_saki1)  # 変更前
+                        # .order('shiire_nm COLLATE "ja-JP-x-icu", seikyu_saki1 COLLATE "ja-JP-x-icu"')           # これで本番環境と同じ動きになる
             return true, tbl, nil
 
             rescue => ex
@@ -53,7 +53,7 @@ class SisetuKanribuTeisyutu0 < ApplicationRecord
             end
         end
 
-    private
+        private
 
         # テーブル1 ⇒ テーブル0に更新
         def table_insert1

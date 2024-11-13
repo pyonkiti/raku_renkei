@@ -21,18 +21,29 @@ class AssenTesuuryosController < ApplicationController
                 throw :goto_err
             end
 
-            # テーブルを全件削除
+            # テーブルを全件削除（１回目）
             AssenSeikyu.table_delete
 
             # データを抽出
             ret, tbl, msg = SisetuKanribuTeisyutu0.table_select_assen
             throw :goto_err if !ret
             
-            # データを更新
+            # データを更新（１回目）
             ret, msg = AssenSeikyu.table_insert(tbl)
             throw :goto_err if !ret
 
             msg_ary << "斡旋手数料の請求書のデータ抽出が完了しました。　処理件数は #{AssenSeikyu.table_count(1)} 件です。"
+
+            # テーブルをGroup化
+            ret, tbl, msg = AssenSeikyu.table_group
+            throw goto_err if !ret
+
+            # テーブルを全件削除（２回目）
+            AssenSeikyu.table_delete
+
+            # データを更新（２回目）
+            ret, msg = AssenSeikyu.table_group_insert(tbl)
+            throw :goto_err if !ret
 
             # Excelファイルの雛形にデータをセット
             ret, msg = create_excel
