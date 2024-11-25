@@ -1,6 +1,29 @@
 
 
+# ---------------------------------------------------------
+# ハッシュの値をから配列にする
+# ---------------------------------------------------------
+def test_hashtoarry
+    
+    hash = {"ebarajitsugyo"   => "デモ用",
+            "hakusan"         => "敗退",
+            "haneron"         => "社内デモ用",
+            "ikeda_c_gesui"   => "敗退",
+            "kanazawa_haisui" => "kanazawa_usuiへ移行",
+            "nihonsoft"       => "デモ用",
+            "toyota_gesui"    => "破棄",
+            "wateragency"     => "デモ用",
+           }
 
+    vals_array = hash.values          # 値だけを配列に抽出
+    keys_array = hash.keys            # キーだけを配列に抽出
+
+    if vals_array.instance_of?(Array)
+        puts "配列です"
+    else
+        puts "配列ではありません"
+    end
+end
 
 # ---------------------------------------------------------
 # 三項演算子で行頭、行末に共通文字列を追加する

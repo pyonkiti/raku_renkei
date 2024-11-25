@@ -166,9 +166,27 @@ class CloudRenCheck < ApplicationRecord
             end
         end
 
-        # Excel出力用の抽出
+        # Excel出力用の抽出（すべて）
         def table_select_forexcel
             cloudrencheck = CloudRenCheck.order(:deta_kbn1, :dantai_kbn, :jichitai_cd, :bunrui_cd, :userkey)
+        end
+
+        # Excel出力用の抽出（削除条件あり）
+        def table_select_where_forexcel
+
+            where_hash = {"ebarajitsugyo"   => "デモ用",
+                          "hakusan"         => "敗退",
+                          "haneron"         => "社内デモ用",
+                          "ikeda_c_gesui"   => "敗退",
+                          "kanazawa_haisui" => "kanazawa_usuiへ移行",
+                          "nihonsoft"       => "デモ用",
+                          "toyota_gesui"    => "破棄",
+                          "wateragency"     => "デモ用",
+                         }
+
+            cloudrencheck = CloudRenCheck
+                                .where.not(userkey: where_hash.keys)
+                                .order(:deta_kbn1, :dantai_kbn, :jichitai_cd, :bunrui_cd, :userkey)
         end
 
         # 新規施設分のデータ抽出

@@ -180,7 +180,7 @@ class Con36CloudRenkeisController < ApplicationController
     def export_user
 
         # データ取得
-        @cloudrencheck = CloudRenCheck.table_select_forexcel
+        @cloudrencheck = CloudRenCheck.table_select_where_forexcel
 
         filename = "クラウド連携_#{Time.current.strftime("%m%d")}"
         respond_to do |format|
