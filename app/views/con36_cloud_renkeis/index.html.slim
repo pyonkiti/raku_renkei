@@ -24,14 +24,19 @@ hr
 = form_with url: '/con36_cloud_renkeis', local: true do |f|
 
     / リダイレクトで入ってきたとき、チェックボックスの初期化を防ぐ
+    - chk_kbn = [false] * 3
     - if (params[:kbn_syori] == "1" or params[:kbn_syori] == nil)
-        - chk_kbn = true
-    - else
-        - chk_kbn = false
+        - chk_kbn[0] = true
+    
+    - if (params[:kbn_syori] == "2")
+        - chk_kbn[1] = true
 
-    .checkbox.row.mt-4
+    - if (params[:kbn_syori] == "3")
+        - chk_kbn[2] = true
+
+    .form-group.row
         .col-lg-1
-            = f.radio_button :kbn_syori, 1, checked: chk_kbn, id: 'chk_syori_kbn1'
+            = f.radio_button :kbn_syori, 1, checked: chk_kbn[0], id: 'chk_syori_kbn1'
         .col-lg-11
             h9 <b>①</b> 新規/廃止ユーザーのExcel作成を行います。
     br
@@ -44,7 +49,7 @@ hr
     br
     .form-group.row
         .col-lg-1
-            = f.radio_button :kbn_syori, 2, checked: !(chk_kbn), id: 'chk_syori_kbn2'
+            = f.radio_button :kbn_syori, 2, checked: chk_kbn[1], id: 'chk_syori_kbn2'
         .col-lg-11 
             h9 <b>③</b> 新規施設のExcel作成を行います。
     br
@@ -53,6 +58,14 @@ hr
         .col-lg-1
         .col-lg-11
             h9 <b>④</b> 上記③の処理で出力した「クラウド連携_新規更新分_MMDD」のExcelファイルに、新規分の施設データが出力されます。ファイルにはユーザーキーが単一のものと、重複のものとが混在して出力されます。Excelファイルの編集を行った後、ExcelファイルからCSVファイルを生成し、楽楽販売の施設テーブルにインポートします。すると新規分の施設データが楽楽販売の施設テーブルに反映されます。その後、楽楽販売側で単価、開始年月の登録を行ってください。
+    br
+    br
+    .form-group.row
+        .col-lg-1
+            = f.radio_button :kbn_syori, 3, checked: chk_kbn[2], id: 'chk_syori_kbn3'
+        .col-lg-11
+            h9 <b>⑤</b> SofinetCloudからブザーのデータを取得します。処理には7分程時間がかかります。
+
     .mt-4
     = f.button type: "submit", class: 'btn btn-primary', id: 'btn_renkei_jikko'
         i class = "fas fa-rocket"  実行
@@ -69,3 +82,9 @@ br
             = link_to export_shisetu_con36_cloud_renkeis_path(format: :xlsx),
                 class: 'btn btn-primary'
                 i class = "fa solid fa-download"  Excel 施設
+.form-group.row
+    .col-lg-2
+        #lnk_cloud_renkeis3
+            = link_to export_buzzer_con36_cloud_renkeis_path(format: :xlsx),
+                class: 'btn btn-primary'
+                i class = "fa solid fa-download"  Excel ブザー

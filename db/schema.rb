@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_17_014411) do
+ActiveRecord::Schema.define(version: 2025_02_12_023345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,6 +20,16 @@ ActiveRecord::Schema.define(version: 2024_04_17_014411) do
     t.string "kokyaku", default: "", null: false
     t.integer "assen_tesuryo", default: 0, null: false
     t.integer "suuryou", default: 0, null: false
+  end
+
+  create_table "cloud_ren_buzzers", force: :cascade do |t|
+    t.string "userkey", default: "", null: false
+    t.string "buzzer_id", default: "", null: false
+    t.string "buzzer_name", default: "", null: false
+    t.string "upd_flg", default: "", null: false
+    t.integer "sts_flg", default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "cloud_ren_checks", force: :cascade do |t|

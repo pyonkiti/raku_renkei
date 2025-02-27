@@ -8,7 +8,9 @@ hr
 
     / 画面から遷移してきたときはパラメータの中身はnil
     - if params[:seikyu_ym].nil?
-       - @txt_seikyu_ym = Time.current.months_ago(1).strftime("%Y-%m")
+       / upd 2025/01/29
+       / - @txt_seikyu_ym = Time.current.months_ago(1).strftime("%Y-%m")
+       - @txt_seikyu_ym = Time.current.strftime("%Y-%m")
     - else
        - @txt_seikyu_ym = params[:seikyu_ym]
 
@@ -22,7 +24,8 @@ hr
                      class: 'form-control',
                         id: 'txt_seikyu_ym'
         .col-md-7
-            h9 初期表示はシステム年月の１ヶ月前です。
+            / upd 2025/01/29
+            / h9 初期表示はシステム年月の１ヶ月前です。
 
     br
 

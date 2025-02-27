@@ -40,6 +40,9 @@ class ProcScp
             # プロジェクト配下のディレクトリ
             direc_arry = %w(app bin config db excel lib node_modules public storage vendor)
 
+            # カスタマイズ版
+            direc_cust = %w(excel)
+
             # db/seeds.rbだけ
             seeds_arry = %w(seeds.rb)
 
@@ -48,6 +51,7 @@ class ProcScp
             all_arry = case flg
                 when "all"  then (filea_arry + filef_arry + direc_arry)
                 when "seed" then seeds_arry
+                when "cust" then direc_cust
                 else []
             end
 
@@ -56,11 +60,11 @@ class ProcScp
             all_arry.each_with_index do |fil, idx|
                 
                 cmd = case flg
-                    when "all"
+                    when "all", "cust"
                         "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}"
                     when "seed"
                         "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/db/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}/db"
-                    else
+                    else1
                         ""
                 end
 
@@ -79,7 +83,7 @@ if ret != true
     exit
 end
 
-# 第二引数（all:全てのファイルをコピー、seed:seedsファイルのみをコピー）
+# 第二引数（all:全てのファイルをコピー、seed:seedsファイルのみをコピー、cust:都度メンテする）
 if ProcScp.proc_scp(ARGV[0].to_s, "all") != true
     puts "処理が異常終了しました。"
 else

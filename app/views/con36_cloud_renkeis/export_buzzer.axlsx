@@ -1,0 +1,36 @@
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "ブザー一覧") do |sheet|
+
+    styles = {
+        title: sheet.styles.add_style(font_name: 'メイリオ'),
+        body:  sheet.styles.add_style(font_name: 'ＭＳ Ｐゴシック'),
+        date:  sheet.styles.add_style(font_name: 'Arial', format_code: 'yyyymmdd'),
+        time:  sheet.styles.add_style(font_name: 'Arial', format_code: 'hhmmss'),
+        egg:   sheet.styles.add_style(bg_color: 'FFFFCC'),                              # 卵色
+        water: sheet.styles.add_style(bg_color: 'CCFFFF')                               # 水色
+    }
+    
+    header = %w(ユーザーキー ブザーID ブザー名 状態)
+    sheet.add_row header, style: styles[:title]
+
+    @cloudrenbuzzer.each do |tbl|
+        sheet.add_row do |row|
+
+            row.add_cell(tbl.userkey,     style: styles[:body])
+            row.add_cell(tbl.buzzer_id,   style: styles[:body])
+            row.add_cell(tbl.buzzer_name, style: styles[:body])
+
+            style = case tbl.upd_flg 
+                when "新規" then styles[:water]
+                when "廃止" then styles[:egg]
+                else nil
+            end
+
+            if style.nil?
+                row.add_cell(tbl.upd_flg, style: styles[:body]) 
+            else
+                row.add_cell(tbl.upd_flg, style: styles[:body], style: style)
+            end
+        end
+    end
+end

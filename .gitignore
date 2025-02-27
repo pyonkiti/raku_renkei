@@ -29,7 +29,7 @@
 # 自作ファイル
 /.env
 /routes.txt
-/test/ruby*.rb
+/Ruby/*
 /private/*
 /_excel/moto/*
 /excel/moto/*

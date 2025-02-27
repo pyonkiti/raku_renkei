@@ -3,12 +3,20 @@ document.addEventListener('turbolinks:load', function() {
     
     // 別画面でエラーになる事象を回避
     if (document.getElementById('chk_syori_kbn1') == null) { return false; }
-
+    
     // 初期表示
     if (document.getElementById('chk_syori_kbn1').checked == null || document.getElementById('chk_syori_kbn1').checked == true) {
         head_disp_cloud_ren(1);
-    } else {
+    }
+
+    // ③にチェック
+    if (document.getElementById('chk_syori_kbn2').checked == true) {
         head_disp_cloud_ren(2);
+    }
+
+    // ⑤にチェック
+    if (document.getElementById('chk_syori_kbn3').checked == true) {
+        head_disp_cloud_ren(3);
     }
 
     // インポート１
@@ -32,12 +40,16 @@ document.addEventListener('turbolinks:load', function() {
     // 新規/廃止ユーザーのExcel出力
     document.getElementById('chk_syori_kbn1').addEventListener('click', function() {
         head_disp_cloud_ren(1);
-
     })
     
     // 新規施設のExcel出力
     document.getElementById('chk_syori_kbn2').addEventListener('click', function() {
         head_disp_cloud_ren(2);
+    })
+
+    // ブザーのCSV出力
+    document.getElementById('chk_syori_kbn3').addEventListener('click', function() {
+        head_disp_cloud_ren(3);
     })
 }, false)
 
@@ -48,11 +60,17 @@ function head_disp_cloud_ren(kbn) {
         case 1:
             document.getElementById("lnk_cloud_renkeis1").style.display = "block";
             document.getElementById("lnk_cloud_renkeis2").style.display = "none";
-
+            document.getElementById("lnk_cloud_renkeis3").style.display = "none";
             break;
         case 2:
             document.getElementById("lnk_cloud_renkeis1").style.display = "none";
             document.getElementById("lnk_cloud_renkeis2").style.display = "block";
+            document.getElementById("lnk_cloud_renkeis3").style.display = "none";
+            break;
+        case 3:
+            document.getElementById("lnk_cloud_renkeis1").style.display = "none";
+            document.getElementById("lnk_cloud_renkeis2").style.display = "none";
+            document.getElementById("lnk_cloud_renkeis3").style.display = "block";
             break;
     }
 

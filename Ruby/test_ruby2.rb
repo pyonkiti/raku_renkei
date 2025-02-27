@@ -1,7 +1,4 @@
 
-
-
-
 # ファイルのタイプスタンプを取得
 def test_filetime
     puts File.mtime(__FILE__)

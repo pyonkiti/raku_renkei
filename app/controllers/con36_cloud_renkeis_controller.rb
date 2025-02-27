@@ -140,6 +140,36 @@ class Con36CloudRenkeisController < ApplicationController
                     cloudrenchecks = CloudRenCheck.table_select_newshisetu(syori: "key_jyufuku")
                     ret, msg = CloudRenWork3.table_insert(cloudrenchecks, syori: "key_jyufuku")
                     throw :goto_err if !ret
+                    
+                when "3" then
+
+                    # Sofinet CloudよりAPI連携
+                    ret, msg, result = get_cloud("hon")
+                    throw :goto_err if !ret
+                    
+                    # テーブル読み込み
+                    ret, msg = CloudRenBuzzer.table_each(result, nil, "cloud")
+                    throw :goto_err if !ret
+                    
+                    sql_h = {0 => "oy-ko", 1 => "oy-only", 2 => "ko-only"}
+
+                    3.times do |cnt|
+                        # テーブル抽出
+                        ret, msg, tbl = CloudRenBuzzer.table_select_join(sql_h[cnt])
+                        throw :goto_err if !ret
+                        
+                        # テーブル読み込み
+                        ret, msg = CloudRenBuzzer.table_each(tbl, sql_h[cnt], "local")
+                        throw :goto_err if !ret
+                    end
+                    
+                    # テーブルの削除
+                    ret, msg = CloudRenBuzzer.table_delete
+                    throw :goto_err if !ret
+                    
+                    # テーブルの更新
+                    ret, msg = CloudRenBuzzer.table_update
+                    throw :goto_err if !ret
                 else
                     msg = "処理区分が正しく選択されていないため、処理を中断しました。"
                     ret = false
@@ -153,7 +183,7 @@ class Con36CloudRenkeisController < ApplicationController
             
             case params[:kbn_syori].to_s
                 when "1"
-                    msg = "Sofinet Cloudからローカルテーブルに、一括でデータを取得しました。" + "　（処理時間 #{measure_msg}）"
+                    msg = "Sofinet Cloudからユーザー/施設データを一括で取得しました。" + "　（処理時間 #{measure_msg}）"
                     msg << "<pre>"
                     msg << "　ユーザー数　：　#{CloudRenUser.table_count.to_s(:delimited).rjust(7)} 件<br>"
                     msg << "　施設数　　　：　#{CloudRenShisetu.table_count.to_s(:delimited).rjust(7)} 件"
@@ -163,6 +193,11 @@ class Con36CloudRenkeisController < ApplicationController
                     msg << "<pre>"
                     msg << "　単一キー　：　#{CloudRenWork3.table_count(syori: "key_tanitsu").to_s(:delimited).rjust(7)} 件<br>"
                     msg << "　重複キー　：　#{CloudRenWork3.table_count(syori: "key_jyufuku").to_s(:delimited).rjust(7)} 件"
+                    msg << "</pre>"
+                when "3"
+                    msg = "Sofinet Cloudからブザーデータを一括で取得しました。" + "　（処理時間 #{measure_msg}）"
+                    msg << "<pre>"
+                    msg << "　ブザー数　：　#{CloudRenBuzzer.table_count.to_s(:delimited).rjust(7)} 件"
                     msg << "</pre>"
             end
         end
@@ -208,5 +243,48 @@ class Con36CloudRenkeisController < ApplicationController
             end
         end
         render :export_shisetu
+    end
+
+    # Excelブザー（Excel出力）
+    def export_buzzer
+        
+        # データ取得
+        @cloudrenbuzzer = CloudRenBuzzer.table_select_forexcel
+
+        filename = "ブザー一覧_#{Time.current.strftime("%m%d")}"
+        respond_to do | format |
+            format.xlsx do
+                response.headers['Content-Disposition'] = "attachment; filename=#{filename}.xlsx"
+            end
+        end
+        render :export_buzzer
+    end
+
+    private
+
+    # Sofinet CloudよりAPI連携（ブザーデータ取得）
+    def get_cloud(get_flg)
+        begin
+            url = case get_flg
+                when "test" then "https://www.sofinetcloud.net:8080/api/system/get_all_buzzers"
+                when "hon"  then "https://www.sofinetcloud.net/api/system/get_all_buzzers"
+            end
+            uri = URI.parse(url)
+            
+            http = Net::HTTP.new(uri.host, uri.port)
+            http.use_ssl = uri.scheme == 'https'
+            http.open_timeout = 60 * 10
+            http.read_timeout = 60 * 10
+            
+            response = http.start { http.get(uri) }
+            result = JSON.parse(response.body)
+
+            return true, nil, result
+        rescue => ex
+            err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
+            err = err + " Sofilet Cloudからのブザーデータの取得でエラーが発生しています"
+            @@debug.pri_logger.error(err)
+            return false, "エラーが発生しました。", nil
+        end
     end
 end

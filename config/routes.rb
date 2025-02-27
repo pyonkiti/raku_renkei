@@ -19,16 +19,17 @@ Rails.application.routes.draw do
     end
     
     # Cloud連携
-    resources :con36_cloud_renkeis, only: [:index]
+    resources :con36_cloud_renkeis, only: [:index, :create]
     
     # Cloud連携
     resources :con36_cloud_renkeis do
         get   :export_user,     on: :collection
         get   :export_shisetu,  on: :collection
+        get   :export_buzzer,   on: :collection
         post  :import_seikyu,   on: :collection
         post  :import_shisetu,  on: :collection
     end
-    
+
     # 請求計算
     resources :con37_nyushi_seikyus, only: [:index, :create]
     
@@ -47,7 +48,7 @@ Rails.application.routes.draw do
         post  :import1,         on: :collection
         post  :import2,         on: :collection
         post  :import3,         on: :collection
-        get  :syori0,          on: :collection
+        get   :syori0,          on: :collection
         get   :export_shi,      on: :collection
         get   :export_nyu,      on: :collection
     end
