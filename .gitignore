@@ -30,7 +30,7 @@
 /.env
 /routes.txt
 /Ruby/*
-/private/*
+/private
 /_excel/moto/*
 /excel/moto/*
 /excel/*.xlsx

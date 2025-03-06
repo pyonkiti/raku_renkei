@@ -133,8 +133,8 @@ class SeikyuYoteCal < ApplicationRecord
                 when "09" then ["01", "11"]
                 when "10" then ["01", "13"]
                 when "11" then ["01"]
-                when "12" then ["01"]
-                else ["01", "11", "12", "13", "21"]
+                when "12" then ["01", "22"]
+                else ["01", "11", "12", "13", "21", "22"]
             end
             return res
         end

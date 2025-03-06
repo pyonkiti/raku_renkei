@@ -111,8 +111,9 @@ class SeikyuTukiCal < ApplicationRecord
         #  14  半期（4月/9月/3月）       ※システム対応を行わない
         #  15  四半期（6月/9月/12月/3月）※システム対応を行わない
         #【年度請求】
-        #  21  年度末（3月）
-        #  22  期初一括（4月）           ※システム対応を行わない
+        #  21  年度末（ 3月）
+        #  22  年度末（12月）            ※2025/3に仕様追加
+        #  23  期初一括（4月）           ※システム対応を行わない
         # ---------------------------------------------------------
         def get_calctuki(ary, seikyu_ym)
             
@@ -196,6 +197,11 @@ class SeikyuTukiCal < ApplicationRecord
                     #【パターン１３～１６の場合】
                     # 終了年月がどうであれ、開始年月 > 画面年月の場合は請求しない
                     if Common.get_strendym(0, ary[1]) > seikyu_ym.delete("-").to_i
+                        return "無"
+                    end
+                    
+                    # イレギュラー対応（開始:2025/12 終了:2025/11 画面:2025/12の場合）
+                    if ary[1].delete("/").to_i > ary[2].delete("/").to_i
                         return "無"
                     end
                     return "有"

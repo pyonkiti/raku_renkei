@@ -206,7 +206,7 @@ class CloudRenBuzzer < ApplicationRecord
         # 状態フラグを2→1に更新
         def table_update
             begin
-                CloudRenBuzzer.update(sts_flg: 1)
+                CloudRenBuzzer.update_all(sts_flg: 1)
                 return true, nil
             rescue => ex
                 err = self.name.to_s + "." + __method__.to_s + " : " + ex.message
