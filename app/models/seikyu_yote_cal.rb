@@ -94,25 +94,6 @@ class SeikyuYoteCal < ApplicationRecord
             end
         end
 
-        # ActiveRecordからSQL文を生成
-        # 不要であれば削除する
-        # def get_sql(seikyu_ym)
-        #     sql = SisetuKanribuTeisyutu0.left_joins(:seikyu_tuki_cals)
-        #                                 .includes(:seikyu_tuki_cals)
-        #                                 .where("seikyu_tuki_cals.print_flg = '有'")
-        #                                 .where("seikyu_tuki_cals.seikyu_ym = '#{seikyu_ym.delete("-")}'")
-        #                                 .where("sisetu_kanribu_teisyutu0s.siharai_kikan_cd: #{get_jyoken_siharai(seikyu_ym)}")
-        #                                 .select("sisetu_kanribu_teisyutu0s.id As id")
-        #                                 .select("sisetu_kanribu_teisyutu0s.tanka As tanka")
-        #                                 .select("sisetu_kanribu_teisyutu0s.assen_tesuryo As assen_tesuryo")
-        #                                 .select("sisetu_kanribu_teisyutu0s.seikyu_m_su As seikyu_m_su_test")
-        #                                 .select("seikyu_tuki_cals.seikyu_m_su As seikyu_m_su")
-        #                                 .select("seikyu_tuki_cals.print_flg As print_flg")
-        #                                 .order("seikyu_tuki_cals.id")
-        #                                 .to_sql
-        #     return sql
-        # end
-
         # 請求予定額テーブルを全件削除
         def table_delete
             connection.execute "TRUNCATE TABLE seikyu_yote_cals;"

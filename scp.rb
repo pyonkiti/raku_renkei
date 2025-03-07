@@ -62,6 +62,7 @@ class ProcScp
                 cmd = case flg
                     when "all", "cust"
                         "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}"
+
                     when "seed"
                         "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/db/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}/db"
                     else1
