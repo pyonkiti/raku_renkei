@@ -62,7 +62,6 @@ class ProcScp
                 cmd = case flg
                     when "all", "cust"
                         "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}"
-
                     when "seed"
                         "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/db/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}/db"
                     else1
@@ -85,7 +84,7 @@ if ret != true
 end
 
 # 第二引数（all:全てのファイルをコピー、seed:seedsファイルのみをコピー、cust:都度メンテする）
-if ProcScp.proc_scp(ARGV[0].to_s, "all") != true
+if ProcScp.proc_scp(ARGV[0].to_s, "cust") != true
     puts "処理が異常終了しました。"
 else
     puts "処理が正常終了しました。"
