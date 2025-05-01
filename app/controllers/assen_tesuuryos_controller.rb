@@ -169,7 +169,7 @@ class AssenTesuuryosController < ApplicationController
                     # 初期設定（タグ名を取得）
                     hash_tag = {}
                     hash_tag = case tbl.shiire_nm
-                            when "東日本支社"   then {tag_name: "請求書 (東日本)",      column: 11}
+                            when "東日本支社"   then {tag_name: "請求書 (東日本)",      column: 23}
                             when "北関東支店"   then {tag_name: "請求書 (北関東)",      column: 23}
                             when "東京支店"     then {tag_name: "請求書 (東京)",        column: 11}
                             when "中部支社"     then {tag_name: "請求書 (中部)",        column: 11}

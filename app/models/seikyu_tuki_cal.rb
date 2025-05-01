@@ -201,8 +201,10 @@ class SeikyuTukiCal < ApplicationRecord
                     end
                     
                     # イレギュラー対応（開始:2025/12 終了:2025/11 画面:2025/12の場合）
-                    if ary[1].delete("/").to_i > ary[2].delete("/").to_i
-                        return "無"
+                    if ary[2].delete("/").to_i != 0
+                        if ary[1].delete("/").to_i > ary[2].delete("/").to_i
+                            return "無"
+                        end
                     end
                     return "有"
             end
