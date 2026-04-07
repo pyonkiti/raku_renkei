@@ -37,8 +37,9 @@ development:
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
   # domain sockets, so uncomment these lines.
-  host: 192.168.33.10
-  # host: 127.0.0.1
+  # host: 192.168.33.10   # Vagrant環境
+  host: 127.0.0.1
+  # host: localhost
 
   # The TCP port the server listens on. Defaults to 5432.
   # If your server runs on a different port number, change accordingly.
@@ -63,7 +64,9 @@ test:
 # password: vagrant
   username: <%= ENV['DATABASE_USER'] %>
   password: <%= ENV['DATABASE_PASS'] %>
-  host: 192.168.33.10
+#  host: 192.168.33.10     # Vagrant環境
+  host: 127.0.0.1
+#  host: localhost
   port: 5432
    
 # As with config/secrets.yml, you never want to store sensitive information,
@@ -92,5 +95,6 @@ production:
   password: <%= ENV['DATABASE_PASS_PRO'] %>
 
   host: 192.168.19.11               # 開発サーバー（本番）
-# host: 192.168.33.10               # 自分のPC（開発）
+  host: 10.0.2.15                   # 自分のPC（開発）
+# host: 192.168.33.10               # 自分のPC（開発）vagrant環境
   port: 5432

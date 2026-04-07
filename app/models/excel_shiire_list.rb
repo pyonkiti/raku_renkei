@@ -70,7 +70,7 @@ class ExcelShiireList < ApplicationRecord
                 hash = {}
                 hash["denpyo_kugiri"]   = "*"
                 hash["hojyo_kamoku"]    = table0.shiire_cd
-                hash["torihikisaki"]    = table0.shiire_nm.split[0]
+                hash["torihikisaki"]    = table0.shiire_nm.split[0].to_s
                 shiire_nm_shiten = table0.shiire_nm.split[1].nil? ? "" : table0.shiire_nm.split[1]
                 hash["tekiyo1"]         = shiire_nm_shiten
                 hash["tekiyo2"]         = table0.uri_m.to_s + "月分"

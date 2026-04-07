@@ -1,5 +1,6 @@
 # 開発環境から開発サーバー（本番環境）にRailsプロジェクトをコピーする
 # 本番環境にコピーする必要があるファイルやディレクトリが増えれば、都度、配列に追加する
+# sshpassコマンドが実行環境にインストールされている必要があります
 # ＜使い方＞ $ruby scp.rb password 引数には開発サーバーにsofinetでログインするときのパスワードを渡す
 class ProcScp
 
@@ -24,7 +25,8 @@ class ProcScp
         def proc_scp(argv, flg)
             
             param_hash = {
-                path_moto: "/vagrant/raku_renkei",              # コピー元
+                # path_moto: "/vagrant/raku_renkei",            # コピー元
+                path_moto: "/media/sf_vagrant/raku_renkei",     # コピー元
                 # path_saki: "/home/tanaka/test_scp",           # コピー先（テスト用）
                 path_saki: "/home/tanaka/raku_renkei",          # コピー先（本番用）
                 server: "sofinet@192.168.19.11",                # 開発サーバー
@@ -41,7 +43,7 @@ class ProcScp
             direc_arry = %w(app bin config db excel lib node_modules public storage vendor)
 
             # カスタマイズ版
-            direc_cust = %w(excel)
+            direc_cust = %w(app)
 
             # db/seeds.rbだけ
             seeds_arry = %w(seeds.rb)
@@ -61,7 +63,8 @@ class ProcScp
                 
                 cmd = case flg
                     when "all", "cust"
-                        "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}"
+                        # "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}"
+                          "sshpass -p #{param_hash[:password]} scp -rp #{param_hash[:path_moto]}/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}"
                     when "seed"
                         "sshpass -p #{param_hash[:password]} sudo scp -rp #{param_hash[:path_moto]}/db/#{fil} #{param_hash[:server]}:#{param_hash[:path_saki]}/db"
                     else1

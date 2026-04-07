@@ -13,6 +13,9 @@ Rails.application.configure do
   # 標準のログ
   config.logger = Logger.new("log/development.log", 3, 500 * 1024 * 1024)
 
+  # ログのカラーコードを出力しない
+  # config.colorize_logging = false
+
   # Do not eager load code on boot.
   config.eager_load = false
 
