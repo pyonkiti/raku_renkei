@@ -35,7 +35,8 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
                     hash["siharai_ymd_yokued"]  = row[16]
                     hash["ki"]                  = row[17]
                     hash["seikyu_m"]            = row[18]
-                    hash["tantou_cd"]           = row[19]
+                   #hash["tantou_cd"]           = row[19]
+                    hash["tantou"]              = row[19]
                     hash["shiire_cd"]           = row[20]
                     
                     sisetu_kanribu_teisyutu1 = new
@@ -93,7 +94,8 @@ class SisetuKanribuTeisyutu1 < ApplicationRecord
              "siharai_ymd_yokued",
              "ki",
              "seikyu_m",
-             "tantou_cd",
+            #"tantou_cd",
+             "tantou",
              "shiire_cd"]
         end
     end

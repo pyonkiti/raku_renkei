@@ -94,7 +94,8 @@ class ExcelNyukinList < ApplicationRecord
                 hash["ki"]                 = table0.ki
                 hash["bumon"]              = "510"
                 hash["seikyu_m"]           = table0.seikyu_m
-                hash["tantou"]             = table0.tantou_cd
+               #hash["tantou"]             = table0.tantou_cd
+                hash["tantou"]             = table0.tantou
                 hash["renban"]             = ""
                 hash["edaban"]             = ""
                 hash["yobi"]               = ""

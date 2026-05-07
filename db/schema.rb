@@ -197,7 +197,7 @@ ActiveRecord::Schema.define(version: 2025_02_12_023345) do
     t.string "siharai_ymd_yokued", default: "", null: false
     t.string "ki", default: "", null: false
     t.string "seikyu_m", default: "", null: false
-    t.string "tantou_cd", default: "", null: false
+    t.string "tantou", default: "", null: false
     t.string "shiire_cd", default: "", null: false
     t.string "shiire_nm", default: "", null: false
     t.string "uri_m", default: "", null: false
@@ -236,7 +236,7 @@ ActiveRecord::Schema.define(version: 2025_02_12_023345) do
     t.string "siharai_ymd_yokued", default: "", null: false
     t.string "ki", default: "", null: false
     t.string "seikyu_m", default: "", null: false
-    t.string "tantou_cd", default: "", null: false
+    t.string "tantou", default: "", null: false
     t.string "shiire_cd", default: "", null: false
     t.datetime "created_at"
   end

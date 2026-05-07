@@ -21,7 +21,8 @@ class AddColumnTosisetuKanribuTeisyutu0 < ActiveRecord::Migration[5.2]
         add_column :sisetu_kanribu_teisyutu0s, :siharai_ymd_yokued,  :string    # 支払日（翌月末）
         add_column :sisetu_kanribu_teisyutu0s, :ki,                  :string    # 期
         add_column :sisetu_kanribu_teisyutu0s, :seikyu_m,            :string    # 請求月
-        add_column :sisetu_kanribu_teisyutu0s, :tantou_cd,           :string    # 担当者コード
+       #add_column :sisetu_kanribu_teisyutu0s, :tantou_cd,           :string    # 担当者コード
+        add_column :sisetu_kanribu_teisyutu0s, :tantou,              :string    # 担当者
         add_column :sisetu_kanribu_teisyutu0s, :shiire_cd,           :string    # 仕入先コード
 
         # カラムを追加（テーブル２より連携）

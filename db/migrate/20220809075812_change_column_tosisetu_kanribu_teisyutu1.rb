@@ -30,7 +30,8 @@ class ChangeColumnTosisetuKanribuTeisyutu1 < ActiveRecord::Migration[5.2]
         change_column_null :sisetu_kanribu_teisyutu1s, :siharai_ymd_yokued,  flg
         change_column_null :sisetu_kanribu_teisyutu1s, :ki,                  flg
         change_column_null :sisetu_kanribu_teisyutu1s, :seikyu_m,            flg
-        change_column_null :sisetu_kanribu_teisyutu1s, :tantou_cd,           flg
+       #change_column_null :sisetu_kanribu_teisyutu1s, :tantou_cd,           flg
+        change_column_null :sisetu_kanribu_teisyutu1s, :tantou,              flg
         change_column_null :sisetu_kanribu_teisyutu1s, :shiire_cd,           flg
     end
 
@@ -54,7 +55,8 @@ class ChangeColumnTosisetuKanribuTeisyutu1 < ActiveRecord::Migration[5.2]
         change_column_default :sisetu_kanribu_teisyutu1s, :siharai_ymd_yokued,  flg
         change_column_default :sisetu_kanribu_teisyutu1s, :ki,                  flg
         change_column_default :sisetu_kanribu_teisyutu1s, :seikyu_m,            flg
-        change_column_default :sisetu_kanribu_teisyutu1s, :tantou_cd,           flg
+       #change_column_default :sisetu_kanribu_teisyutu1s, :tantou_cd,           flg
+        change_column_default :sisetu_kanribu_teisyutu1s, :tantou,              flg
         change_column_default :sisetu_kanribu_teisyutu1s, :shiire_cd,           flg
     end
 end
